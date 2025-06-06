@@ -1,0 +1,26 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Get the current branch name
+branch=$(git rev-parse --abbrev-ref HEAD)
+
+# Protected branches
+protected_branches="^(main|master|develop)$"
+
+if [[ "$branch" =~ $protected_branches ]]; then
+  echo ""
+  echo "🚫 Direct push to $branch branch is not allowed!"
+  echo ""
+  echo "Please follow these steps:"
+  echo "1. Create a feature branch: git checkout -b feature/your-feature-name"
+  echo "2. Make your changes and commit them"
+  echo "3. Push your feature branch: git push origin feature/your-feature-name"
+  echo "4. Create a Pull Request on GitHub/GitLab"
+  echo ""
+  echo "If you need to push to $branch for emergency, use:"
+  echo "git push --no-verify origin $branch"
+  echo ""
+  exit 1
+fi
+
+echo "✅ Pushing to $branch branch..." 
