@@ -1,3 +1,6 @@
+import AppProviders from "@/providers/AppProviders";
+import { Outlet } from "@tanstack/react-router";
+
 export default function Layout() {
-  return <div>Layout</div>
+  return <Outlet/>
 }
