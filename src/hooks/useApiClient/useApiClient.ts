@@ -3,7 +3,7 @@ import { ApiClientContext } from '@/context/apiClient/apiClientContext/ApiClient
 
 export const useApiClient = () => {
   const ctx = useContext(ApiClientContext)
-
+  console.log(ctx)
   if (typeof ctx === 'undefined') {
     throw new Error('useApiClient hook is not wrapped by ApiClient provider')
   }
