@@ -4,7 +4,7 @@ import { queryFactoryOptions } from "@/api/utils/queryFactoryOptions";
 import { ENV } from "@/config/env";
 
 const getFact = (client: AxiosInstance) => async () => {
-    return ((await client.get<TestMutationReponse>('/')).data);
+    return ((await client.get<TestMutationReponse>('/')));
   };
   
   export const testQueries = {
