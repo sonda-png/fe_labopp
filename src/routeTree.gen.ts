@@ -14,6 +14,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as PublicImport } from './routes/_public'
 import { Route as AuthImport } from './routes/_auth'
 import { Route as IndexImport } from './routes/index'
+import { Route as PublicTestIndexImport } from './routes/_public/test/index'
 import { Route as PublicHomeIndexImport } from './routes/_public/home/index'
 import { Route as AuthAboutIndexImport } from './routes/_auth/about/index'
 
@@ -33,6 +34,12 @@ const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
+} as any)
+
+const PublicTestIndexRoute = PublicTestIndexImport.update({
+  id: '/test/',
+  path: '/test/',
+  getParentRoute: () => PublicRoute,
 } as any)
 
 const PublicHomeIndexRoute = PublicHomeIndexImport.update({
@@ -86,6 +93,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicHomeIndexImport
       parentRoute: typeof PublicImport
     }
+    '/_public/test/': {
+      id: '/_public/test/'
+      path: '/test'
+      fullPath: '/test'
+      preLoaderRoute: typeof PublicTestIndexImport
+      parentRoute: typeof PublicImport
+    }
   }
 }
 
@@ -103,10 +117,12 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 interface PublicRouteChildren {
   PublicHomeIndexRoute: typeof PublicHomeIndexRoute
+  PublicTestIndexRoute: typeof PublicTestIndexRoute
 }
 
 const PublicRouteChildren: PublicRouteChildren = {
   PublicHomeIndexRoute: PublicHomeIndexRoute,
+  PublicTestIndexRoute: PublicTestIndexRoute,
 }
 
 const PublicRouteWithChildren =
@@ -117,6 +133,7 @@ export interface FileRoutesByFullPath {
   '': typeof PublicRouteWithChildren
   '/about': typeof AuthAboutIndexRoute
   '/home': typeof PublicHomeIndexRoute
+  '/test': typeof PublicTestIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -124,6 +141,7 @@ export interface FileRoutesByTo {
   '': typeof PublicRouteWithChildren
   '/about': typeof AuthAboutIndexRoute
   '/home': typeof PublicHomeIndexRoute
+  '/test': typeof PublicTestIndexRoute
 }
 
 export interface FileRoutesById {
@@ -133,13 +151,14 @@ export interface FileRoutesById {
   '/_public': typeof PublicRouteWithChildren
   '/_auth/about/': typeof AuthAboutIndexRoute
   '/_public/home/': typeof PublicHomeIndexRoute
+  '/_public/test/': typeof PublicTestIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '' | '/about' | '/home'
+  fullPaths: '/' | '' | '/about' | '/home' | '/test'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '' | '/about' | '/home'
+  to: '/' | '' | '/about' | '/home' | '/test'
   id:
     | '__root__'
     | '/'
@@ -147,6 +166,7 @@ export interface FileRouteTypes {
     | '/_public'
     | '/_auth/about/'
     | '/_public/home/'
+    | '/_public/test/'
   fileRoutesById: FileRoutesById
 }
 
@@ -189,7 +209,8 @@ export const routeTree = rootRoute
     "/_public": {
       "filePath": "_public.tsx",
       "children": [
-        "/_public/home/"
+        "/_public/home/",
+        "/_public/test/"
       ]
     },
     "/_auth/about/": {
@@ -198,6 +219,10 @@ export const routeTree = rootRoute
     },
     "/_public/home/": {
       "filePath": "_public/home/index.tsx",
+      "parent": "/_public"
+    },
+    "/_public/test/": {
+      "filePath": "_public/test/index.tsx",
       "parent": "/_public"
     }
   }
