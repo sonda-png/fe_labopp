@@ -14,8 +14,8 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as PublicImport } from './routes/_public'
 import { Route as AuthImport } from './routes/_auth'
 import { Route as IndexImport } from './routes/index'
+import { Route as PublicTestIndexImport } from './routes/_public/test/index'
 import { Route as PublicHomeIndexImport } from './routes/_public/home/index'
-import { Route as AuthTestIndexImport } from './routes/_auth/test/index'
 import { Route as AuthAboutIndexImport } from './routes/_auth/about/index'
 
 // Create/Update Routes
@@ -36,16 +36,16 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const PublicTestIndexRoute = PublicTestIndexImport.update({
+  id: '/test/',
+  path: '/test/',
+  getParentRoute: () => PublicRoute,
+} as any)
+
 const PublicHomeIndexRoute = PublicHomeIndexImport.update({
   id: '/home/',
   path: '/home/',
   getParentRoute: () => PublicRoute,
-} as any)
-
-const AuthTestIndexRoute = AuthTestIndexImport.update({
-  id: '/test/',
-  path: '/test/',
-  getParentRoute: () => AuthRoute,
 } as any)
 
 const AuthAboutIndexRoute = AuthAboutIndexImport.update({
@@ -86,18 +86,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAboutIndexImport
       parentRoute: typeof AuthImport
     }
-    '/_auth/test/': {
-      id: '/_auth/test/'
-      path: '/test'
-      fullPath: '/test'
-      preLoaderRoute: typeof AuthTestIndexImport
-      parentRoute: typeof AuthImport
-    }
     '/_public/home/': {
       id: '/_public/home/'
       path: '/home'
       fullPath: '/home'
       preLoaderRoute: typeof PublicHomeIndexImport
+      parentRoute: typeof PublicImport
+    }
+    '/_public/test/': {
+      id: '/_public/test/'
+      path: '/test'
+      fullPath: '/test'
+      preLoaderRoute: typeof PublicTestIndexImport
       parentRoute: typeof PublicImport
     }
   }
@@ -107,22 +107,22 @@ declare module '@tanstack/react-router' {
 
 interface AuthRouteChildren {
   AuthAboutIndexRoute: typeof AuthAboutIndexRoute
-  AuthTestIndexRoute: typeof AuthTestIndexRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthAboutIndexRoute: AuthAboutIndexRoute,
-  AuthTestIndexRoute: AuthTestIndexRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 interface PublicRouteChildren {
   PublicHomeIndexRoute: typeof PublicHomeIndexRoute
+  PublicTestIndexRoute: typeof PublicTestIndexRoute
 }
 
 const PublicRouteChildren: PublicRouteChildren = {
   PublicHomeIndexRoute: PublicHomeIndexRoute,
+  PublicTestIndexRoute: PublicTestIndexRoute,
 }
 
 const PublicRouteWithChildren =
@@ -132,16 +132,16 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '': typeof PublicRouteWithChildren
   '/about': typeof AuthAboutIndexRoute
-  '/test': typeof AuthTestIndexRoute
   '/home': typeof PublicHomeIndexRoute
+  '/test': typeof PublicTestIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '': typeof PublicRouteWithChildren
   '/about': typeof AuthAboutIndexRoute
-  '/test': typeof AuthTestIndexRoute
   '/home': typeof PublicHomeIndexRoute
+  '/test': typeof PublicTestIndexRoute
 }
 
 export interface FileRoutesById {
@@ -150,23 +150,23 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteWithChildren
   '/_public': typeof PublicRouteWithChildren
   '/_auth/about/': typeof AuthAboutIndexRoute
-  '/_auth/test/': typeof AuthTestIndexRoute
   '/_public/home/': typeof PublicHomeIndexRoute
+  '/_public/test/': typeof PublicTestIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '' | '/about' | '/test' | '/home'
+  fullPaths: '/' | '' | '/about' | '/home' | '/test'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '' | '/about' | '/test' | '/home'
+  to: '/' | '' | '/about' | '/home' | '/test'
   id:
     | '__root__'
     | '/'
     | '/_auth'
     | '/_public'
     | '/_auth/about/'
-    | '/_auth/test/'
     | '/_public/home/'
+    | '/_public/test/'
   fileRoutesById: FileRoutesById
 }
 
@@ -203,26 +203,26 @@ export const routeTree = rootRoute
     "/_auth": {
       "filePath": "_auth.tsx",
       "children": [
-        "/_auth/about/",
-        "/_auth/test/"
+        "/_auth/about/"
       ]
     },
     "/_public": {
       "filePath": "_public.tsx",
       "children": [
-        "/_public/home/"
+        "/_public/home/",
+        "/_public/test/"
       ]
     },
     "/_auth/about/": {
       "filePath": "_auth/about/index.tsx",
       "parent": "/_auth"
     },
-    "/_auth/test/": {
-      "filePath": "_auth/test/index.tsx",
-      "parent": "/_auth"
-    },
     "/_public/home/": {
       "filePath": "_public/home/index.tsx",
+      "parent": "/_public"
+    },
+    "/_public/test/": {
+      "filePath": "_public/test/index.tsx",
       "parent": "/_public"
     }
   }
