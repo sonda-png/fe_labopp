@@ -10,38 +10,27 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
-import { Link, useNavigate } from '@tanstack/react-router'
-import { authStore } from '@/stores/authStore'
+import { Link } from '@tanstack/react-router'
 
-export const LoginPage: FC = () => {
-  const { setAuthData } = authStore()
-  const navigate = useNavigate()
-
-  const handleLogin = (e: React.FormEvent) => {
+export const ForgotPasswordPage: FC = () => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle login logic here
-    setAuthData({
-      isAuthenticated: true,
-      accessToken: '123',
-      refreshToken: '123',
-      email: 'sonda@gmail.com',
-      image: '123',
-      role: 'Admin',
-      userName: 'sonda',
-    })
-    navigate({ to: '/home' })
+    // Handle password reset logic here
   }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <Card className="w-[400px]">
         <CardHeader>
-          <CardTitle className="text-2xl text-center">Login</CardTitle>
+          <CardTitle className="text-2xl text-center">
+            Forgot Password
+          </CardTitle>
           <CardDescription className="text-center">
-            Enter your credentials to access your account
+            Enter your email address and we'll send you a link to reset your
+            password
           </CardDescription>
         </CardHeader>
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -52,29 +41,17 @@ export const LoginPage: FC = () => {
                 required
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                required
-              />
-            </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
             <Button
               type="submit"
               className="w-full bg-orange-500 hover:bg-orange-600 text-white"
             >
-              Sign In
+              Send Reset Link
             </Button>
             <div className="text-sm text-center">
-              <Link
-                to="/forgot-password"
-                className="text-orange-500 hover:underline"
-              >
-                Forgot your password?
+              <Link to="/login" className="text-orange-500 hover:underline">
+                Back to Login
               </Link>
             </div>
           </CardFooter>
