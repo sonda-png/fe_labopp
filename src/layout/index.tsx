@@ -1,7 +1,10 @@
 import { Outlet } from '@tanstack/react-router'
 import { HeaderComponent } from './header'
 import { SidebarComponent } from './sidebar'
-import { Fragment } from 'react'
+import { ErrorBoundary } from 'react-error-boundary'
+import FallbackRender from './error-boundary'
+import { Suspense } from 'react'
+import { Loader2 } from 'lucide-react'
 
 export default function Layout() {
   return (
@@ -9,7 +12,18 @@ export default function Layout() {
       <HeaderComponent />
       <div className="flex mx-auto">
         <SidebarComponent />
-        <Outlet />
+        <ErrorBoundary fallbackRender={FallbackRender}>
+          <Suspense
+            fallback={
+              <div className="w-full h-full flex justify-center items-center">
+                <Loader2 className="h-8 w-8 animate-spin text-yellow-500 mr-2" />
+                <span>Đang tải...</span>
+              </div>
+            }
+          >
+            <Outlet />
+          </Suspense>
+        </ErrorBoundary>
       </div>
     </div>
   )

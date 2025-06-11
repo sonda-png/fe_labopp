@@ -1,66 +1,100 @@
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { useNavigate } from '@tanstack/react-router'
 import { BarChart3, FileCheck, FileText, Trophy, Users } from 'lucide-react'
 import { useState } from 'react'
+const classes = [
+  {
+    id: 1,
+    name: 'LAB211 - IA1908',
+    code: 'Summer2025',
+    students: 32,
+    assignments: 73,
+    status: 'inactive',
+    mentors: [
+      'Nguyễn Đình Mạnh Linh - LinhNDM3',
+      'Nguyễn Thị Hải Nàng - nangnth',
+    ],
+  },
+  {
+    id: 2,
+    name: 'LAB211 - SE1967',
+    code: 'Summer2025',
+    students: 31,
+    assignments: 72,
+    status: 'inactive',
+    mentors: [
+      'Nguyễn Đình Mạnh Linh - LinhNDM3',
+      'Nguyễn Thị Hải Nàng - nangnth',
+    ],
+  },
+  {
+    id: 3,
+    name: 'LAB211 - SE1968',
+    code: 'Summer2025',
+    students: 30,
+    assignments: 106,
+    status: 'inactive',
+    mentors: ['Nguyễn Thị Hải Nàng - nangnth'],
+  },
+  {
+    id: 4,
+    name: 'LAB211 - SE1973',
+    code: 'Summer2025',
+    students: 30,
+    assignments: 127,
+    status: 'active',
+    mentors: ['Nguyễn Thị Hải Nàng - nangnth'],
+  },
+]
+
+interface SidebarItem {
+  id: string
+  label: string
+  icon: React.ElementType
+  to: string
+}
 
 export const SidebarComponent = () => {
+  const navigate = useNavigate()
+
   const [activeTab, setActiveTab] = useState('overview')
-
-  const classes = [
-    {
-      id: 1,
-      name: 'LAB211 - IA1908',
-      code: 'Summer2025',
-      students: 32,
-      assignments: 73,
-      status: 'inactive',
-      mentors: [
-        'Nguyễn Đình Mạnh Linh - LinhNDM3',
-        'Nguyễn Thị Hải Nàng - nangnth',
-      ],
-    },
-    {
-      id: 2,
-      name: 'LAB211 - SE1967',
-      code: 'Summer2025',
-      students: 31,
-      assignments: 72,
-      status: 'inactive',
-      mentors: [
-        'Nguyễn Đình Mạnh Linh - LinhNDM3',
-        'Nguyễn Thị Hải Nàng - nangnth',
-      ],
-    },
-    {
-      id: 3,
-      name: 'LAB211 - SE1968',
-      code: 'Summer2025',
-      students: 30,
-      assignments: 106,
-      status: 'inactive',
-      mentors: ['Nguyễn Thị Hải Nàng - nangnth'],
-    },
-    {
-      id: 4,
-      name: 'LAB211 - SE1973',
-      code: 'Summer2025',
-      students: 30,
-      assignments: 127,
-      status: 'active',
-      mentors: ['Nguyễn Thị Hải Nàng - nangnth'],
-    },
-  ]
-
   const [selectedClass, setSelectedClass] = useState(classes[3])
+
+  const handleNavigateSidebar = (sidebarItem: SidebarItem) => {
+    setActiveTab(sidebarItem.id)
+    console.log(sidebarItem.to)
+    navigate({ to: sidebarItem.to })
+  }
   return (
     <aside className="w-[380px] bg-white border-r border-gray-200 min-h-screen p-6">
       <nav className="space-y-1 mb-8">
         {[
-          { id: 'overview', label: 'Tổng quan', icon: BarChart3 },
-          { id: 'assignments', label: 'Quản lý bài tập', icon: FileText },
-          { id: 'submissions', label: 'Chấm bài & Review', icon: FileCheck },
-          { id: 'ranking', label: 'Bảng xếp hạng LOC', icon: Trophy },
-          { id: 'students', label: 'Quản lý sinh viên', icon: Users },
+          { id: 'overview', label: 'Tổng quan', icon: BarChart3, to: '/home' },
+          {
+            id: 'assignments',
+            label: 'Quản lý bài tập',
+            icon: FileText,
+            to: '/assignments',
+          },
+          {
+            id: 'submissions',
+            label: 'Chấm bài & Review',
+            icon: FileCheck,
+            to: '/submissions',
+          },
+          {
+            id: 'ranking',
+            label: 'Bảng xếp hạng LOC',
+            icon: Trophy,
+            to: '/ranking',
+          },
+          {
+            id: 'students',
+            label: 'Quản lý sinh viên',
+            icon: Users,
+            to: '/users',
+          },
         ].map(item => (
           <Button
             key={item.id}
@@ -70,7 +104,7 @@ export const SidebarComponent = () => {
                 ? 'bg-orange-500 hover:bg-orange-600 text-white'
                 : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
             }`}
-            onClick={() => setActiveTab(item.id)}
+            onClick={() => handleNavigateSidebar(item)}
           >
             <item.icon className="mr-3 h-4 w-4" />
             {item.label}
