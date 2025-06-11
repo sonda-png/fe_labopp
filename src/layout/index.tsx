@@ -7,9 +7,11 @@ export default function Layout() {
   return (
     <div className="min-h-screen bg-gray-50">
       <HeaderComponent />
-      <div className="flex mx-auto">
+      <div className="flex w-full">
         <SidebarComponent />
-        <Outlet />
+        <div className="flex-grow">
+          <Outlet />
+        </div>
       </div>
     </div>
   )

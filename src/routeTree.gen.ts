@@ -16,6 +16,11 @@ import { Route as AuthImport } from './routes/_auth'
 import { Route as IndexImport } from './routes/index'
 import { Route as PublicTestIndexImport } from './routes/_public/test/index'
 import { Route as PublicHomeIndexImport } from './routes/_public/home/index'
+import { Route as AuthStudentManageIndexImport } from './routes/_auth/student-manage/index'
+import { Route as AuthListLabIndexImport } from './routes/_auth/list-lab/index'
+import { Route as AuthClassManageIndexImport } from './routes/_auth/class-manage/index'
+import { Route as AuthAssignmentlistIndexImport } from './routes/_auth/assignmentlist/index'
+import { Route as AuthAssignmentManageIndexImport } from './routes/_auth/assignment-manage/index'
 import { Route as AuthAboutIndexImport } from './routes/_auth/about/index'
 
 // Create/Update Routes
@@ -46,6 +51,36 @@ const PublicHomeIndexRoute = PublicHomeIndexImport.update({
   id: '/home/',
   path: '/home/',
   getParentRoute: () => PublicRoute,
+} as any)
+
+const AuthStudentManageIndexRoute = AuthStudentManageIndexImport.update({
+  id: '/student-manage/',
+  path: '/student-manage/',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthListLabIndexRoute = AuthListLabIndexImport.update({
+  id: '/list-lab/',
+  path: '/list-lab/',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthClassManageIndexRoute = AuthClassManageIndexImport.update({
+  id: '/class-manage/',
+  path: '/class-manage/',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthAssignmentlistIndexRoute = AuthAssignmentlistIndexImport.update({
+  id: '/assignmentlist/',
+  path: '/assignmentlist/',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthAssignmentManageIndexRoute = AuthAssignmentManageIndexImport.update({
+  id: '/assignment-manage/',
+  path: '/assignment-manage/',
+  getParentRoute: () => AuthRoute,
 } as any)
 
 const AuthAboutIndexRoute = AuthAboutIndexImport.update({
@@ -86,6 +121,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAboutIndexImport
       parentRoute: typeof AuthImport
     }
+    '/_auth/assignment-manage/': {
+      id: '/_auth/assignment-manage/'
+      path: '/assignment-manage'
+      fullPath: '/assignment-manage'
+      preLoaderRoute: typeof AuthAssignmentManageIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/assignmentlist/': {
+      id: '/_auth/assignmentlist/'
+      path: '/assignmentlist'
+      fullPath: '/assignmentlist'
+      preLoaderRoute: typeof AuthAssignmentlistIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/class-manage/': {
+      id: '/_auth/class-manage/'
+      path: '/class-manage'
+      fullPath: '/class-manage'
+      preLoaderRoute: typeof AuthClassManageIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/list-lab/': {
+      id: '/_auth/list-lab/'
+      path: '/list-lab'
+      fullPath: '/list-lab'
+      preLoaderRoute: typeof AuthListLabIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/student-manage/': {
+      id: '/_auth/student-manage/'
+      path: '/student-manage'
+      fullPath: '/student-manage'
+      preLoaderRoute: typeof AuthStudentManageIndexImport
+      parentRoute: typeof AuthImport
+    }
     '/_public/home/': {
       id: '/_public/home/'
       path: '/home'
@@ -107,10 +177,20 @@ declare module '@tanstack/react-router' {
 
 interface AuthRouteChildren {
   AuthAboutIndexRoute: typeof AuthAboutIndexRoute
+  AuthAssignmentManageIndexRoute: typeof AuthAssignmentManageIndexRoute
+  AuthAssignmentlistIndexRoute: typeof AuthAssignmentlistIndexRoute
+  AuthClassManageIndexRoute: typeof AuthClassManageIndexRoute
+  AuthListLabIndexRoute: typeof AuthListLabIndexRoute
+  AuthStudentManageIndexRoute: typeof AuthStudentManageIndexRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthAboutIndexRoute: AuthAboutIndexRoute,
+  AuthAssignmentManageIndexRoute: AuthAssignmentManageIndexRoute,
+  AuthAssignmentlistIndexRoute: AuthAssignmentlistIndexRoute,
+  AuthClassManageIndexRoute: AuthClassManageIndexRoute,
+  AuthListLabIndexRoute: AuthListLabIndexRoute,
+  AuthStudentManageIndexRoute: AuthStudentManageIndexRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
@@ -132,6 +212,11 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '': typeof PublicRouteWithChildren
   '/about': typeof AuthAboutIndexRoute
+  '/assignment-manage': typeof AuthAssignmentManageIndexRoute
+  '/assignmentlist': typeof AuthAssignmentlistIndexRoute
+  '/class-manage': typeof AuthClassManageIndexRoute
+  '/list-lab': typeof AuthListLabIndexRoute
+  '/student-manage': typeof AuthStudentManageIndexRoute
   '/home': typeof PublicHomeIndexRoute
   '/test': typeof PublicTestIndexRoute
 }
@@ -140,6 +225,11 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '': typeof PublicRouteWithChildren
   '/about': typeof AuthAboutIndexRoute
+  '/assignment-manage': typeof AuthAssignmentManageIndexRoute
+  '/assignmentlist': typeof AuthAssignmentlistIndexRoute
+  '/class-manage': typeof AuthClassManageIndexRoute
+  '/list-lab': typeof AuthListLabIndexRoute
+  '/student-manage': typeof AuthStudentManageIndexRoute
   '/home': typeof PublicHomeIndexRoute
   '/test': typeof PublicTestIndexRoute
 }
@@ -150,21 +240,51 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteWithChildren
   '/_public': typeof PublicRouteWithChildren
   '/_auth/about/': typeof AuthAboutIndexRoute
+  '/_auth/assignment-manage/': typeof AuthAssignmentManageIndexRoute
+  '/_auth/assignmentlist/': typeof AuthAssignmentlistIndexRoute
+  '/_auth/class-manage/': typeof AuthClassManageIndexRoute
+  '/_auth/list-lab/': typeof AuthListLabIndexRoute
+  '/_auth/student-manage/': typeof AuthStudentManageIndexRoute
   '/_public/home/': typeof PublicHomeIndexRoute
   '/_public/test/': typeof PublicTestIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '' | '/about' | '/home' | '/test'
+  fullPaths:
+    | '/'
+    | ''
+    | '/about'
+    | '/assignment-manage'
+    | '/assignmentlist'
+    | '/class-manage'
+    | '/list-lab'
+    | '/student-manage'
+    | '/home'
+    | '/test'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '' | '/about' | '/home' | '/test'
+  to:
+    | '/'
+    | ''
+    | '/about'
+    | '/assignment-manage'
+    | '/assignmentlist'
+    | '/class-manage'
+    | '/list-lab'
+    | '/student-manage'
+    | '/home'
+    | '/test'
   id:
     | '__root__'
     | '/'
     | '/_auth'
     | '/_public'
     | '/_auth/about/'
+    | '/_auth/assignment-manage/'
+    | '/_auth/assignmentlist/'
+    | '/_auth/class-manage/'
+    | '/_auth/list-lab/'
+    | '/_auth/student-manage/'
     | '/_public/home/'
     | '/_public/test/'
   fileRoutesById: FileRoutesById
@@ -203,7 +323,12 @@ export const routeTree = rootRoute
     "/_auth": {
       "filePath": "_auth.tsx",
       "children": [
-        "/_auth/about/"
+        "/_auth/about/",
+        "/_auth/assignment-manage/",
+        "/_auth/assignmentlist/",
+        "/_auth/class-manage/",
+        "/_auth/list-lab/",
+        "/_auth/student-manage/"
       ]
     },
     "/_public": {
@@ -215,6 +340,26 @@ export const routeTree = rootRoute
     },
     "/_auth/about/": {
       "filePath": "_auth/about/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/assignment-manage/": {
+      "filePath": "_auth/assignment-manage/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/assignmentlist/": {
+      "filePath": "_auth/assignmentlist/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/class-manage/": {
+      "filePath": "_auth/class-manage/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/list-lab/": {
+      "filePath": "_auth/list-lab/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/student-manage/": {
+      "filePath": "_auth/student-manage/index.tsx",
       "parent": "/_auth"
     },
     "/_public/home/": {
