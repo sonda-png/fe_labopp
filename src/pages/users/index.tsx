@@ -56,8 +56,7 @@ export const UsersPage: FC = () => {
     const form = e.target as HTMLFormElement
     const name = (form.elements.namedItem('name') as HTMLInputElement).value
     const email = (form.elements.namedItem('email') as HTMLInputElement).value
-    const password = (form.elements.namedItem('password') as HTMLInputElement)
-      .value
+
     const role = (form.elements.namedItem('role') as HTMLInputElement).value
     // Thêm user mới (giả lập id)
     setUsers(prev => [
@@ -132,16 +131,7 @@ export const UsersPage: FC = () => {
                     required
                   />
                 </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="password">Password</Label>
-                  <Input
-                    id="password"
-                    name="password"
-                    type="password"
-                    placeholder="Enter password"
-                    required
-                  />
-                </div>
+
                 <div className="grid gap-2">
                   <Label htmlFor="role">Role</Label>
                   <Select name="role">
