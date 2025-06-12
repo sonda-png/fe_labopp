@@ -10,20 +10,22 @@ export default function Layout() {
   return (
     <div className="min-h-screen bg-gray-50">
       <HeaderComponent />
-      <div className="flex mx-auto">
+      <div className="flex w-full">
         <SidebarComponent />
-        <ErrorBoundary fallbackRender={FallbackRender}>
-          <Suspense
-            fallback={
-              <div className="w-full h-full flex justify-center items-center">
-                <Loader2 className="h-8 w-8 animate-spin text-yellow-500 mr-2" />
-                <span>Đang tải...</span>
-              </div>
-            }
-          >
-            <Outlet />
-          </Suspense>
-        </ErrorBoundary>
+        <div className="flex-grow">
+          <ErrorBoundary fallbackRender={FallbackRender}>
+            <Suspense
+              fallback={
+                <div className="w-full h-full flex justify-center items-center">
+                  <Loader2 className="h-8 w-8 animate-spin text-yellow-500 mr-2" />
+                  <span>Đang tải...</span>
+                </div>
+              }
+            >
+              <Outlet />
+            </Suspense>
+          </ErrorBoundary>
+        </div>
       </div>
     </div>
   )
