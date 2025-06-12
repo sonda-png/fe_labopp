@@ -1,14 +1,22 @@
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useNavigate } from '@tanstack/react-router'
-import { BarChart3, FileCheck, FileText, Trophy, Users } from 'lucide-react'
+import {
+  BarChart3,
+  FileCheck,
+  FileText,
+  Menu,
+  Trophy,
+  Users,
+  X,
+} from 'lucide-react'
 import { useState } from 'react'
 import { Link } from '@tanstack/react-router'
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 
 export const SidebarComponent = () => {
   const navigate = useNavigate()
-
   const [activeTab, setActiveTab] = useState('overview')
+  const [isOpen, setIsOpen] = useState(false)
 
   const navigationItems = [
     { id: 'overview', label: 'Tổng quan', icon: BarChart3, path: '/' },
@@ -42,28 +50,70 @@ export const SidebarComponent = () => {
       icon: Users,
       path: '/class-manage',
     },
+    {
+      id: 'users',
+      label: 'Quản lý tài khoản',
+      icon: Users,
+      path: '/users',
+    },
   ]
 
+  const NavContent = () => (
+    <nav className="space-y-1">
+      {navigationItems.map(item => (
+        <Link
+          key={item.id}
+          to={item.path}
+          className="block"
+          onClick={() => setIsOpen(false)}
+        >
+          <Button
+            variant={activeTab === item.id ? 'default' : 'ghost'}
+            className={`w-full justify-start h-10 ${
+              activeTab === item.id
+                ? 'bg-orange-500 hover:bg-orange-600 text-white'
+                : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+            }`}
+            onClick={() => setActiveTab(item.id)}
+          >
+            <item.icon className="mr-3 h-4 w-4" />
+            {item.label}
+          </Button>
+        </Link>
+      ))}
+    </nav>
+  )
+
   return (
-    <aside className="w-[380px] bg-white border-r border-gray-200 min-h-screen p-6">
-      <nav className="space-y-1 mb-8">
-        {navigationItems.map(item => (
-          <Link key={item.id} to={item.path} className="block">
-            <Button
-              variant={activeTab === item.id ? 'default' : 'ghost'}
-              className={`w-full justify-start h-10 ${
-                activeTab === item.id
-                  ? 'bg-orange-500 hover:bg-orange-600 text-white'
-                  : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
-              }`}
-              onClick={() => setActiveTab(item.id)}
-            >
-              <item.icon className="mr-3 h-4 w-4" />
-              {item.label}
+    <>
+      {/* Mobile Menu Button */}
+      <div className="lg:hidden fixed top-4 left-4 z-50">
+        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon" className="h-10 w-10">
+              <Menu className="h-6 w-6" />
             </Button>
-          </Link>
-        ))}
-      </nav>
-    </aside>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-[300px] p-6">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-lg font-semibold">Menu</h2>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsOpen(false)}
+              >
+                <X className="h-6 w-6" />
+              </Button>
+            </div>
+            <NavContent />
+          </SheetContent>
+        </Sheet>
+      </div>
+
+      {/* Desktop Sidebar */}
+      <aside className="hidden lg:block w-[300px] bg-white border-r border-gray-200 min-h-screen p-6">
+        <NavContent />
+      </aside>
+    </>
   )
 }

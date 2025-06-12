@@ -10,9 +10,9 @@ export default function Layout() {
   return (
     <div className="min-h-screen bg-gray-50">
       <HeaderComponent />
-      <div className="flex w-full">
+      <div className="flex w-full pt-16 lg:pt-0">
         <SidebarComponent />
-        <div className="flex-grow">
+        <div className="flex-grow p-4 lg:p-6">
           <ErrorBoundary fallbackRender={FallbackRender}>
             <Suspense
               fallback={
