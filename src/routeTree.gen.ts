@@ -15,9 +15,12 @@ import { Route as PublicImport } from './routes/_public'
 import { Route as AuthImport } from './routes/_auth'
 import { Route as IndexImport } from './routes/index'
 import { Route as PublicTestIndexImport } from './routes/_public/test/index'
-import { Route as PublicHomeIndexImport } from './routes/_public/home/index'
+import { Route as PublicLoginIndexImport } from './routes/_public/login/index'
+import { Route as PublicForgotPassIndexImport } from './routes/_public/forgot-pass/index'
+import { Route as AuthUsersIndexImport } from './routes/_auth/users/index'
 import { Route as AuthStudentManageIndexImport } from './routes/_auth/student-manage/index'
 import { Route as AuthListLabIndexImport } from './routes/_auth/list-lab/index'
+import { Route as AuthHomeIndexImport } from './routes/_auth/home/index'
 import { Route as AuthClassManageIndexImport } from './routes/_auth/class-manage/index'
 import { Route as AuthAssignmentlistIndexImport } from './routes/_auth/assignmentlist/index'
 import { Route as AuthAssignmentManageIndexImport } from './routes/_auth/assignment-manage/index'
@@ -47,10 +50,22 @@ const PublicTestIndexRoute = PublicTestIndexImport.update({
   getParentRoute: () => PublicRoute,
 } as any)
 
-const PublicHomeIndexRoute = PublicHomeIndexImport.update({
-  id: '/home/',
-  path: '/home/',
+const PublicLoginIndexRoute = PublicLoginIndexImport.update({
+  id: '/login/',
+  path: '/login/',
   getParentRoute: () => PublicRoute,
+} as any)
+
+const PublicForgotPassIndexRoute = PublicForgotPassIndexImport.update({
+  id: '/forgot-pass/',
+  path: '/forgot-pass/',
+  getParentRoute: () => PublicRoute,
+} as any)
+
+const AuthUsersIndexRoute = AuthUsersIndexImport.update({
+  id: '/users/',
+  path: '/users/',
+  getParentRoute: () => AuthRoute,
 } as any)
 
 const AuthStudentManageIndexRoute = AuthStudentManageIndexImport.update({
@@ -62,6 +77,12 @@ const AuthStudentManageIndexRoute = AuthStudentManageIndexImport.update({
 const AuthListLabIndexRoute = AuthListLabIndexImport.update({
   id: '/list-lab/',
   path: '/list-lab/',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthHomeIndexRoute = AuthHomeIndexImport.update({
+  id: '/home/',
+  path: '/home/',
   getParentRoute: () => AuthRoute,
 } as any)
 
@@ -142,6 +163,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthClassManageIndexImport
       parentRoute: typeof AuthImport
     }
+    '/_auth/home/': {
+      id: '/_auth/home/'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof AuthHomeIndexImport
+      parentRoute: typeof AuthImport
+    }
     '/_auth/list-lab/': {
       id: '/_auth/list-lab/'
       path: '/list-lab'
@@ -156,11 +184,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthStudentManageIndexImport
       parentRoute: typeof AuthImport
     }
-    '/_public/home/': {
-      id: '/_public/home/'
-      path: '/home'
-      fullPath: '/home'
-      preLoaderRoute: typeof PublicHomeIndexImport
+    '/_auth/users/': {
+      id: '/_auth/users/'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof AuthUsersIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_public/forgot-pass/': {
+      id: '/_public/forgot-pass/'
+      path: '/forgot-pass'
+      fullPath: '/forgot-pass'
+      preLoaderRoute: typeof PublicForgotPassIndexImport
+      parentRoute: typeof PublicImport
+    }
+    '/_public/login/': {
+      id: '/_public/login/'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof PublicLoginIndexImport
       parentRoute: typeof PublicImport
     }
     '/_public/test/': {
@@ -180,8 +222,10 @@ interface AuthRouteChildren {
   AuthAssignmentManageIndexRoute: typeof AuthAssignmentManageIndexRoute
   AuthAssignmentlistIndexRoute: typeof AuthAssignmentlistIndexRoute
   AuthClassManageIndexRoute: typeof AuthClassManageIndexRoute
+  AuthHomeIndexRoute: typeof AuthHomeIndexRoute
   AuthListLabIndexRoute: typeof AuthListLabIndexRoute
   AuthStudentManageIndexRoute: typeof AuthStudentManageIndexRoute
+  AuthUsersIndexRoute: typeof AuthUsersIndexRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
@@ -189,19 +233,23 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthAssignmentManageIndexRoute: AuthAssignmentManageIndexRoute,
   AuthAssignmentlistIndexRoute: AuthAssignmentlistIndexRoute,
   AuthClassManageIndexRoute: AuthClassManageIndexRoute,
+  AuthHomeIndexRoute: AuthHomeIndexRoute,
   AuthListLabIndexRoute: AuthListLabIndexRoute,
   AuthStudentManageIndexRoute: AuthStudentManageIndexRoute,
+  AuthUsersIndexRoute: AuthUsersIndexRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 interface PublicRouteChildren {
-  PublicHomeIndexRoute: typeof PublicHomeIndexRoute
+  PublicForgotPassIndexRoute: typeof PublicForgotPassIndexRoute
+  PublicLoginIndexRoute: typeof PublicLoginIndexRoute
   PublicTestIndexRoute: typeof PublicTestIndexRoute
 }
 
 const PublicRouteChildren: PublicRouteChildren = {
-  PublicHomeIndexRoute: PublicHomeIndexRoute,
+  PublicForgotPassIndexRoute: PublicForgotPassIndexRoute,
+  PublicLoginIndexRoute: PublicLoginIndexRoute,
   PublicTestIndexRoute: PublicTestIndexRoute,
 }
 
@@ -215,9 +263,12 @@ export interface FileRoutesByFullPath {
   '/assignment-manage': typeof AuthAssignmentManageIndexRoute
   '/assignmentlist': typeof AuthAssignmentlistIndexRoute
   '/class-manage': typeof AuthClassManageIndexRoute
+  '/home': typeof AuthHomeIndexRoute
   '/list-lab': typeof AuthListLabIndexRoute
   '/student-manage': typeof AuthStudentManageIndexRoute
-  '/home': typeof PublicHomeIndexRoute
+  '/users': typeof AuthUsersIndexRoute
+  '/forgot-pass': typeof PublicForgotPassIndexRoute
+  '/login': typeof PublicLoginIndexRoute
   '/test': typeof PublicTestIndexRoute
 }
 
@@ -228,9 +279,12 @@ export interface FileRoutesByTo {
   '/assignment-manage': typeof AuthAssignmentManageIndexRoute
   '/assignmentlist': typeof AuthAssignmentlistIndexRoute
   '/class-manage': typeof AuthClassManageIndexRoute
+  '/home': typeof AuthHomeIndexRoute
   '/list-lab': typeof AuthListLabIndexRoute
   '/student-manage': typeof AuthStudentManageIndexRoute
-  '/home': typeof PublicHomeIndexRoute
+  '/users': typeof AuthUsersIndexRoute
+  '/forgot-pass': typeof PublicForgotPassIndexRoute
+  '/login': typeof PublicLoginIndexRoute
   '/test': typeof PublicTestIndexRoute
 }
 
@@ -243,9 +297,12 @@ export interface FileRoutesById {
   '/_auth/assignment-manage/': typeof AuthAssignmentManageIndexRoute
   '/_auth/assignmentlist/': typeof AuthAssignmentlistIndexRoute
   '/_auth/class-manage/': typeof AuthClassManageIndexRoute
+  '/_auth/home/': typeof AuthHomeIndexRoute
   '/_auth/list-lab/': typeof AuthListLabIndexRoute
   '/_auth/student-manage/': typeof AuthStudentManageIndexRoute
-  '/_public/home/': typeof PublicHomeIndexRoute
+  '/_auth/users/': typeof AuthUsersIndexRoute
+  '/_public/forgot-pass/': typeof PublicForgotPassIndexRoute
+  '/_public/login/': typeof PublicLoginIndexRoute
   '/_public/test/': typeof PublicTestIndexRoute
 }
 
@@ -258,9 +315,12 @@ export interface FileRouteTypes {
     | '/assignment-manage'
     | '/assignmentlist'
     | '/class-manage'
+    | '/home'
     | '/list-lab'
     | '/student-manage'
-    | '/home'
+    | '/users'
+    | '/forgot-pass'
+    | '/login'
     | '/test'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -270,9 +330,12 @@ export interface FileRouteTypes {
     | '/assignment-manage'
     | '/assignmentlist'
     | '/class-manage'
+    | '/home'
     | '/list-lab'
     | '/student-manage'
-    | '/home'
+    | '/users'
+    | '/forgot-pass'
+    | '/login'
     | '/test'
   id:
     | '__root__'
@@ -283,9 +346,12 @@ export interface FileRouteTypes {
     | '/_auth/assignment-manage/'
     | '/_auth/assignmentlist/'
     | '/_auth/class-manage/'
+    | '/_auth/home/'
     | '/_auth/list-lab/'
     | '/_auth/student-manage/'
-    | '/_public/home/'
+    | '/_auth/users/'
+    | '/_public/forgot-pass/'
+    | '/_public/login/'
     | '/_public/test/'
   fileRoutesById: FileRoutesById
 }
@@ -327,14 +393,17 @@ export const routeTree = rootRoute
         "/_auth/assignment-manage/",
         "/_auth/assignmentlist/",
         "/_auth/class-manage/",
+        "/_auth/home/",
         "/_auth/list-lab/",
-        "/_auth/student-manage/"
+        "/_auth/student-manage/",
+        "/_auth/users/"
       ]
     },
     "/_public": {
       "filePath": "_public.tsx",
       "children": [
-        "/_public/home/",
+        "/_public/forgot-pass/",
+        "/_public/login/",
         "/_public/test/"
       ]
     },
@@ -354,6 +423,10 @@ export const routeTree = rootRoute
       "filePath": "_auth/class-manage/index.tsx",
       "parent": "/_auth"
     },
+    "/_auth/home/": {
+      "filePath": "_auth/home/index.tsx",
+      "parent": "/_auth"
+    },
     "/_auth/list-lab/": {
       "filePath": "_auth/list-lab/index.tsx",
       "parent": "/_auth"
@@ -362,8 +435,16 @@ export const routeTree = rootRoute
       "filePath": "_auth/student-manage/index.tsx",
       "parent": "/_auth"
     },
-    "/_public/home/": {
-      "filePath": "_public/home/index.tsx",
+    "/_auth/users/": {
+      "filePath": "_auth/users/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_public/forgot-pass/": {
+      "filePath": "_public/forgot-pass/index.tsx",
+      "parent": "/_public"
+    },
+    "/_public/login/": {
+      "filePath": "_public/login/index.tsx",
       "parent": "/_public"
     },
     "/_public/test/": {

@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import Layout from '../layout'
+import { sleep } from '@/utils/helpers/sleep'
 
 export const Route = createFileRoute('/_auth')({
   beforeLoad: async () => {
@@ -8,6 +9,10 @@ export const Route = createFileRoute('/_auth')({
     // if (!isAuthenticated) {
     //   throw redirect({ to: '/login' })
     // }
+  },
+  loader: async () => {
+    await sleep(1000) // ⏳ Delay 2 giây trước khi hiển thị
+    return null
   },
   component: Layout,
 })
