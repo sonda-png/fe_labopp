@@ -56,6 +56,30 @@ export const SidebarComponent = () => {
       icon: Users,
       path: '/users',
     },
+    {
+      id: 'academic-outcome-report',
+      label: 'Báo cáo kết quả học tập',
+      icon: BarChart3,
+      path: '/academic-outcome-report',
+    },
+    {
+      id: 'fap-sync',
+      label: 'Đồng bộ FAP',
+      icon: BarChart3,
+      path: '/fap-sync',
+    },
+    {
+      id: 'semester-management',
+      label: 'Quản lý học kỳ',
+      icon: BarChart3,
+      path: '/semester-management',
+    },
+    {
+      id: 'assignment-bank',
+      label: 'Quản lý ngân hàng bài tập',
+      icon: BarChart3,
+      path: '/assignment-bank',
+    },
   ]
 
   const NavContent = () => (
@@ -111,7 +135,7 @@ export const SidebarComponent = () => {
       </div>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:block w-[300px] bg-white border-r border-gray-200 min-h-screen p-6">
+      <aside className="hidden lg:block w-[250px] bg-white border-r border-gray-200 min-h-screen p-6">
         <NavContent />
       </aside>
     </>
