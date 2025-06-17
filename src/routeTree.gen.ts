@@ -19,11 +19,15 @@ import { Route as PublicLoginIndexImport } from './routes/_public/login/index'
 import { Route as PublicForgotPassIndexImport } from './routes/_public/forgot-pass/index'
 import { Route as AuthUsersIndexImport } from './routes/_auth/users/index'
 import { Route as AuthStudentManageIndexImport } from './routes/_auth/student-manage/index'
+import { Route as AuthSemesterManagementIndexImport } from './routes/_auth/semester-management/index'
 import { Route as AuthListLabIndexImport } from './routes/_auth/list-lab/index'
 import { Route as AuthHomeIndexImport } from './routes/_auth/home/index'
+import { Route as AuthFapSyncIndexImport } from './routes/_auth/fap-sync/index'
 import { Route as AuthClassManageIndexImport } from './routes/_auth/class-manage/index'
 import { Route as AuthAssignmentlistIndexImport } from './routes/_auth/assignmentlist/index'
 import { Route as AuthAssignmentManageIndexImport } from './routes/_auth/assignment-manage/index'
+import { Route as AuthAssignmentBankIndexImport } from './routes/_auth/assignment-bank/index'
+import { Route as AuthAcademicOutcomeReportIndexImport } from './routes/_auth/academic-outcome-report/index'
 import { Route as AuthAboutIndexImport } from './routes/_auth/about/index'
 
 // Create/Update Routes
@@ -74,6 +78,13 @@ const AuthStudentManageIndexRoute = AuthStudentManageIndexImport.update({
   getParentRoute: () => AuthRoute,
 } as any)
 
+const AuthSemesterManagementIndexRoute =
+  AuthSemesterManagementIndexImport.update({
+    id: '/semester-management/',
+    path: '/semester-management/',
+    getParentRoute: () => AuthRoute,
+  } as any)
+
 const AuthListLabIndexRoute = AuthListLabIndexImport.update({
   id: '/list-lab/',
   path: '/list-lab/',
@@ -83,6 +94,12 @@ const AuthListLabIndexRoute = AuthListLabIndexImport.update({
 const AuthHomeIndexRoute = AuthHomeIndexImport.update({
   id: '/home/',
   path: '/home/',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthFapSyncIndexRoute = AuthFapSyncIndexImport.update({
+  id: '/fap-sync/',
+  path: '/fap-sync/',
   getParentRoute: () => AuthRoute,
 } as any)
 
@@ -103,6 +120,19 @@ const AuthAssignmentManageIndexRoute = AuthAssignmentManageIndexImport.update({
   path: '/assignment-manage/',
   getParentRoute: () => AuthRoute,
 } as any)
+
+const AuthAssignmentBankIndexRoute = AuthAssignmentBankIndexImport.update({
+  id: '/assignment-bank/',
+  path: '/assignment-bank/',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthAcademicOutcomeReportIndexRoute =
+  AuthAcademicOutcomeReportIndexImport.update({
+    id: '/academic-outcome-report/',
+    path: '/academic-outcome-report/',
+    getParentRoute: () => AuthRoute,
+  } as any)
 
 const AuthAboutIndexRoute = AuthAboutIndexImport.update({
   id: '/about/',
@@ -142,6 +172,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAboutIndexImport
       parentRoute: typeof AuthImport
     }
+    '/_auth/academic-outcome-report/': {
+      id: '/_auth/academic-outcome-report/'
+      path: '/academic-outcome-report'
+      fullPath: '/academic-outcome-report'
+      preLoaderRoute: typeof AuthAcademicOutcomeReportIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/assignment-bank/': {
+      id: '/_auth/assignment-bank/'
+      path: '/assignment-bank'
+      fullPath: '/assignment-bank'
+      preLoaderRoute: typeof AuthAssignmentBankIndexImport
+      parentRoute: typeof AuthImport
+    }
     '/_auth/assignment-manage/': {
       id: '/_auth/assignment-manage/'
       path: '/assignment-manage'
@@ -163,6 +207,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthClassManageIndexImport
       parentRoute: typeof AuthImport
     }
+    '/_auth/fap-sync/': {
+      id: '/_auth/fap-sync/'
+      path: '/fap-sync'
+      fullPath: '/fap-sync'
+      preLoaderRoute: typeof AuthFapSyncIndexImport
+      parentRoute: typeof AuthImport
+    }
     '/_auth/home/': {
       id: '/_auth/home/'
       path: '/home'
@@ -175,6 +226,13 @@ declare module '@tanstack/react-router' {
       path: '/list-lab'
       fullPath: '/list-lab'
       preLoaderRoute: typeof AuthListLabIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/semester-management/': {
+      id: '/_auth/semester-management/'
+      path: '/semester-management'
+      fullPath: '/semester-management'
+      preLoaderRoute: typeof AuthSemesterManagementIndexImport
       parentRoute: typeof AuthImport
     }
     '/_auth/student-manage/': {
@@ -219,22 +277,30 @@ declare module '@tanstack/react-router' {
 
 interface AuthRouteChildren {
   AuthAboutIndexRoute: typeof AuthAboutIndexRoute
+  AuthAcademicOutcomeReportIndexRoute: typeof AuthAcademicOutcomeReportIndexRoute
+  AuthAssignmentBankIndexRoute: typeof AuthAssignmentBankIndexRoute
   AuthAssignmentManageIndexRoute: typeof AuthAssignmentManageIndexRoute
   AuthAssignmentlistIndexRoute: typeof AuthAssignmentlistIndexRoute
   AuthClassManageIndexRoute: typeof AuthClassManageIndexRoute
+  AuthFapSyncIndexRoute: typeof AuthFapSyncIndexRoute
   AuthHomeIndexRoute: typeof AuthHomeIndexRoute
   AuthListLabIndexRoute: typeof AuthListLabIndexRoute
+  AuthSemesterManagementIndexRoute: typeof AuthSemesterManagementIndexRoute
   AuthStudentManageIndexRoute: typeof AuthStudentManageIndexRoute
   AuthUsersIndexRoute: typeof AuthUsersIndexRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthAboutIndexRoute: AuthAboutIndexRoute,
+  AuthAcademicOutcomeReportIndexRoute: AuthAcademicOutcomeReportIndexRoute,
+  AuthAssignmentBankIndexRoute: AuthAssignmentBankIndexRoute,
   AuthAssignmentManageIndexRoute: AuthAssignmentManageIndexRoute,
   AuthAssignmentlistIndexRoute: AuthAssignmentlistIndexRoute,
   AuthClassManageIndexRoute: AuthClassManageIndexRoute,
+  AuthFapSyncIndexRoute: AuthFapSyncIndexRoute,
   AuthHomeIndexRoute: AuthHomeIndexRoute,
   AuthListLabIndexRoute: AuthListLabIndexRoute,
+  AuthSemesterManagementIndexRoute: AuthSemesterManagementIndexRoute,
   AuthStudentManageIndexRoute: AuthStudentManageIndexRoute,
   AuthUsersIndexRoute: AuthUsersIndexRoute,
 }
@@ -260,11 +326,15 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '': typeof PublicRouteWithChildren
   '/about': typeof AuthAboutIndexRoute
+  '/academic-outcome-report': typeof AuthAcademicOutcomeReportIndexRoute
+  '/assignment-bank': typeof AuthAssignmentBankIndexRoute
   '/assignment-manage': typeof AuthAssignmentManageIndexRoute
   '/assignmentlist': typeof AuthAssignmentlistIndexRoute
   '/class-manage': typeof AuthClassManageIndexRoute
+  '/fap-sync': typeof AuthFapSyncIndexRoute
   '/home': typeof AuthHomeIndexRoute
   '/list-lab': typeof AuthListLabIndexRoute
+  '/semester-management': typeof AuthSemesterManagementIndexRoute
   '/student-manage': typeof AuthStudentManageIndexRoute
   '/users': typeof AuthUsersIndexRoute
   '/forgot-pass': typeof PublicForgotPassIndexRoute
@@ -276,11 +346,15 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '': typeof PublicRouteWithChildren
   '/about': typeof AuthAboutIndexRoute
+  '/academic-outcome-report': typeof AuthAcademicOutcomeReportIndexRoute
+  '/assignment-bank': typeof AuthAssignmentBankIndexRoute
   '/assignment-manage': typeof AuthAssignmentManageIndexRoute
   '/assignmentlist': typeof AuthAssignmentlistIndexRoute
   '/class-manage': typeof AuthClassManageIndexRoute
+  '/fap-sync': typeof AuthFapSyncIndexRoute
   '/home': typeof AuthHomeIndexRoute
   '/list-lab': typeof AuthListLabIndexRoute
+  '/semester-management': typeof AuthSemesterManagementIndexRoute
   '/student-manage': typeof AuthStudentManageIndexRoute
   '/users': typeof AuthUsersIndexRoute
   '/forgot-pass': typeof PublicForgotPassIndexRoute
@@ -294,11 +368,15 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteWithChildren
   '/_public': typeof PublicRouteWithChildren
   '/_auth/about/': typeof AuthAboutIndexRoute
+  '/_auth/academic-outcome-report/': typeof AuthAcademicOutcomeReportIndexRoute
+  '/_auth/assignment-bank/': typeof AuthAssignmentBankIndexRoute
   '/_auth/assignment-manage/': typeof AuthAssignmentManageIndexRoute
   '/_auth/assignmentlist/': typeof AuthAssignmentlistIndexRoute
   '/_auth/class-manage/': typeof AuthClassManageIndexRoute
+  '/_auth/fap-sync/': typeof AuthFapSyncIndexRoute
   '/_auth/home/': typeof AuthHomeIndexRoute
   '/_auth/list-lab/': typeof AuthListLabIndexRoute
+  '/_auth/semester-management/': typeof AuthSemesterManagementIndexRoute
   '/_auth/student-manage/': typeof AuthStudentManageIndexRoute
   '/_auth/users/': typeof AuthUsersIndexRoute
   '/_public/forgot-pass/': typeof PublicForgotPassIndexRoute
@@ -312,11 +390,15 @@ export interface FileRouteTypes {
     | '/'
     | ''
     | '/about'
+    | '/academic-outcome-report'
+    | '/assignment-bank'
     | '/assignment-manage'
     | '/assignmentlist'
     | '/class-manage'
+    | '/fap-sync'
     | '/home'
     | '/list-lab'
+    | '/semester-management'
     | '/student-manage'
     | '/users'
     | '/forgot-pass'
@@ -327,11 +409,15 @@ export interface FileRouteTypes {
     | '/'
     | ''
     | '/about'
+    | '/academic-outcome-report'
+    | '/assignment-bank'
     | '/assignment-manage'
     | '/assignmentlist'
     | '/class-manage'
+    | '/fap-sync'
     | '/home'
     | '/list-lab'
+    | '/semester-management'
     | '/student-manage'
     | '/users'
     | '/forgot-pass'
@@ -343,11 +429,15 @@ export interface FileRouteTypes {
     | '/_auth'
     | '/_public'
     | '/_auth/about/'
+    | '/_auth/academic-outcome-report/'
+    | '/_auth/assignment-bank/'
     | '/_auth/assignment-manage/'
     | '/_auth/assignmentlist/'
     | '/_auth/class-manage/'
+    | '/_auth/fap-sync/'
     | '/_auth/home/'
     | '/_auth/list-lab/'
+    | '/_auth/semester-management/'
     | '/_auth/student-manage/'
     | '/_auth/users/'
     | '/_public/forgot-pass/'
@@ -390,11 +480,15 @@ export const routeTree = rootRoute
       "filePath": "_auth.tsx",
       "children": [
         "/_auth/about/",
+        "/_auth/academic-outcome-report/",
+        "/_auth/assignment-bank/",
         "/_auth/assignment-manage/",
         "/_auth/assignmentlist/",
         "/_auth/class-manage/",
+        "/_auth/fap-sync/",
         "/_auth/home/",
         "/_auth/list-lab/",
+        "/_auth/semester-management/",
         "/_auth/student-manage/",
         "/_auth/users/"
       ]
@@ -411,6 +505,14 @@ export const routeTree = rootRoute
       "filePath": "_auth/about/index.tsx",
       "parent": "/_auth"
     },
+    "/_auth/academic-outcome-report/": {
+      "filePath": "_auth/academic-outcome-report/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/assignment-bank/": {
+      "filePath": "_auth/assignment-bank/index.tsx",
+      "parent": "/_auth"
+    },
     "/_auth/assignment-manage/": {
       "filePath": "_auth/assignment-manage/index.tsx",
       "parent": "/_auth"
@@ -423,12 +525,20 @@ export const routeTree = rootRoute
       "filePath": "_auth/class-manage/index.tsx",
       "parent": "/_auth"
     },
+    "/_auth/fap-sync/": {
+      "filePath": "_auth/fap-sync/index.tsx",
+      "parent": "/_auth"
+    },
     "/_auth/home/": {
       "filePath": "_auth/home/index.tsx",
       "parent": "/_auth"
     },
     "/_auth/list-lab/": {
       "filePath": "_auth/list-lab/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/semester-management/": {
+      "filePath": "_auth/semester-management/index.tsx",
       "parent": "/_auth"
     },
     "/_auth/student-manage/": {
