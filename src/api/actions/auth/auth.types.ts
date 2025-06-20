@@ -1,16 +1,18 @@
 export type LoginMutationArguments = {
-  userCredential: string
-  password: string
+  idToken: string
 }
 
 export type LoginMutationResponse = {
-  isAuthenticated: boolean
-  accessToken: string
-  refreshToken: string
-  role: string
-  userName: string
+  userId: string
   email: string
-  image: string
+  role: string
+  token: string
+}
+
+export type GoogleLoginReturn = {
+  clientId: string
+  credential: string
+  select_by: string
 }
 
 export type GetMeQueryResponse = {
