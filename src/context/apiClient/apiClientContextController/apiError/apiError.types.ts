@@ -1,28 +1,19 @@
 import { AxiosError } from 'axios'
-import zod from 'zod'
-import {
-  ApiError,
-  basicErrorDataSchema,
-  formErrorDataSchema,
-} from '@/context/apiClient/apiClientContextController/apiError/apiError'
 
-export type FormErrorData = zod.infer<typeof formErrorDataSchema>
+// ----------------------
+// Unified API error type
+// ----------------------
 
-export type BasicErrorData = zod.infer<typeof basicErrorDataSchema>
-
-type BaseApiError<TData = unknown> = {
-  statusCode: number | undefined
-  data: TData
-  originalError: AxiosError<TData>
+export type ApiErrorResponse = {
+  success: false
+  message: string
+  data: unknown | null
+  errors: string[]
 }
 
-export type BasicApiError = { type: 'basic' } & BaseApiError<BasicErrorData>
-
-export type FormApiError = { type: 'form' } & BaseApiError<FormErrorData>
-
-export type UnknownApiError = { type: 'unknown' } & BaseApiError
-
-export type StandardizedApiError =
-  | ApiError<BasicApiError>
-  | ApiError<FormApiError>
-  | ApiError<UnknownApiError>
+export interface StandardizedApiError extends ApiErrorResponse {
+  /** HTTP status code */
+  statusCode?: number
+  /** Original Axios error for debugging */
+  originalError: AxiosError<unknown> | Error
+}

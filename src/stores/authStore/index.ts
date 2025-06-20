@@ -3,19 +3,16 @@ import { persist } from 'zustand/middleware'
 
 interface AuthValuesType {
   isAuthenticated: boolean
-  accessToken: string | null
-  refreshToken: string | null
-  role: string | null
-  userName: string | null
-  email: string | null
-  image: string
+  userId: string
+  email: string
+  role: string
+  token: string
 }
 
 interface AuthState {
   authValues: AuthValuesType
   setAuthData: (authValues: AuthValuesType) => void
   clearTokens: () => void
-  updateToken: (accessToken: string, refreshToken: string) => void
   updateAuthField: <K extends keyof AuthValuesType>(
     key: K,
     value: AuthValuesType[K]
@@ -28,34 +25,23 @@ export const authStore = create<AuthState>()(
     (set, get) => ({
       authValues: {
         isAuthenticated: false,
-        accessToken: null,
-        refreshToken: null,
-        role: null,
-        userName: null,
-        email: null,
-        image: '',
+        userId: '',
+        email: '',
+        role: '',
+        token: '',
       },
       setAuthData: authValues => set({ authValues }),
       clearTokens: () =>
         set({
           authValues: {
             isAuthenticated: false,
-            accessToken: null,
-            refreshToken: null,
-            role: null,
-            userName: null,
-            email: null,
-            image: '',
+            userId: '',
+            email: '',
+            role: '',
+            token: '',
           },
         }),
-      updateToken: (accessToken, refreshToken) =>
-        set(state => ({
-          authValues: {
-            ...state.authValues,
-            accessToken,
-            refreshToken,
-          },
-        })),
+
       updateAuthField: (key, value) =>
         set(state => ({
           authValues: {
@@ -66,7 +52,7 @@ export const authStore = create<AuthState>()(
       getRole: (): string | null => get().authValues.role,
     }),
     {
-      name: 'app-storage',
+      name: 'auth-storage',
     }
   )
 )
