@@ -56,6 +56,13 @@ export const SidebarComponent = () => {
       icon: Users,
       path: '/users',
     },
+    {
+      id: 'assignment-list ',
+      label: 'Danh sách bài tập',
+      icon: Users,
+      path: '/assignmentlist',
+    }
+    
   ]
 
   const NavContent = () => (
