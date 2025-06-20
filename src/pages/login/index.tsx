@@ -18,9 +18,15 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Link, useNavigate } from '@tanstack/react-router'
-import { GoogleLogin } from '@react-oauth/google'
+import { CredentialResponse, GoogleLogin } from '@react-oauth/google'
+import { useMutation } from '@/hooks'
+import { LoginMutationResponse } from '@/api/actions/auth/auth.types'
+import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
+import { toast } from 'react-toastify'
+import { authStore } from '@/stores/authStore'
 
 export const LoginPage: FC = () => {
+  const { setAuthData } = authStore()
   const navigate = useNavigate()
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
@@ -28,8 +34,26 @@ export const LoginPage: FC = () => {
     navigate({ to: '/class-manage' })
   }
 
-  const handleGoogleLogin = () => {
-    // Handle Google login logic here
+  const { mutateAsync: loginMutation } = useMutation('loginMutation', {
+    onSuccess: (res: LoginMutationResponse) => {
+      setAuthData({
+        isAuthenticated: true,
+        userId: res.userId,
+        email: res.email,
+        role: res.role,
+        token: res.token,
+      })
+      navigate({ to: '/class-manage' })
+    },
+    onError: (error: StandardizedApiError) => {
+      toast.error(error.message)
+    },
+  })
+
+  const handleGoogleLogin = async (credentialResponse: CredentialResponse) => {
+    await loginMutation({
+      idToken: credentialResponse.credential ?? '',
+    })
   }
 
   return (
@@ -97,8 +121,8 @@ export const LoginPage: FC = () => {
               <div className="w-full flex justify-center">
                 <GoogleLogin
                   width={'100%'}
-                  onSuccess={credentialResponse => {
-                    console.log(credentialResponse)
+                  onSuccess={async (credentialResponse: CredentialResponse) => {
+                    await handleGoogleLogin(credentialResponse)
                   }}
                   onError={() => {
                     console.log('Login Failed')
