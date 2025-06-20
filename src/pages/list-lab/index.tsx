@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { Building, Download, Edit, Eye, Calendar } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"

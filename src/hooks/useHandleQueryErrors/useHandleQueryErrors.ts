@@ -1,10 +1,8 @@
-import { ExtendedQueryMeta } from "@/api/types/types"
-import { StandardizedApiError } from "@/context/apiClient/apiClientContextController/apiError/apiError.types"
+import { ExtendedQueryMeta } from '@/api/types/types'
+import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
 
 export const useHandleQueryErrors = () => {
-  const handleErrors = (error: StandardizedApiError) => {
-
-  }
+  const handleErrors = (_error: StandardizedApiError) => {}
 
   const shouldHandleGlobalError = (
     metaError?: ExtendedQueryMeta['error'],

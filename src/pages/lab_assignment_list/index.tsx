@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { Building, Download, Edit, Search } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -122,7 +120,7 @@ export default function LabAssignmentList() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header */}
-      <header className="bg-blue-600 text-white p-4">
+      <header className="bg-orange-500 text-white p-4">
         <div className="flex items-center gap-2">
           <Building className="h-6 w-6" />
           <div>
@@ -184,7 +182,7 @@ export default function LabAssignmentList() {
                   </div>
                   <div className="col-span-1 md:col-span-3 flex justify-end gap-2">
                     <Button variant="outline">Reset</Button>
-                    <Button>Search</Button>
+                    <Button className="bg-orange-500 hover:bg-orange-600 text-white">Search</Button>
                   </div>
                 </div>
               </CardContent>
