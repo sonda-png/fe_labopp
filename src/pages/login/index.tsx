@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Link, useNavigate } from '@tanstack/react-router'
+import { Link, useMatch, useNavigate } from '@tanstack/react-router'
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google'
 import { useMutation } from '@/hooks'
 import { LoginMutationResponse } from '@/api/actions/auth/auth.types'
@@ -27,6 +27,7 @@ import { authStore } from '@/stores/authStore'
 
 export const LoginPage: FC = () => {
   const { setAuthData } = authStore()
+  const path = useMatch({ from: '/login' })
   const navigate = useNavigate()
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
@@ -43,7 +44,9 @@ export const LoginPage: FC = () => {
         role: res.role,
         token: res.token,
       })
-      navigate({ to: '/class-manage' })
+      // tìm tanstack để lấy được path params
+
+      navigate({ to: path?.pathname ?? '/class-manage' })
     },
     onError: (error: StandardizedApiError) => {
       toast.error(error.message)
