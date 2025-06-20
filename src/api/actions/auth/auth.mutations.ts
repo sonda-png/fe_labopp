@@ -8,17 +8,21 @@ import {
 import { ENV } from '@/config/env'
 
 export const authMutations = {
-  loginMutation:
-    (client: AxiosInstance) => async (body: LoginMutationArguments) => {
-      return (
-        await client.post<LoginMutationResponse>('/auth/authenticate', body)
-      ).data
-    },
+  loginMutation: (client: AxiosInstance) => handleLogin(client),
   logoutMutation:
     (client: AxiosInstance) => async (body: LogoutMutationRequest) => {
-      return (await client.post<void>('/auth/logout', body)).data
+      return await client.post<void>('/auth/logout', body)
     },
   // MUTATION_FUNCTIONS_SETUP
 }
+
+const handleLogin =
+  (client: AxiosInstance) => async (body: LoginMutationArguments) => {
+    const formData = new FormData()
+    formData.append('idToken', body.idToken)
+    return (
+      await client.post<LoginMutationResponse>('/auth/google-login', formData)
+    ).data
+  }
 
 export const refreshTokenUrl = `${ENV.BACK_END_URL}/users/refresh-token`

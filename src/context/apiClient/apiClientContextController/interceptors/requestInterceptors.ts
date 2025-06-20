@@ -1,30 +1,36 @@
 import { AxiosRequestHeaders, InternalAxiosRequestConfig } from 'axios'
-import _ from 'lodash'
 
 export const requestSuccessInterceptor = async (
   config: InternalAxiosRequestConfig
 ): Promise<InternalAxiosRequestConfig> => {
   // const { accessToken } = authStore.getState();
   const accessToken = ''
-  // Kiểm tra nếu method là POST, PUT, PATCH và có data
-  if (
-    _.includes(['post', 'put', 'patch'], _.toLower(config.method)) &&
-    _.has(config, 'data')
-  ) {
-    config.data = {
-      data: _.get(config, 'data', {}), // Lấy data hiện tại, mặc định là {}
-      timestamp: Math.floor(Date.now() / 1000),
-    }
+
+  // Dynamically adjust the `Content-Type` header so that callers can
+  // freely send either JSON bodies or FormData without manually
+  // overriding headers each time. If the payload is an instance of
+  // `FormData`, we REMOVE the `Content-Type` header and let the
+  // browser/axios set the appropriate multipart boundary. Otherwise we
+  // default to `application/json`.
+  const headers = (config.headers ?? {}) as AxiosRequestHeaders
+  const isFormData =
+    typeof FormData !== 'undefined' && config.data instanceof FormData
+
+  if (isFormData) {
+    // Let the browser set the correct multipart boundary automatically.
+    delete headers['Content-Type']
+  } else {
+    headers['Content-Type'] = headers['Content-Type'] ?? 'application/json'
   }
-  if (!accessToken) {
-    return config
+
+  // Attach authorization header if token is available
+  if (accessToken) {
+    headers['Authorization'] = `Bearer ${accessToken}`
   }
+
   return {
     ...config,
     withCredentials: false,
-    headers: {
-      ...config.headers,
-      Authorization: `Bearer ${accessToken}`,
-    } as AxiosRequestHeaders,
+    headers: headers,
   }
 }

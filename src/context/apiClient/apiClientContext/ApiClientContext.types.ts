@@ -1,8 +1,10 @@
 import { AxiosInstance } from 'axios'
 
-export type ApiResponse<TData = unknown, TConfig = unknown> = {
+export type ApiResponse<TData = unknown> = {
+  success: boolean
+  message: string
   data: TData
-  config: TConfig | null
+  errors: string[]
 }
 
 export type ApiClientContextValue = {
