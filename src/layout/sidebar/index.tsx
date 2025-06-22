@@ -57,6 +57,12 @@ export const SidebarComponent = () => {
       path: '/users',
     },
     {
+      id: 'assignment-list ',
+      label: 'Danh sách bài tập',
+      icon: Users,
+      path: '/assignmentlist',
+    },
+    {
       id: 'academic-outcome-report',
       label: 'Báo cáo kết quả học tập',
       icon: BarChart3,
