@@ -1,4 +1,3 @@
-import Layout from '@/layout'
 import AppProviders from '@/providers/AppProviders'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { createRootRoute, Outlet } from '@tanstack/react-router'
