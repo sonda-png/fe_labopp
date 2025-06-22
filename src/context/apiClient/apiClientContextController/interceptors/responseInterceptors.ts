@@ -11,7 +11,9 @@ export function responseSuccessInterceptor<T>(
   const { success, message } = response.data
 
   if (success) {
-    toast.success(message)
+    if (!response.config.method?.toLowerCase().includes('get') && message) {
+      toast.success(message)
+    }
     return response.data
   }
 
