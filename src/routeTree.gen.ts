@@ -17,10 +17,11 @@ import { Route as IndexImport } from './routes/index'
 import { Route as PublicTestIndexImport } from './routes/_public/test/index'
 import { Route as PublicLoginIndexImport } from './routes/_public/login/index'
 import { Route as PublicForgotPassIndexImport } from './routes/_public/forgot-pass/index'
+import { Route as AuthUsersIndexImport } from './routes/_auth/users/index'
+import { Route as AuthSubmitlabIndexImport } from './routes/_auth/submitlab/index'
+import { Route as AuthStudentdashboardIndexImport } from './routes/_auth/studentdashboard/index'
 import { Route as AuthStudentManageIndexImport } from './routes/_auth/student-manage/index'
-import { Route as AuthSemesterManagementIndexImport } from './routes/_auth/semester-management/index'
-import { Route as AuthManageAccountIndexImport } from './routes/_auth/manage-account/index'
-import { Route as AuthListLabIndexImport } from './routes/_auth/list-lab/index'
+import { Route as AuthMysubmitIndexImport } from './routes/_auth/mysubmit/index'
 import { Route as AuthHomeIndexImport } from './routes/_auth/home/index'
 import { Route as AuthFapSyncIndexImport } from './routes/_auth/fap-sync/index'
 import { Route as AuthClassManageIndexImport } from './routes/_auth/class-manage/index'
@@ -66,28 +67,33 @@ const PublicForgotPassIndexRoute = PublicForgotPassIndexImport.update({
   getParentRoute: () => PublicRoute,
 } as any)
 
+const AuthUsersIndexRoute = AuthUsersIndexImport.update({
+  id: '/users/',
+  path: '/users/',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthSubmitlabIndexRoute = AuthSubmitlabIndexImport.update({
+  id: '/submitlab/',
+  path: '/submitlab/',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthStudentdashboardIndexRoute = AuthStudentdashboardIndexImport.update({
+  id: '/studentdashboard/',
+  path: '/studentdashboard/',
+  getParentRoute: () => AuthRoute,
+} as any)
+
 const AuthStudentManageIndexRoute = AuthStudentManageIndexImport.update({
   id: '/student-manage/',
   path: '/student-manage/',
   getParentRoute: () => AuthRoute,
 } as any)
 
-const AuthSemesterManagementIndexRoute =
-  AuthSemesterManagementIndexImport.update({
-    id: '/semester-management/',
-    path: '/semester-management/',
-    getParentRoute: () => AuthRoute,
-  } as any)
-
-const AuthManageAccountIndexRoute = AuthManageAccountIndexImport.update({
-  id: '/manage-account/',
-  path: '/manage-account/',
-  getParentRoute: () => AuthRoute,
-} as any)
-
-const AuthListLabIndexRoute = AuthListLabIndexImport.update({
-  id: '/list-lab/',
-  path: '/list-lab/',
+const AuthMysubmitIndexRoute = AuthMysubmitIndexImport.update({
+  id: '/mysubmit/',
+  path: '/mysubmit/',
   getParentRoute: () => AuthRoute,
 } as any)
 
@@ -221,11 +227,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthHomeIndexImport
       parentRoute: typeof AuthImport
     }
-    '/_auth/list-lab/': {
-      id: '/_auth/list-lab/'
-      path: '/list-lab'
-      fullPath: '/list-lab'
-      preLoaderRoute: typeof AuthListLabIndexImport
+    '/_auth/mysubmit/': {
+      id: '/_auth/mysubmit/'
+      path: '/mysubmit'
+      fullPath: '/mysubmit'
+      preLoaderRoute: typeof AuthMysubmitIndexImport
       parentRoute: typeof AuthImport
     }
     '/_auth/manage-account/': {
@@ -247,6 +253,27 @@ declare module '@tanstack/react-router' {
       path: '/student-manage'
       fullPath: '/student-manage'
       preLoaderRoute: typeof AuthStudentManageIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/studentdashboard/': {
+      id: '/_auth/studentdashboard/'
+      path: '/studentdashboard'
+      fullPath: '/studentdashboard'
+      preLoaderRoute: typeof AuthStudentdashboardIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/submitlab/': {
+      id: '/_auth/submitlab/'
+      path: '/submitlab'
+      fullPath: '/submitlab'
+      preLoaderRoute: typeof AuthSubmitlabIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/users/': {
+      id: '/_auth/users/'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof AuthUsersIndexImport
       parentRoute: typeof AuthImport
     }
     '/_public/forgot-pass/': {
@@ -284,10 +311,11 @@ interface AuthRouteChildren {
   AuthClassManageIndexRoute: typeof AuthClassManageIndexRoute
   AuthFapSyncIndexRoute: typeof AuthFapSyncIndexRoute
   AuthHomeIndexRoute: typeof AuthHomeIndexRoute
-  AuthListLabIndexRoute: typeof AuthListLabIndexRoute
-  AuthManageAccountIndexRoute: typeof AuthManageAccountIndexRoute
-  AuthSemesterManagementIndexRoute: typeof AuthSemesterManagementIndexRoute
+  AuthMysubmitIndexRoute: typeof AuthMysubmitIndexRoute
   AuthStudentManageIndexRoute: typeof AuthStudentManageIndexRoute
+  AuthStudentdashboardIndexRoute: typeof AuthStudentdashboardIndexRoute
+  AuthSubmitlabIndexRoute: typeof AuthSubmitlabIndexRoute
+  AuthUsersIndexRoute: typeof AuthUsersIndexRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
@@ -299,10 +327,11 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthClassManageIndexRoute: AuthClassManageIndexRoute,
   AuthFapSyncIndexRoute: AuthFapSyncIndexRoute,
   AuthHomeIndexRoute: AuthHomeIndexRoute,
-  AuthListLabIndexRoute: AuthListLabIndexRoute,
-  AuthManageAccountIndexRoute: AuthManageAccountIndexRoute,
-  AuthSemesterManagementIndexRoute: AuthSemesterManagementIndexRoute,
+  AuthMysubmitIndexRoute: AuthMysubmitIndexRoute,
   AuthStudentManageIndexRoute: AuthStudentManageIndexRoute,
+  AuthStudentdashboardIndexRoute: AuthStudentdashboardIndexRoute,
+  AuthSubmitlabIndexRoute: AuthSubmitlabIndexRoute,
+  AuthUsersIndexRoute: AuthUsersIndexRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
@@ -333,10 +362,11 @@ export interface FileRoutesByFullPath {
   '/class-manage': typeof AuthClassManageIndexRoute
   '/fap-sync': typeof AuthFapSyncIndexRoute
   '/home': typeof AuthHomeIndexRoute
-  '/list-lab': typeof AuthListLabIndexRoute
-  '/manage-account': typeof AuthManageAccountIndexRoute
-  '/semester-management': typeof AuthSemesterManagementIndexRoute
+  '/mysubmit': typeof AuthMysubmitIndexRoute
   '/student-manage': typeof AuthStudentManageIndexRoute
+  '/studentdashboard': typeof AuthStudentdashboardIndexRoute
+  '/submitlab': typeof AuthSubmitlabIndexRoute
+  '/users': typeof AuthUsersIndexRoute
   '/forgot-pass': typeof PublicForgotPassIndexRoute
   '/login': typeof PublicLoginIndexRoute
   '/test': typeof PublicTestIndexRoute
@@ -353,10 +383,11 @@ export interface FileRoutesByTo {
   '/class-manage': typeof AuthClassManageIndexRoute
   '/fap-sync': typeof AuthFapSyncIndexRoute
   '/home': typeof AuthHomeIndexRoute
-  '/list-lab': typeof AuthListLabIndexRoute
-  '/manage-account': typeof AuthManageAccountIndexRoute
-  '/semester-management': typeof AuthSemesterManagementIndexRoute
+  '/mysubmit': typeof AuthMysubmitIndexRoute
   '/student-manage': typeof AuthStudentManageIndexRoute
+  '/studentdashboard': typeof AuthStudentdashboardIndexRoute
+  '/submitlab': typeof AuthSubmitlabIndexRoute
+  '/users': typeof AuthUsersIndexRoute
   '/forgot-pass': typeof PublicForgotPassIndexRoute
   '/login': typeof PublicLoginIndexRoute
   '/test': typeof PublicTestIndexRoute
@@ -375,10 +406,11 @@ export interface FileRoutesById {
   '/_auth/class-manage/': typeof AuthClassManageIndexRoute
   '/_auth/fap-sync/': typeof AuthFapSyncIndexRoute
   '/_auth/home/': typeof AuthHomeIndexRoute
-  '/_auth/list-lab/': typeof AuthListLabIndexRoute
-  '/_auth/manage-account/': typeof AuthManageAccountIndexRoute
-  '/_auth/semester-management/': typeof AuthSemesterManagementIndexRoute
+  '/_auth/mysubmit/': typeof AuthMysubmitIndexRoute
   '/_auth/student-manage/': typeof AuthStudentManageIndexRoute
+  '/_auth/studentdashboard/': typeof AuthStudentdashboardIndexRoute
+  '/_auth/submitlab/': typeof AuthSubmitlabIndexRoute
+  '/_auth/users/': typeof AuthUsersIndexRoute
   '/_public/forgot-pass/': typeof PublicForgotPassIndexRoute
   '/_public/login/': typeof PublicLoginIndexRoute
   '/_public/test/': typeof PublicTestIndexRoute
@@ -397,10 +429,11 @@ export interface FileRouteTypes {
     | '/class-manage'
     | '/fap-sync'
     | '/home'
-    | '/list-lab'
-    | '/manage-account'
-    | '/semester-management'
+    | '/mysubmit'
     | '/student-manage'
+    | '/studentdashboard'
+    | '/submitlab'
+    | '/users'
     | '/forgot-pass'
     | '/login'
     | '/test'
@@ -416,10 +449,11 @@ export interface FileRouteTypes {
     | '/class-manage'
     | '/fap-sync'
     | '/home'
-    | '/list-lab'
-    | '/manage-account'
-    | '/semester-management'
+    | '/mysubmit'
     | '/student-manage'
+    | '/studentdashboard'
+    | '/submitlab'
+    | '/users'
     | '/forgot-pass'
     | '/login'
     | '/test'
@@ -436,10 +470,11 @@ export interface FileRouteTypes {
     | '/_auth/class-manage/'
     | '/_auth/fap-sync/'
     | '/_auth/home/'
-    | '/_auth/list-lab/'
-    | '/_auth/manage-account/'
-    | '/_auth/semester-management/'
+    | '/_auth/mysubmit/'
     | '/_auth/student-manage/'
+    | '/_auth/studentdashboard/'
+    | '/_auth/submitlab/'
+    | '/_auth/users/'
     | '/_public/forgot-pass/'
     | '/_public/login/'
     | '/_public/test/'
@@ -487,10 +522,11 @@ export const routeTree = rootRoute
         "/_auth/class-manage/",
         "/_auth/fap-sync/",
         "/_auth/home/",
-        "/_auth/list-lab/",
-        "/_auth/manage-account/",
-        "/_auth/semester-management/",
-        "/_auth/student-manage/"
+        "/_auth/mysubmit/",
+        "/_auth/student-manage/",
+        "/_auth/studentdashboard/",
+        "/_auth/submitlab/",
+        "/_auth/users/"
       ]
     },
     "/_public": {
@@ -533,8 +569,8 @@ export const routeTree = rootRoute
       "filePath": "_auth/home/index.tsx",
       "parent": "/_auth"
     },
-    "/_auth/list-lab/": {
-      "filePath": "_auth/list-lab/index.tsx",
+    "/_auth/mysubmit/": {
+      "filePath": "_auth/mysubmit/index.tsx",
       "parent": "/_auth"
     },
     "/_auth/manage-account/": {
@@ -547,6 +583,18 @@ export const routeTree = rootRoute
     },
     "/_auth/student-manage/": {
       "filePath": "_auth/student-manage/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/studentdashboard/": {
+      "filePath": "_auth/studentdashboard/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/submitlab/": {
+      "filePath": "_auth/submitlab/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/users/": {
+      "filePath": "_auth/users/index.tsx",
       "parent": "/_auth"
     },
     "/_public/forgot-pass/": {
