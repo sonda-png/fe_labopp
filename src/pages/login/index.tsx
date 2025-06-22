@@ -27,7 +27,6 @@ import { authStore } from '@/stores/authStore'
 
 export const LoginPage: FC = () => {
   const { setAuthData } = authStore()
-  const path = useMatch({ from: '/login' })
   const navigate = useNavigate()
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
@@ -46,7 +45,7 @@ export const LoginPage: FC = () => {
       })
       // tìm tanstack để lấy được path params
 
-      navigate({ to: path?.pathname ?? '/class-manage' })
+      navigate({ to: '/class-manage' })
     },
     onError: (error: StandardizedApiError) => {
       toast.error(error.message)
@@ -57,6 +56,7 @@ export const LoginPage: FC = () => {
     await loginMutation({
       idToken: credentialResponse.credential ?? '',
     })
+    console.log(credentialResponse)
   }
 
   return (
