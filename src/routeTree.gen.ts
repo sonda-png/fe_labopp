@@ -234,6 +234,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthMysubmitIndexImport
       parentRoute: typeof AuthImport
     }
+    '/_auth/manage-account/': {
+      id: '/_auth/manage-account/'
+      path: '/manage-account'
+      fullPath: '/manage-account'
+      preLoaderRoute: typeof AuthManageAccountIndexImport
+      parentRoute: typeof AuthImport
+    }
     '/_auth/semester-management/': {
       id: '/_auth/semester-management/'
       path: '/semester-management'
@@ -564,6 +571,10 @@ export const routeTree = rootRoute
     },
     "/_auth/mysubmit/": {
       "filePath": "_auth/mysubmit/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/manage-account/": {
+      "filePath": "_auth/manage-account/index.tsx",
       "parent": "/_auth"
     },
     "/_auth/semester-management/": {
