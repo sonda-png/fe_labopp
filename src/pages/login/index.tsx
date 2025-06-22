@@ -27,6 +27,7 @@ import { authStore } from '@/stores/authStore'
 
 export const LoginPage: FC = () => {
   const { setAuthData } = authStore()
+  // const path = useMatch({ from: '/login' })
   const navigate = useNavigate()
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
