@@ -21,6 +21,7 @@ import { Route as AuthUsersIndexImport } from './routes/_auth/users/index'
 import { Route as AuthSubmitlabIndexImport } from './routes/_auth/submitlab/index'
 import { Route as AuthStudentdashboardIndexImport } from './routes/_auth/studentdashboard/index'
 import { Route as AuthStudentManageIndexImport } from './routes/_auth/student-manage/index'
+import { Route as AuthSemesterManagementIndexImport } from './routes/_auth/semester-management/index'
 import { Route as AuthMysubmitIndexImport } from './routes/_auth/mysubmit/index'
 import { Route as AuthHomeIndexImport } from './routes/_auth/home/index'
 import { Route as AuthFapSyncIndexImport } from './routes/_auth/fap-sync/index'
@@ -90,6 +91,13 @@ const AuthStudentManageIndexRoute = AuthStudentManageIndexImport.update({
   path: '/student-manage/',
   getParentRoute: () => AuthRoute,
 } as any)
+
+const AuthSemesterManagementIndexRoute =
+  AuthSemesterManagementIndexImport.update({
+    id: '/semester-management/',
+    path: '/semester-management/',
+    getParentRoute: () => AuthRoute,
+  } as any)
 
 const AuthMysubmitIndexRoute = AuthMysubmitIndexImport.update({
   id: '/mysubmit/',
@@ -305,6 +313,7 @@ interface AuthRouteChildren {
   AuthFapSyncIndexRoute: typeof AuthFapSyncIndexRoute
   AuthHomeIndexRoute: typeof AuthHomeIndexRoute
   AuthMysubmitIndexRoute: typeof AuthMysubmitIndexRoute
+  AuthSemesterManagementIndexRoute: typeof AuthSemesterManagementIndexRoute
   AuthStudentManageIndexRoute: typeof AuthStudentManageIndexRoute
   AuthStudentdashboardIndexRoute: typeof AuthStudentdashboardIndexRoute
   AuthSubmitlabIndexRoute: typeof AuthSubmitlabIndexRoute
@@ -321,6 +330,7 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthFapSyncIndexRoute: AuthFapSyncIndexRoute,
   AuthHomeIndexRoute: AuthHomeIndexRoute,
   AuthMysubmitIndexRoute: AuthMysubmitIndexRoute,
+  AuthSemesterManagementIndexRoute: AuthSemesterManagementIndexRoute,
   AuthStudentManageIndexRoute: AuthStudentManageIndexRoute,
   AuthStudentdashboardIndexRoute: AuthStudentdashboardIndexRoute,
   AuthSubmitlabIndexRoute: AuthSubmitlabIndexRoute,
@@ -356,6 +366,7 @@ export interface FileRoutesByFullPath {
   '/fap-sync': typeof AuthFapSyncIndexRoute
   '/home': typeof AuthHomeIndexRoute
   '/mysubmit': typeof AuthMysubmitIndexRoute
+  '/semester-management': typeof AuthSemesterManagementIndexRoute
   '/student-manage': typeof AuthStudentManageIndexRoute
   '/studentdashboard': typeof AuthStudentdashboardIndexRoute
   '/submitlab': typeof AuthSubmitlabIndexRoute
@@ -377,6 +388,7 @@ export interface FileRoutesByTo {
   '/fap-sync': typeof AuthFapSyncIndexRoute
   '/home': typeof AuthHomeIndexRoute
   '/mysubmit': typeof AuthMysubmitIndexRoute
+  '/semester-management': typeof AuthSemesterManagementIndexRoute
   '/student-manage': typeof AuthStudentManageIndexRoute
   '/studentdashboard': typeof AuthStudentdashboardIndexRoute
   '/submitlab': typeof AuthSubmitlabIndexRoute
@@ -400,6 +412,7 @@ export interface FileRoutesById {
   '/_auth/fap-sync/': typeof AuthFapSyncIndexRoute
   '/_auth/home/': typeof AuthHomeIndexRoute
   '/_auth/mysubmit/': typeof AuthMysubmitIndexRoute
+  '/_auth/semester-management/': typeof AuthSemesterManagementIndexRoute
   '/_auth/student-manage/': typeof AuthStudentManageIndexRoute
   '/_auth/studentdashboard/': typeof AuthStudentdashboardIndexRoute
   '/_auth/submitlab/': typeof AuthSubmitlabIndexRoute
@@ -423,6 +436,7 @@ export interface FileRouteTypes {
     | '/fap-sync'
     | '/home'
     | '/mysubmit'
+    | '/semester-management'
     | '/student-manage'
     | '/studentdashboard'
     | '/submitlab'
@@ -443,6 +457,7 @@ export interface FileRouteTypes {
     | '/fap-sync'
     | '/home'
     | '/mysubmit'
+    | '/semester-management'
     | '/student-manage'
     | '/studentdashboard'
     | '/submitlab'
@@ -464,6 +479,7 @@ export interface FileRouteTypes {
     | '/_auth/fap-sync/'
     | '/_auth/home/'
     | '/_auth/mysubmit/'
+    | '/_auth/semester-management/'
     | '/_auth/student-manage/'
     | '/_auth/studentdashboard/'
     | '/_auth/submitlab/'
@@ -516,6 +532,7 @@ export const routeTree = rootRoute
         "/_auth/fap-sync/",
         "/_auth/home/",
         "/_auth/mysubmit/",
+        "/_auth/semester-management/",
         "/_auth/student-manage/",
         "/_auth/studentdashboard/",
         "/_auth/submitlab/",
