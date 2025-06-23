@@ -18,11 +18,11 @@ export const adminAccountQueries = {
             queryFn: getAdminAccountList(params),
             enabled: true,
         }),
-    get: (id: string) =>
+    getDetail: (id: string | undefined) =>
         queryFactoryOptions({
             queryKey: [...adminAccountQueries.all(), 'detail', id],
             queryFn: getAdminAccount(id),
-            enabled: true,
+            enabled: !!id,
         }),
 };
 
@@ -39,9 +39,13 @@ const getAdminAccountList = (
         }
 
 /* Get admin account by id */
-const getAdminAccount = (id: string) =>
+const getAdminAccount = (id: string | undefined) =>
     (client: AxiosInstance) =>
-        async () =>
-            (
-                await client.get<AdminAccountResponse>(`/admin/accounts/${id}`)
-            ).data;
+        async () => {
+            if (id) {
+                return (
+                    await client.get<AdminAccountResponse>(`/admin/accounts/${id}`)
+                ).data
+            }
+            return Promise.reject(new Error('ID is required'))
+        }

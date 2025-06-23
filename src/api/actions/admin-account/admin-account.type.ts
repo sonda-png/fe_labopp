@@ -18,3 +18,17 @@ export type AdminAccountQueryParams = {
     roleId?: string;
     isActive?: string;
 }
+
+export type AuditAccountArgs = {
+    fullName: string;
+    email: string;
+    phone?: string;
+    roleId: string;
+    department?: string;
+}
+
+export type UpdateAccountArgs = AuditAccountArgs & { id: string }
+
+export type ChangeStatusAccountArgs = {
+    id: string, isActive: boolean, reason: string
+}
