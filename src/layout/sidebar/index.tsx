@@ -54,7 +54,7 @@ export const SidebarComponent = () => {
       id: 'users',
       label: 'Quản lý tài khoản',
       icon: Users,
-      path: '/users',
+      path: '/manage-account',
     },
     {
       id: 'assignment-list ',
