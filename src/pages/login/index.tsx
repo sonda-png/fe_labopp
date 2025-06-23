@@ -17,17 +17,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Link, useMatch, useNavigate } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google'
-import { useMutation } from '@/hooks'
-import { LoginMutationResponse } from '@/api/actions/auth/auth.types'
-import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
-import { toast } from 'react-toastify'
-import { authStore } from '@/stores/authStore'
 
 export const LoginPage: FC = () => {
-  const { setAuthData } = authStore()
-  const path = useMatch({ from: '/login' })
   const navigate = useNavigate()
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
@@ -35,28 +28,9 @@ export const LoginPage: FC = () => {
     navigate({ to: '/class-manage' })
   }
 
-  const { mutateAsync: loginMutation } = useMutation('loginMutation', {
-    onSuccess: (res: LoginMutationResponse) => {
-      setAuthData({
-        isAuthenticated: true,
-        userId: res.userId,
-        email: res.email,
-        role: res.role,
-        token: res.token,
-      })
-      // tìm tanstack để lấy được path params
-
-      navigate({ to: path?.pathname ?? '/class-manage' })
-    },
-    onError: (error: StandardizedApiError) => {
-      toast.error(error.message)
-    },
-  })
-
-  const handleGoogleLogin = async (credentialResponse: CredentialResponse) => {
-    await loginMutation({
-      idToken: credentialResponse.credential ?? '',
-    })
+  const handleGoogleLogin = (credentialResponse: CredentialResponse) => {
+    // Handle Google login logic here
+    console.log(credentialResponse)
   }
 
   return (
@@ -122,15 +96,7 @@ export const LoginPage: FC = () => {
                 </div>
               </div>
               <div className="w-full flex justify-center">
-                <GoogleLogin
-                  width={'100%'}
-                  onSuccess={async (credentialResponse: CredentialResponse) => {
-                    await handleGoogleLogin(credentialResponse)
-                  }}
-                  onError={() => {
-                    console.log('Login Failed')
-                  }}
-                />
+                <GoogleLogin width={'100%'} onSuccess={handleGoogleLogin} />
               </div>
               <div className="text-sm text-center">
                 <Link
