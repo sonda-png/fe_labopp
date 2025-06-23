@@ -87,14 +87,14 @@ export default function AssignmentManagement() {
     'addAssignmentMutation',
     {
       onSuccess: () => {
+        console.log('onSuccess addAssignmentMutation')
         setIsAddDialogOpen(false)
         resetForm()
-        toast.dismiss('add-success')
-        toast.success('Thêm đề bài thành công!', { toastId: 'add-success' })
 
         refetch()
       },
       onError: (error: StandardizedApiError) => {
+        console.log('onError addAssignmentMutation', error)
         toast.error(error.message || 'Có lỗi xảy ra khi thêm đề bài', {
           toastId: 'add-error',
         })
@@ -107,10 +107,7 @@ export default function AssignmentManagement() {
     {
       onSuccess: () => {
         handleEditDialogChange(false)
-        toast.dismiss('update-success')
-        toast.success('Cập nhật đề bài thành công!', {
-          toastId: 'update-success',
-        })
+
         refetch()
       },
       onError: (error: StandardizedApiError) => {
@@ -125,8 +122,6 @@ export default function AssignmentManagement() {
     'deleteAssignmentMutation',
     {
       onSuccess: () => {
-        toast.dismiss('delete-success')
-        toast.success('Xóa đề bài thành công!', { toastId: 'delete-success' })
         refetch()
       },
       onError: (error: StandardizedApiError) => {
@@ -173,17 +168,15 @@ export default function AssignmentManagement() {
   }
 
   const handleAdd = async () => {
-    try {
-      await addAssignmentMutation({
-        ...formData,
-        id: `lab${labs.length + 1}`,
-      })
-    } catch (error) {
-      console.error('Error adding assignment:', error)
-    }
+    console.log('handleAdd called')
+    await addAssignmentMutation({
+      ...formData,
+      id: `lab${labs.length + 1}`,
+    })
   }
 
   const handleEdit = (lab: Lab) => {
+    console.log('handleEdit called', lab)
     setEditingLab(lab)
     setFormData({
       title: lab.title,
@@ -191,7 +184,10 @@ export default function AssignmentManagement() {
       locTotal: lab.locTotal,
       teacherId: lab.teacherId,
     })
-    setTimeout(() => setIsEditDialogOpen(true), 10)
+    setTimeout(() => {
+      setIsEditDialogOpen(true)
+      console.log('setIsEditDialogOpen(true) called')
+    }, 10)
   }
 
   const handleUpdate = async () => {
@@ -248,6 +244,11 @@ export default function AssignmentManagement() {
         openButtonRef.current?.focus()
       }, 0)
     }
+  }
+
+  // Log dialog open state for debugging
+  if (isEditDialogOpen) {
+    console.log('DialogContent rendered, isEditDialogOpen:', isEditDialogOpen)
   }
 
   return (
