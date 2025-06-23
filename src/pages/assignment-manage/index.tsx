@@ -1,5 +1,3 @@
-'use client'
-
 import { useEffect, useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -65,6 +63,12 @@ import { assignmentMutations } from '@/api/actions/assignment-manage/assignment.
 import { Skeleton } from '@/components/ui/skeleton'
 import { toast } from 'react-toastify'
 import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import {
+  assignmentSchema,
+  AssignmentFormValues,
+} from '@/schema/assignmentSchema'
 
 interface Lab {
   id: string
@@ -89,8 +93,8 @@ export default function AssignmentManagement() {
       onSuccess: () => {
         console.log('onSuccess addAssignmentMutation')
         setIsAddDialogOpen(false)
-        resetForm()
-
+        reset()
+        toast.success('Thêm Đề bài thành công')
         refetch()
       },
       onError: (error: StandardizedApiError) => {
@@ -107,7 +111,7 @@ export default function AssignmentManagement() {
     {
       onSuccess: () => {
         handleEditDialogChange(false)
-
+        toast.success('Chỉnh sửa Đề bài thành công')
         refetch()
       },
       onError: (error: StandardizedApiError) => {
@@ -122,6 +126,7 @@ export default function AssignmentManagement() {
     'deleteAssignmentMutation',
     {
       onSuccess: () => {
+        toast.success('Xóa thành công')
         refetch()
       },
       onError: (error: StandardizedApiError) => {
@@ -143,64 +148,52 @@ export default function AssignmentManagement() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [editingLab, setEditingLab] = useState<Lab | null>(null)
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    locTotal: 0,
-    teacherId: '',
-  })
 
-  const resetForm = () => {
-    setFormData({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+    setValue,
+    getValues,
+  } = useForm<AssignmentFormValues>({
+    resolver: zodResolver(assignmentSchema),
+    defaultValues: {
       title: '',
       description: '',
       locTotal: 0,
       teacherId: '',
-    })
-  }
+    },
+  })
 
   const handleEditDialogChange = (isOpen: boolean) => {
     setIsEditDialogOpen(isOpen)
     if (!isOpen) {
       setEditingLab(null)
-      resetForm()
+      reset()
     }
-  }
-
-  const handleAdd = async () => {
-    console.log('handleAdd called')
-    await addAssignmentMutation({
-      ...formData,
-      id: `lab${labs.length + 1}`,
-    })
   }
 
   const handleEdit = (lab: Lab) => {
     console.log('handleEdit called', lab)
     setEditingLab(lab)
-    setFormData({
-      title: lab.title,
-      description: lab.description,
-      locTotal: lab.locTotal,
-      teacherId: lab.teacherId,
-    })
-    setTimeout(() => {
-      setIsEditDialogOpen(true)
-      console.log('setIsEditDialogOpen(true) called')
-    }, 10)
+    setValue('title', lab.title)
+    setValue('description', lab.description)
+    setValue('locTotal', lab.locTotal)
+    setValue('teacherId', lab.teacherId)
+    setTimeout(() => setIsEditDialogOpen(true), 10)
   }
 
-  const handleUpdate = async () => {
-    if (editingLab) {
-      try {
-        await updateAssignmentMutation({
-          ...formData,
-          id: editingLab.id,
-        })
-      } catch (error) {
-        console.error('Error updating assignment:', error)
-      }
+  const onSubmit = async (data: AssignmentFormValues) => {
+    if (isEditDialogOpen && editingLab) {
+      await updateAssignmentMutation({ ...data, id: editingLab.id })
+    } else {
+      await addAssignmentMutation({
+        ...getValues(),
+        id: `lab${labs.length + 1}`,
+      })
     }
+    reset()
   }
 
   const handleDelete = async (id: string) => {
@@ -399,7 +392,7 @@ export default function AssignmentManagement() {
                           </div>
                         </TableCell>
                         <TableCell className="text-right">
-                          <DropdownMenu>
+                          <DropdownMenu modal={false}>
                             <DropdownMenuTrigger asChild>
                               <Button variant="ghost" size="sm">
                                 <MoreHorizontal className="w-4 h-4" />
@@ -472,49 +465,54 @@ export default function AssignmentManagement() {
                 <Label htmlFor="title">Tiêu đề</Label>
                 <Input
                   id="title"
-                  value={formData.title}
-                  onChange={e =>
-                    setFormData({ ...formData, title: e.target.value })
-                  }
+                  {...register('title')}
                   placeholder="Nhập tiêu đề đề bài"
                 />
+                {errors.title && (
+                  <span className="text-red-500 text-xs">
+                    {errors.title.message}
+                  </span>
+                )}
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="description">Mô tả</Label>
                 <Textarea
                   id="description"
-                  value={formData.description}
-                  onChange={e =>
-                    setFormData({ ...formData, description: e.target.value })
-                  }
+                  {...register('description')}
                   placeholder="Nhập mô tả đề bài"
                 />
+                {errors.description && (
+                  <span className="text-red-500 text-xs">
+                    {errors.description.message}
+                  </span>
+                )}
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="locTotal">Tổng số dòng code</Label>
                 <Input
                   id="locTotal"
                   type="number"
-                  value={formData.locTotal}
-                  onChange={e =>
-                    setFormData({
-                      ...formData,
-                      locTotal: Number.parseInt(e.target.value) || 0,
-                    })
-                  }
+                  {...register('locTotal', { valueAsNumber: true })}
                   placeholder="Nhập tổng số dòng code"
                 />
+                {errors.locTotal && (
+                  <span className="text-red-500 text-xs">
+                    {errors.locTotal.message}
+                  </span>
+                )}
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="teacherId">Mã giáo viên</Label>
                 <Input
                   id="teacherId"
-                  value={formData.teacherId}
-                  onChange={e =>
-                    setFormData({ ...formData, teacherId: e.target.value })
-                  }
+                  {...register('teacherId')}
                   placeholder="Nhập mã giáo viên"
                 />
+                {errors.teacherId && (
+                  <span className="text-red-500 text-xs">
+                    {errors.teacherId.message}
+                  </span>
+                )}
               </div>
             </div>
             <DialogFooter>
@@ -522,13 +520,13 @@ export default function AssignmentManagement() {
                 variant="outline"
                 onClick={() => {
                   setIsAddDialogOpen(false)
-                  resetForm()
+                  reset()
                 }}
               >
                 Hủy
               </Button>
               <Button
-                onClick={handleAdd}
+                onClick={handleSubmit(onSubmit)}
                 className="bg-orange-500 hover:bg-orange-600"
               >
                 Thêm
@@ -549,49 +547,54 @@ export default function AssignmentManagement() {
                 <Label htmlFor="edit-title">Tiêu đề</Label>
                 <Input
                   id="edit-title"
-                  value={formData.title}
-                  onChange={e =>
-                    setFormData({ ...formData, title: e.target.value })
-                  }
+                  {...register('title')}
                   placeholder="Nhập tiêu đề đề bài"
                 />
+                {errors.title && (
+                  <span className="text-red-500 text-xs">
+                    {errors.title.message}
+                  </span>
+                )}
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="edit-description">Mô tả</Label>
                 <Textarea
                   id="edit-description"
-                  value={formData.description}
-                  onChange={e =>
-                    setFormData({ ...formData, description: e.target.value })
-                  }
+                  {...register('description')}
                   placeholder="Nhập mô tả đề bài"
                 />
+                {errors.description && (
+                  <span className="text-red-500 text-xs">
+                    {errors.description.message}
+                  </span>
+                )}
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="edit-locTotal">Tổng số dòng code</Label>
                 <Input
                   id="edit-locTotal"
                   type="number"
-                  value={formData.locTotal}
-                  onChange={e =>
-                    setFormData({
-                      ...formData,
-                      locTotal: Number.parseInt(e.target.value) || 0,
-                    })
-                  }
+                  {...register('locTotal', { valueAsNumber: true })}
                   placeholder="Nhập tổng số dòng code"
                 />
+                {errors.locTotal && (
+                  <span className="text-red-500 text-xs">
+                    {errors.locTotal.message}
+                  </span>
+                )}
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="edit-teacherId">Mã giáo viên</Label>
                 <Input
                   id="edit-teacherId"
-                  value={formData.teacherId}
-                  onChange={e =>
-                    setFormData({ ...formData, teacherId: e.target.value })
-                  }
+                  {...register('teacherId')}
                   placeholder="Nhập mã giáo viên"
                 />
+                {errors.teacherId && (
+                  <span className="text-red-500 text-xs">
+                    {errors.teacherId.message}
+                  </span>
+                )}
               </div>
             </div>
             <DialogFooter>
@@ -602,7 +605,7 @@ export default function AssignmentManagement() {
                 Hủy
               </Button>
               <Button
-                onClick={handleUpdate}
+                onClick={handleSubmit(onSubmit)}
                 className="bg-orange-500 hover:bg-orange-600"
               >
                 Cập nhật
