@@ -21,6 +21,8 @@ import { Link, useNavigate } from '@tanstack/react-router'
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google'
 
 export const LoginPage: FC = () => {
+  const { setAuthData } = authStore()
+  // const path = useMatch({ from: '/login' })
   const navigate = useNavigate()
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
@@ -28,9 +30,28 @@ export const LoginPage: FC = () => {
     navigate({ to: '/class-manage' })
   }
 
-  const handleGoogleLogin = (credentialResponse: CredentialResponse) => {
-    // Handle Google login logic here
-    console.log(credentialResponse)
+  const { mutateAsync: loginMutation } = useMutation('loginMutation', {
+    onSuccess: (res: LoginMutationResponse) => {
+      setAuthData({
+        isAuthenticated: true,
+        userId: res.userId,
+        email: res.email,
+        role: res.role,
+        token: res.token,
+      })
+      // tìm tanstack để lấy được path params
+
+      // navigate({ to: path?.pathname ?? '/class-manage' })
+    },
+    onError: (error: StandardizedApiError) => {
+      toast.error(error.message)
+    },
+  })
+
+  const handleGoogleLogin = async (credentialResponse: CredentialResponse) => {
+    await loginMutation({
+      idToken: credentialResponse.credential ?? '',
+    })
   }
 
   return (
