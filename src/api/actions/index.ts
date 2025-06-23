@@ -1,7 +1,9 @@
 import { authMutations } from './auth/auth.mutations'
+import { assignmentMutations } from './assignment-manage/assignment.mutation'
 
 export const mutations = {
   ...authMutations,
+  ...assignmentMutations,
   // API_COLLECTION_MUTATIONS
 } as const
 
