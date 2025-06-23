@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -59,9 +59,12 @@ import {
   Code,
   User,
 } from 'lucide-react'
-import { useQuery } from '@/hooks'
+import { useQuery, useMutation } from '@/hooks'
 import { getAssignmentList } from '@/api/actions/assignment-manage/assignment.query'
+import { assignmentMutations } from '@/api/actions/assignment-manage/assignment.mutation'
 import { Skeleton } from '@/components/ui/skeleton'
+import { toast } from 'react-toastify'
+import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
 
 interface Lab {
   id: string
@@ -72,17 +75,73 @@ interface Lab {
 }
 
 export default function AssignmentManagement() {
-  const { data: assignmentsData, isLoading } = useQuery({
+  const {
+    data: assignmentsData,
+    isLoading,
+    refetch,
+  } = useQuery({
     ...getAssignmentList.get(),
   })
+
+  const { mutateAsync: addAssignmentMutation } = useMutation(
+    'addAssignmentMutation',
+    {
+      onSuccess: () => {
+        setIsAddDialogOpen(false)
+        resetForm()
+        toast.dismiss('add-success')
+        toast.success('Thêm đề bài thành công!', { toastId: 'add-success' })
+
+        refetch()
+      },
+      onError: (error: StandardizedApiError) => {
+        toast.error(error.message || 'Có lỗi xảy ra khi thêm đề bài', {
+          toastId: 'add-error',
+        })
+      },
+    }
+  )
+
+  const { mutateAsync: updateAssignmentMutation } = useMutation(
+    'updateAssignmentMutation',
+    {
+      onSuccess: () => {
+        handleEditDialogChange(false)
+        toast.dismiss('update-success')
+        toast.success('Cập nhật đề bài thành công!', {
+          toastId: 'update-success',
+        })
+        refetch()
+      },
+      onError: (error: StandardizedApiError) => {
+        toast.error(error.message || 'Có lỗi xảy ra khi cập nhật đề bài', {
+          toastId: 'update-error',
+        })
+      },
+    }
+  )
+
+  const { mutateAsync: deleteAssignmentMutation } = useMutation(
+    'deleteAssignmentMutation',
+    {
+      onSuccess: () => {
+        toast.dismiss('delete-success')
+        toast.success('Xóa đề bài thành công!', { toastId: 'delete-success' })
+        refetch()
+      },
+      onError: (error: StandardizedApiError) => {
+        toast.error(error.message || 'Có lỗi xảy ra khi xóa đề bài', {
+          toastId: 'delete-error',
+        })
+      },
+    }
+  )
 
   const [labs, setLabs] = useState<Lab[]>([])
 
   useEffect(() => {
     if (assignmentsData?.data) {
-      // Assuming the API returns an array of assignments.
-      // The type definition seems to be for a single item, but the endpoint implies a list.
-      setLabs(assignmentsData.data)
+      setLabs(Array.isArray(assignmentsData.data) ? assignmentsData.data : [])
     }
   }, [assignmentsData])
 
@@ -113,14 +172,15 @@ export default function AssignmentManagement() {
     }
   }
 
-  const handleAdd = () => {
-    const newLab: Lab = {
-      id: `lab${labs.length + 1}`,
-      ...formData,
+  const handleAdd = async () => {
+    try {
+      await addAssignmentMutation({
+        ...formData,
+        id: `lab${labs.length + 1}`,
+      })
+    } catch (error) {
+      console.error('Error adding assignment:', error)
     }
-    setLabs([...labs, newLab])
-    setIsAddDialogOpen(false)
-    resetForm()
   }
 
   const handleEdit = (lab: Lab) => {
@@ -131,22 +191,28 @@ export default function AssignmentManagement() {
       locTotal: lab.locTotal,
       teacherId: lab.teacherId,
     })
-    setIsEditDialogOpen(true)
+    setTimeout(() => setIsEditDialogOpen(true), 10)
   }
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     if (editingLab) {
-      setLabs(
-        labs.map(lab =>
-          lab.id === editingLab.id ? { ...lab, ...formData } : lab
-        )
-      )
-      handleEditDialogChange(false)
+      try {
+        await updateAssignmentMutation({
+          ...formData,
+          id: editingLab.id,
+        })
+      } catch (error) {
+        console.error('Error updating assignment:', error)
+      }
     }
   }
 
-  const handleDelete = (id: string) => {
-    setLabs(labs.filter(lab => lab.id !== id))
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteAssignmentMutation(id)
+    } catch (error) {
+      console.error('Error deleting assignment:', error)
+    }
   }
 
   const stats = [
@@ -169,6 +235,20 @@ export default function AssignmentManagement() {
       color: 'text-orange-600',
     },
   ]
+
+  const buttonRef = useRef<HTMLButtonElement>(null)
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const openButtonRef = useRef<HTMLButtonElement>(null)
+
+  const handleDialogChange = (open: boolean) => {
+    setIsDialogOpen(open)
+    if (!open) {
+      setTimeout(() => {
+        openButtonRef.current?.focus()
+      }, 0)
+    }
+  }
 
   return (
     <main className="flex-1 p-6">
@@ -198,9 +278,7 @@ export default function AssignmentManagement() {
                       {stat.value}
                     </p>
                   </div>
-                  <div
-                    className={`w-12 h-12 rounded-lg bg-gray-50 flex items-center justify-center`}
-                  >
+                  <div className="w-12 h-12 rounded-lg bg-gray-50 flex items-center justify-center">
                     <stat.icon className={`w-6 h-6 ${stat.color}`} />
                   </div>
                 </div>
@@ -327,7 +405,13 @@ export default function AssignmentManagement() {
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                              <DropdownMenuItem onClick={() => handleEdit(lab)}>
+                              <DropdownMenuItem
+                                onClick={e => {
+                                  e.preventDefault()
+                                  handleEdit(lab)
+                                }}
+                                onSelect={e => e.preventDefault()}
+                              >
                                 Chỉnh sửa
                               </DropdownMenuItem>
                               <DropdownMenuItem>Xem chi tiết</DropdownMenuItem>
