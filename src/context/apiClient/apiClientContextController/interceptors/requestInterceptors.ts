@@ -1,10 +1,11 @@
+import { authStore } from '@/stores/authStore';
 import { AxiosRequestHeaders, InternalAxiosRequestConfig } from 'axios'
 
-export const requestSuccessInterceptor = async (
+export const useRequestSuccessInterceptor = async (
   config: InternalAxiosRequestConfig
 ): Promise<InternalAxiosRequestConfig> => {
-  // const { accessToken } = authStore.getState();
-  const accessToken = ''
+
+  const { authValues } = authStore.getState();
 
   // Dynamically adjust the `Content-Type` header so that callers can
   // freely send either JSON bodies or FormData without manually
@@ -24,8 +25,8 @@ export const requestSuccessInterceptor = async (
   }
 
   // Attach authorization header if token is available
-  if (accessToken) {
-    headers['Authorization'] = `Bearer ${accessToken}`
+  if (authValues.isAuthenticated) {
+    headers['Authorization'] = `Bearer ${authValues.token}`
   }
 
   return {
@@ -33,4 +34,5 @@ export const requestSuccessInterceptor = async (
     withCredentials: false,
     headers: headers,
   }
+
 }

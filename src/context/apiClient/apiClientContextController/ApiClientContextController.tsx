@@ -21,7 +21,7 @@ const ApiClientContextController: FC<ApiClientControllerProps> = ({
 
   const mutationCache = new MutationCache({
     onError: (err, variables, context, mutation) => {
-      const error = err as StandardizedApiError
+      const error = err as unknown as StandardizedApiError
       if (
         shouldHandleGlobalError(
           (mutation.meta as ExtendedQueryMeta)?.error,
@@ -35,7 +35,7 @@ const ApiClientContextController: FC<ApiClientControllerProps> = ({
 
   const queryCache = new QueryCache({
     onError: (err, query) => {
-      const error = err as StandardizedApiError
+      const error = err as unknown as StandardizedApiError
 
       if (
         shouldHandleGlobalError(

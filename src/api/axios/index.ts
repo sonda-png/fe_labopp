@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios'
-import { requestSuccessInterceptor } from '@/context/apiClient/apiClientContextController/interceptors/requestInterceptors'
+import { useRequestSuccessInterceptor } from '@/context/apiClient/apiClientContextController/interceptors/requestInterceptors'
 import {
   useResponseFailureInterceptor,
   responseSuccessInterceptor,
@@ -15,7 +15,7 @@ const axiosClient = axios.create({
   timeout: 10000,
 })
 
-axiosClient.interceptors.request.use(requestSuccessInterceptor)
+axiosClient.interceptors.request.use(useRequestSuccessInterceptor)
 axiosClient.interceptors.response.use(
   responseSuccessInterceptor as unknown as (
     response: AxiosResponse<ApiResponse<unknown>>
