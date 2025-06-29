@@ -35,6 +35,25 @@ export const LoginPage: FC = () => {
     navigate({ to: '/class-manage' })
   }
 
+  const handleLoginNavigate = (role: string) => {
+    switch (role) {
+      case 'Admin':
+        navigate({ to: '/dashboard/admin' })
+        break
+      case 'Teacher':
+        navigate({ to: '/dashboard/teacher' })
+        break
+      case 'Student':
+        navigate({ to: '/dashboard/student' })
+        break
+      case 'Head Subject':
+        navigate({ to: '/dashboard/head-subject' })
+        break
+      default:
+        toast.error('Có lỗi xảy ra, vui lòng liên hệ admin để đăng nhập')
+    }
+  }
+
   const { mutateAsync: loginMutation } = useMutation('loginMutation', {
     onSuccess: (res: LoginMutationResponse) => {
       setAuthData({
@@ -45,8 +64,8 @@ export const LoginPage: FC = () => {
         token: res.token,
       })
       // tìm tanstack để lấy được path params
-
-      // navigate({ to: path?.pathname ?? '/class-manage' })
+      handleLoginNavigate(res.role)
+      toast.success('Đăng nhập thành công')
     },
     onError: (error: StandardizedApiError) => {
       toast.error(error.message)
