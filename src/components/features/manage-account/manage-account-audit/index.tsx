@@ -109,8 +109,6 @@ export const ManageAccountAudit = ({
         phone: userToEdit.phone,
         roleId: rolesData?.find(role => role.name === userToEdit.roleName)?.id,
       })
-
-      console.log(rolesData?.find(role => role.name === userToEdit.roleName))
     }
   }, [userToEdit, reset, rolesData])
 

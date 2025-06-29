@@ -11,7 +11,6 @@ export const getStandardizedApiError = (
   // Try to read the API-provided error. Fallbacks ensure we always have sensible defaults.
   const responseData =
     (error.response?.data as Partial<StandardizedApiError>) ?? {}
-
   return {
     success: false,
     message:
