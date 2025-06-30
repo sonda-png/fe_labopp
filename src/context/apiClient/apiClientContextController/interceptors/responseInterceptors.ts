@@ -4,6 +4,8 @@ import { ExtendedAxiosRequestConfig } from '@/api/types/types'
 import { ApiResponse } from '../../apiClientContext/ApiClientContext.types'
 import { toast } from 'react-toastify'
 import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
+import { authStore } from '@/stores/authStore'
+import { getLoginUrlWithRedirect } from '@/utils/helpers/redirectAfterLogin'
 
 export function responseSuccessInterceptor<T>(
   response: AxiosResponse<ApiResponse<T>>
@@ -32,15 +34,17 @@ export function responseSuccessInterceptor<T>(
 export const useResponseFailureInterceptor = async (
   error: AxiosError<unknown>
 ) => {
-  // const { setAuthData, clearTokens, accessToken, refreshToken } = authStore.getState();
+  const { clearTokens } = authStore.getState()
 
   const standarizedError = getStandardizedApiError(error)
 
   const originalRequest = error.config as ExtendedAxiosRequestConfig
   if (standarizedError.statusCode === 401 && originalRequest?._retry) {
-    // clearTokens();
-
-    window.location.replace('/login')
+    // Clear tokens and save current page for redirect after login
+    clearTokens()
+    
+    const loginUrl = getLoginUrlWithRedirect()
+    window.location.replace(loginUrl)
 
     return Promise.reject(standarizedError)
   }
@@ -56,8 +60,11 @@ export const useResponseFailureInterceptor = async (
 
       return axios(originalRequest)
     } catch {
-      // clearTokens();
-      window.location.replace('/login')
+      // Clear tokens and save current page for redirect after login
+      clearTokens()
+      
+      const loginUrl = getLoginUrlWithRedirect()
+      window.location.replace(loginUrl)
 
       return Promise.reject(standarizedError)
     }
