@@ -20,10 +20,17 @@ import {
 } from 'lucide-react'
 import { authStore } from '@/stores/authStore'
 import { useNavigate } from '@tanstack/react-router'
+import { getLoginUrlWithRedirect } from '@/utils/helpers/redirectAfterLogin'
 
 export const HeaderComponent = () => {
   const { authValues } = authStore()
   const navigate = useNavigate()
+  const handleLogout = () => {
+    const loginUrl = getLoginUrlWithRedirect()
+    
+    authStore.getState().clearTokens()
+    navigate({ to: loginUrl })
+  }
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-4 sticky top-0 z-50">
       <div className="flex items-center justify-between  mx-auto">
@@ -72,19 +79,16 @@ export const HeaderComponent = () => {
                   >
                     <Avatar className="h-8 w-8">
                       <AvatarImage
-                        src={
-                          authValues.image ||
-                          '/placeholder.svg?height=32&width=32'
-                        }
+                        src="/placeholder.svg?height=32&width=32"
                       />
                       <AvatarFallback className="bg-orange-500 text-white">
-                        {authValues.userName?.[0] || 'U'}
+                        {authValues.email?.[0]?.toUpperCase() || 'U'}
                       </AvatarFallback>
                     </Avatar>
                     <div className="text-left hidden md:block">
-                      <div className="font-medium">{authValues.userName}</div>
+                      <div className="font-medium">{authValues.email}</div>
                       <div className="text-xs text-gray-500">
-                        {authValues.email}
+                        {authValues.role}
                       </div>
                     </div>
                     <ChevronDown className="h-4 w-4" />
@@ -105,7 +109,7 @@ export const HeaderComponent = () => {
                   <Separator />
                   <DropdownMenuItem
                     onClick={() => {
-                      navigate({ to: '/login' })
+                      handleLogout()
                     }}
                   >
                     <LogOut className="mr-2 h-4 w-4" />

@@ -61,7 +61,7 @@ const semesters = [
     status: 'current',
     isActive: true,
     createdAt: '2024-08-15',
-    createdBy: 'Trưởng bộ môn CNTT',
+    createdBy: 'Head of IT Department',
     totalClasses: 45,
     totalStudents: 1250,
   },
@@ -73,7 +73,7 @@ const semesters = [
     status: 'completed',
     isActive: true,
     createdAt: '2024-01-15',
-    createdBy: 'Trưởng bộ môn CNTT',
+    createdBy: 'Head of IT Department',
     totalClasses: 42,
     totalStudents: 1180,
   },
@@ -85,7 +85,7 @@ const semesters = [
     status: 'completed',
     isActive: true,
     createdAt: '2023-08-15',
-    createdBy: 'Trưởng bộ môn CNTT',
+    createdBy: 'Head of IT Department',
     totalClasses: 38,
     totalStudents: 1100,
   },
@@ -97,25 +97,39 @@ const semesters = [
     status: 'archived',
     isActive: false,
     createdAt: '2023-01-15',
-    createdBy: 'Trưởng bộ môn CNTT',
+    createdBy: 'Head of IT Department',
     totalClasses: 35,
     totalStudents: 980,
   },
 ]
+
+// Type definitions
+type Semester = typeof semesters[0]
+type FormData = {
+  name: string
+  startDate: string
+  endDate: string
+  isCurrent: boolean
+}
+type FormErrors = {
+  name?: string
+  startDate?: string
+  endDate?: string
+}
 
 export default function SemesterManagement() {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const [selectedSemester, setSelectedSemester] = useState(null)
-  const [formData, setFormData] = useState({
+  const [selectedSemester, setSelectedSemester] = useState<Semester | null>(null)
+  const [formData, setFormData] = useState<FormData>({
     name: '',
     startDate: '',
     endDate: '',
     isCurrent: false,
   })
-  const [errors, setErrors] = useState({})
+  const [errors, setErrors] = useState<FormErrors>({})
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -133,13 +147,13 @@ export default function SemesterManagement() {
   const getStatusText = (status: string) => {
     switch (status) {
       case 'current':
-        return 'Học kỳ hiện tại'
+        return 'Current Semester'
       case 'completed':
-        return 'Đã hoàn thành'
+        return 'Completed'
       case 'archived':
-        return 'Đã lưu trữ'
+        return 'Archived'
       default:
-        return 'Không xác định'
+        return 'Unknown'
     }
   }
 
@@ -170,21 +184,21 @@ export default function SemesterManagement() {
 
     // Validation
     if (!formData.name) {
-      setErrors(prev => ({ ...prev, name: 'Vui lòng nhập tên học kỳ' }))
+      setErrors(prev => ({ ...prev, name: 'Please enter semester name' }))
       return
     }
     if (!formData.startDate) {
-      setErrors(prev => ({ ...prev, startDate: 'Vui lòng chọn ngày bắt đầu' }))
+      setErrors(prev => ({ ...prev, startDate: 'Please select start date' }))
       return
     }
     if (!formData.endDate) {
-      setErrors(prev => ({ ...prev, endDate: 'Vui lòng chọn ngày kết thúc' }))
+      setErrors(prev => ({ ...prev, endDate: 'Please select end date' }))
       return
     }
     if (new Date(formData.startDate) >= new Date(formData.endDate)) {
       setErrors(prev => ({
         ...prev,
-        endDate: 'Ngày kết thúc phải sau ngày bắt đầu',
+        endDate: 'End date must be after start date',
       }))
       return
     }
@@ -200,7 +214,7 @@ export default function SemesterManagement() {
 
     // Validation similar to create
     if (!formData.name) {
-      setErrors(prev => ({ ...prev, name: 'Vui lòng nhập tên học kỳ' }))
+      setErrors(prev => ({ ...prev, name: 'Please enter semester name' }))
       return
     }
 
@@ -246,8 +260,8 @@ export default function SemesterManagement() {
         <Calendar className="h-8 w-8 text-orange-500" />
 
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Quản lý học kỳ</h1>
-          <p className="text-gray-600">Quản lý học kỳ và lớp học</p>
+          <h1 className="text-2xl font-bold text-gray-900">Semester Management</h1>
+          <p className="text-gray-600">Manage semesters and classes</p>
         </div>
       </div>
 
@@ -259,7 +273,7 @@ export default function SemesterManagement() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">
-                    Tổng học kỳ
+                    Total Semesters
                   </p>
                   <p className="text-2xl font-semibold text-gray-900">
                     {stats.total}
@@ -276,7 +290,7 @@ export default function SemesterManagement() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Hiện tại</p>
+                  <p className="text-sm font-medium text-gray-600">Current</p>
                   <p className="text-2xl font-semibold text-gray-900">
                     {stats.current}
                   </p>
@@ -293,7 +307,7 @@ export default function SemesterManagement() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">
-                    Hoàn thành
+                    Completed
                   </p>
                   <p className="text-2xl font-semibold text-gray-900">
                     {stats.completed}
@@ -310,7 +324,7 @@ export default function SemesterManagement() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Lưu trữ</p>
+                  <p className="text-sm font-medium text-gray-600">Archived</p>
                   <p className="text-2xl font-semibold text-gray-900">
                     {stats.archived}
                   </p>
@@ -327,7 +341,7 @@ export default function SemesterManagement() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">
-                    Đang hoạt động
+                    Active
                   </p>
                   <p className="text-2xl font-semibold text-gray-900">
                     {stats.active}
@@ -347,7 +361,7 @@ export default function SemesterManagement() {
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
-                placeholder="Tìm kiếm học kỳ..."
+                placeholder="Search semesters..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
                 className="pl-10 w-80 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
@@ -356,19 +370,19 @@ export default function SemesterManagement() {
 
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-48">
-                <SelectValue placeholder="Trạng thái" />
+                <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tất cả trạng thái</SelectItem>
-                <SelectItem value="current">Học kỳ hiện tại</SelectItem>
-                <SelectItem value="completed">Đã hoàn thành</SelectItem>
-                <SelectItem value="archived">Đã lưu trữ</SelectItem>
+                <SelectItem value="all">All statuses</SelectItem>
+                <SelectItem value="current">Current semester</SelectItem>
+                <SelectItem value="completed">Completed</SelectItem>
+                <SelectItem value="archived">Archived</SelectItem>
               </SelectContent>
             </Select>
 
             <Button variant="outline">
               <Filter className="mr-2 h-4 w-4" />
-              Bộ lọc nâng cao
+              Advanced Filters
             </Button>
           </div>
 
@@ -376,22 +390,22 @@ export default function SemesterManagement() {
             <DialogTrigger asChild>
               <Button className="bg-orange-500 hover:bg-orange-600">
                 <Plus className="mr-2 h-4 w-4" />
-                Thêm học kỳ mới
+                Add New Semester
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-2xl">
               <DialogHeader>
-                <DialogTitle>Tạo học kỳ mới</DialogTitle>
+                <DialogTitle>Create New Semester</DialogTitle>
                 <DialogDescription>
-                  Nhập thông tin để tạo học kỳ mới cho hệ thống
+                  Enter information to create a new semester for the system
                 </DialogDescription>
               </DialogHeader>
               <div className="grid grid-cols-1 gap-4 py-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Tên học kỳ *</Label>
+                  <Label htmlFor="name">Semester Name *</Label>
                   <Input
                     id="name"
-                    placeholder="VD: HK1 2024-2025"
+                    placeholder="E.g.: HK1 2024-2025"
                     value={formData.name}
                     onChange={e =>
                       setFormData({ ...formData, name: e.target.value })
@@ -405,7 +419,7 @@ export default function SemesterManagement() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="startDate">Ngày bắt đầu *</Label>
+                    <Label htmlFor="startDate">Start Date *</Label>
                     <Input
                       id="startDate"
                       type="date"
@@ -420,7 +434,7 @@ export default function SemesterManagement() {
                     )}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="endDate">Ngày kết thúc *</Label>
+                    <Label htmlFor="endDate">End Date *</Label>
                     <Input
                       id="endDate"
                       type="date"
@@ -445,16 +459,15 @@ export default function SemesterManagement() {
                     }
                   />
                   <Label htmlFor="isCurrent" className="text-sm font-medium">
-                    Đặt làm học kỳ hiện tại
+                    Set as current semester
                   </Label>
                 </div>
 
                 {formData.isCurrent && (
                   <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                     <p className="text-sm text-yellow-800">
-                      <strong>Lưu ý:</strong> Chỉ được phép có 1 học kỳ hiện tại
-                      tại một thời điểm. Học kỳ hiện tại trước đó sẽ được chuyển
-                      sang trạng thái "Đã hoàn thành".
+                      <strong>Note:</strong> Only one current semester is allowed at a time. 
+                      The previous current semester will be changed to "Completed" status.
                     </p>
                   </div>
                 )}
@@ -464,14 +477,14 @@ export default function SemesterManagement() {
                   variant="outline"
                   onClick={() => setIsCreateModalOpen(false)}
                 >
-                  Hủy
+                  Cancel
                 </Button>
                 <Button
                   className="bg-orange-500 hover:bg-orange-600"
                   onClick={handleCreateSemester}
                 >
                   <Save className="mr-2 h-4 w-4" />
-                  Tạo học kỳ
+                  Create Semester
                 </Button>
               </div>
             </DialogContent>
@@ -507,40 +520,40 @@ export default function SemesterManagement() {
                             variant="outline"
                             className="border-red-200 text-red-700"
                           >
-                            Đã vô hiệu hóa
+                            Disabled
                           </Badge>
                         )}
                       </div>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600 mb-3">
                         <div>
-                          <span className="font-medium">Bắt đầu:</span>
+                          <span className="font-medium">Start:</span>
                           <div>
                             {new Date(semester.startDate).toLocaleDateString(
-                              'vi-VN'
+                              'en-US'
                             )}
                           </div>
                         </div>
                         <div>
-                          <span className="font-medium">Kết thúc:</span>
+                          <span className="font-medium">End:</span>
                           <div>
                             {new Date(semester.endDate).toLocaleDateString(
-                              'vi-VN'
+                              'en-US'
                             )}
                           </div>
                         </div>
                         <div>
-                          <span className="font-medium">Số lớp:</span>
-                          <div>{semester.totalClasses} lớp</div>
+                          <span className="font-medium">Classes:</span>
+                          <div>{semester.totalClasses} classes</div>
                         </div>
                         <div>
-                          <span className="font-medium">Sinh viên:</span>
-                          <div>{semester.totalStudents} người</div>
+                          <span className="font-medium">Students:</span>
+                          <div>{semester.totalStudents} students</div>
                         </div>
                       </div>
                       <div className="text-xs text-gray-500">
-                        Tạo bởi {semester.createdBy} •{' '}
+                        Created by {semester.createdBy} •{' '}
                         {new Date(semester.createdAt).toLocaleDateString(
-                          'vi-VN'
+                          'en-US'
                         )}
                       </div>
                     </div>
@@ -555,7 +568,7 @@ export default function SemesterManagement() {
                         className="border-green-200 text-green-700 hover:bg-green-50"
                       >
                         <Star className="mr-2 h-4 w-4" />
-                        Đặt hiện tại
+                        Set Current
                       </Button>
                     )}
 
@@ -570,11 +583,11 @@ export default function SemesterManagement() {
                           onClick={() => openEditModal(semester)}
                         >
                           <Edit className="mr-2 h-4 w-4" />
-                          Chỉnh sửa
+                          Edit
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <Eye className="mr-2 h-4 w-4" />
-                          Xem chi tiết
+                          View Details
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
@@ -583,19 +596,19 @@ export default function SemesterManagement() {
                           {semester.isActive ? (
                             <>
                               <XCircle className="mr-2 h-4 w-4" />
-                              Vô hiệu hóa
+                              Disable
                             </>
                           ) : (
                             <>
                               <CheckCircle className="mr-2 h-4 w-4" />
-                              Kích hoạt
+                              Enable
                             </>
                           )}
                         </DropdownMenuItem>
                         {semester.status !== 'current' && (
                           <DropdownMenuItem className="text-red-600">
                             <Trash2 className="mr-2 h-4 w-4" />
-                            Xóa học kỳ
+                            Delete Semester
                           </DropdownMenuItem>
                         )}
                       </DropdownMenuContent>
@@ -611,17 +624,17 @@ export default function SemesterManagement() {
         <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>Chỉnh sửa học kỳ</DialogTitle>
+              <DialogTitle>Edit Semester</DialogTitle>
               <DialogDescription>
-                Cập nhật thông tin học kỳ {selectedSemester?.name}
+                Update information for semester {selectedSemester?.name}
               </DialogDescription>
             </DialogHeader>
             <div className="grid grid-cols-1 gap-4 py-4">
               <div className="space-y-2">
-                <Label htmlFor="editName">Tên học kỳ *</Label>
+                <Label htmlFor="editName">Semester Name *</Label>
                 <Input
                   id="editName"
-                  placeholder="VD: HK1 2024-2025"
+                  placeholder="E.g.: HK1 2024-2025"
                   value={formData.name}
                   onChange={e =>
                     setFormData({ ...formData, name: e.target.value })
@@ -635,7 +648,7 @@ export default function SemesterManagement() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="editStartDate">Ngày bắt đầu *</Label>
+                  <Label htmlFor="editStartDate">Start Date *</Label>
                   <Input
                     id="editStartDate"
                     type="date"
@@ -650,7 +663,7 @@ export default function SemesterManagement() {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="editEndDate">Ngày kết thúc *</Label>
+                  <Label htmlFor="editEndDate">End Date *</Label>
                   <Input
                     id="editEndDate"
                     type="date"
@@ -675,7 +688,7 @@ export default function SemesterManagement() {
                   }
                 />
                 <Label htmlFor="editIsCurrent" className="text-sm font-medium">
-                  Đặt làm học kỳ hiện tại
+                  Set as current semester
                 </Label>
               </div>
             </div>
@@ -685,14 +698,14 @@ export default function SemesterManagement() {
                 onClick={() => setIsEditModalOpen(false)}
               >
                 <X className="mr-2 h-4 w-4" />
-                Hủy
+                Cancel
               </Button>
               <Button
                 className="bg-orange-500 hover:bg-orange-600"
                 onClick={handleEditSemester}
               >
                 <Save className="mr-2 h-4 w-4" />
-                Cập nhật
+                Update
               </Button>
             </div>
           </DialogContent>
@@ -704,10 +717,10 @@ export default function SemesterManagement() {
             <CardContent>
               <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Không tìm thấy học kỳ
+                No semesters found
               </h3>
               <p className="text-gray-600 mb-4">
-                Không có học kỳ nào phù hợp với tiêu chí tìm kiếm.
+                No semesters match your search criteria.
               </p>
               <Button
                 variant="outline"
@@ -716,7 +729,7 @@ export default function SemesterManagement() {
                   setStatusFilter('all')
                 }}
               >
-                Xóa bộ lọc
+                Clear Filters
               </Button>
             </CardContent>
           </Card>

@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Play, Settings, Users, BookOpen, GraduationCap } from "lucide-react"
 
-// Dữ liệu cứng cho các lớp học
+// Hard-coded data for classes
 const classData = [
   {
     id: 1,
@@ -46,12 +46,12 @@ const classData = [
 export default function ClassManagement() {
   const handleStartLabServer = (classId: number, className: string) => {
     console.log(`Starting lab server for class: ${className}`)
-    // Xử lý khởi tạo lab server
+    // Handle lab server initialization
   }
 
   const handleClassSettings = (classId: number, className: string) => {
     console.log(`Opening settings for class: ${className}`)
-    // Xử lý cài đặt lớp học
+    // Handle class settings
   }
 
   return (
@@ -60,8 +60,8 @@ export default function ClassManagement() {
       <div className="flex items-center gap-3">
         <GraduationCap className="h-8 w-8 text-orange-500" />
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Quản lý lớp học</h1>
-          <p className="text-gray-600">Xem và truy cập các lớp được phân công</p>
+          <h1 className="text-2xl font-bold text-gray-900">Class Management</h1>
+          <p className="text-gray-600">View and access assigned classes</p>
         </div>
       </div>
 
@@ -81,7 +81,7 @@ export default function ClassManagement() {
                         : "bg-orange-100 text-orange-800 hover:bg-orange-100"
                     }
                   >
-                    {classItem.status === "Active" ? "Đang hoạt động" : "Không hoạt động"}
+                    {classItem.status === "Active" ? "Active" : "Inactive"}
                   </Badge>
                 </div>
                 <div className="flex gap-2">
@@ -153,8 +153,8 @@ export default function ClassManagement() {
       {classData.length === 0 && (
         <div className="text-center py-12">
           <GraduationCap className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Chưa có lớp học nào</h3>
-          <p className="text-gray-600">Bạn chưa được phân công lớp học nào.</p>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">No classes available</h3>
+          <p className="text-gray-600">You haven't been assigned to any classes yet.</p>
         </div>
       )}
     </div>

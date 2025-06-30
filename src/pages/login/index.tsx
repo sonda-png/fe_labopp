@@ -1,6 +1,5 @@
 import { FC } from 'react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import {
   Card,
   CardContent,
@@ -17,17 +16,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Link, useNavigate } from '@tanstack/react-router'
+import { Link, useNavigate, useSearch } from '@tanstack/react-router'
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google'
+import { LoginMutationResponse } from '@/api/actions/auth/auth.types'
+import { authStore } from '@/stores/authStore'
+import { useMutation } from '@/hooks'
+import { toast } from 'react-toastify'
+import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
+import { Input } from '@/components/ui/input'
+import { getRedirectPath } from '@/utils/helpers/redirectAfterLogin'
 
 export const LoginPage: FC = () => {
   const { setAuthData } = authStore()
-  // const path = useMatch({ from: '/login' })
   const navigate = useNavigate()
+  
+  // Get URL search parameters (e.g., /login?redirect=/dashboard&token=abc -> { redirect: "/dashboard", token: "abc" })
+  const searchParams = useSearch({ from: '/_public/login/' })
+  
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
     // Handle login logic here
-    navigate({ to: '/class-manage' })
+    
+    // Navigate to redirect URL if provided in search params, otherwise go to default page
+    const redirectTo = getRedirectPath(searchParams)
+    navigate({ to: redirectTo })
   }
 
   const { mutateAsync: loginMutation } = useMutation('loginMutation', {
@@ -39,9 +51,17 @@ export const LoginPage: FC = () => {
         role: res.role,
         token: res.token,
       })
-      // tìm tanstack để lấy được path params
-
-      // navigate({ to: path?.pathname ?? '/class-manage' })
+      
+      // Lấy đường dẫn trước khi logout từ localStorage
+      const preLogoutPath = localStorage.getItem('preLogoutPath')
+      if (preLogoutPath) {
+        localStorage.removeItem('preLogoutPath') // Xóa sau khi dùng
+        navigate({ to: preLogoutPath })
+      } else {
+        // Nếu không có thì dùng redirect mặc định
+        const redirectTo = getRedirectPath(searchParams)
+        navigate({ to: redirectTo })
+      }
     },
     onError: (error: StandardizedApiError) => {
       toast.error(error.message)
@@ -59,10 +79,10 @@ export const LoginPage: FC = () => {
       {/* Left side - Login form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-50 p-4 sm:p-8">
         <Card className="w-full max-w-[400px]">
-          <CardHeader>
-            <CardTitle className="text-2xl text-center">Đăng nhập</CardTitle>
-            <CardDescription className="text-center">
-              Chào mừng trở lại! Vui lòng nhập thông tin của bạn
+          <CardHeader className="text-center pb-6">
+            <CardTitle className="text-3xl font-bold">Welcome Back</CardTitle>
+            <CardDescription className="text-lg">
+              Sign in to access your account
             </CardDescription>
           </CardHeader>
           <form onSubmit={handleLogin}>
