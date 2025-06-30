@@ -7,8 +7,9 @@ import { getLoginUrlWithRedirect } from '@/utils/helpers/redirectAfterLogin'
 export const Route = createFileRoute('/_auth')({
   beforeLoad: async () => {
     // logic to authen route
-    const { authValues } = authStore.getState()
-    if (!authValues.isAuthenticated) {
+    const { authValues, clearTokens } = authStore.getState()
+    if (!authValues.isAuthenticated || !authValues.token) {
+      clearTokens()
       const loginUrl = getLoginUrlWithRedirect()
       throw redirect({ to: loginUrl })
     }
