@@ -87,6 +87,12 @@ export const SidebarComponent = () => {
       path: '/assignment-bank',
     },
     {
+      id: 'dashboard/teacher',
+      label: 'Teacher Dashboard -TC',
+      icon: BarChart3,
+      path: '/dashboard/teacher',
+    },
+    {
       id: 'assignment-statistic',
       label: 'Assignment statistics-HS',
       icon: BarChart3,
