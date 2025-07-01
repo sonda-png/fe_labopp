@@ -32,9 +32,9 @@ export const ManageAccountPage = (): ReactNode => {
         <GraduationCap className="h-8 w-8 text-orange-500" />
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
-            Quản lý tài khoản
+            Account Management
           </h1>
-          <p className="text-gray-600">Quản lý tài khoản người dùng</p>
+          <p className="text-gray-600">Manage user accounts</p>
         </div>
       </div>
       <div>
@@ -51,14 +51,14 @@ export const ManageAccountPage = (): ReactNode => {
                 value={searchTerm}
                 onChange={setSearchTerm}
                 delay={3000}
-                placeholder="Tìm kiếm theo tên, email, MSSV..."
+                placeholder="Search by name, email, student ID..."
                 className="pl-10 w-80 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
               />
             </div>
 
             <Select value={roleFilter} onValueChange={setRoleFilter}>
               <SelectTrigger className="w-40">
-                <SelectValue placeholder="Vai trò" />
+                <SelectValue placeholder="Role" />
               </SelectTrigger>
               <SelectContent>
                 {rolesData?.map(role => (
@@ -71,12 +71,12 @@ export const ManageAccountPage = (): ReactNode => {
 
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-40">
-                <SelectValue placeholder="Trạng thái" />
+                <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tất cả trạng thái</SelectItem>
-                <SelectItem value="true">Hoạt động</SelectItem>
-                <SelectItem value="false">Không hoạt động</SelectItem>
+                <SelectItem value="all">All statuses</SelectItem>
+                <SelectItem value="true">Active</SelectItem>
+                <SelectItem value="false">Inactive</SelectItem>
               </SelectContent>
             </Select>
           </div>
