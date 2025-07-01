@@ -22,7 +22,7 @@ export const SidebarComponent = () => {
     { id: 'overview', label: 'Tổng quan', icon: BarChart3, path: '/' },
     {
       id: 'assignments',
-      label: 'Quản lý bài tập',
+      label: 'Quản lý bài tập - HS',
       icon: FileText,
       path: '/assignment-manage',
     },
@@ -91,6 +91,12 @@ export const SidebarComponent = () => {
       label: 'Teacher Dashboard -TC',
       icon: BarChart3,
       path: '/dashboard/teacher',
+    },
+    {
+      id: 'assignment-statistic',
+      label: 'Assignment statistics-HS',
+      icon: BarChart3,
+      path: '/assignment-statistic',
     },
   ]
 
