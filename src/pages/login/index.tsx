@@ -17,17 +17,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Link, useMatch, useNavigate } from '@tanstack/react-router'
+import { Link, useNavigate, useSearch } from '@tanstack/react-router'
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google'
 import { useMutation } from '@/hooks'
 import { LoginMutationResponse } from '@/api/actions/auth/auth.types'
 import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
 import { toast } from 'react-toastify'
 import { authStore } from '@/stores/authStore'
+import { getNavigateByRole } from '@/utils/helpers/getNavigateByRole'
 
 export const LoginPage: FC = () => {
   const { setAuthData } = authStore()
-  // const path = useMatch({ from: '/login' })
+  const search = useSearch({ strict: false })
+
   const navigate = useNavigate()
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
@@ -36,21 +38,13 @@ export const LoginPage: FC = () => {
   }
 
   const handleLoginNavigate = (role: string) => {
-    switch (role) {
-      case 'Admin':
-        navigate({ to: '/dashboard/admin' })
-        break
-      case 'Teacher':
-        navigate({ to: '/dashboard/teacher' })
-        break
-      case 'Student':
-        navigate({ to: '/dashboard/student' })
-        break
-      case 'Head Subject':
-        navigate({ to: '/dashboard/head-subject' })
-        break
-      default:
-        toast.error('Có lỗi xảy ra, vui lòng liên hệ admin để đăng nhập')
+    if (search.redirectTo) {
+      navigate({ to: '/' + search.redirectTo, replace: true })
+      return
+    }
+    const path = getNavigateByRole(role)
+    if (path) {
+      navigate({ to: path, replace: true })
     }
   }
 
@@ -76,7 +70,6 @@ export const LoginPage: FC = () => {
     await loginMutation({
       idToken: credentialResponse.credential ?? '',
     })
-    console.log(credentialResponse)
   }
 
   return (

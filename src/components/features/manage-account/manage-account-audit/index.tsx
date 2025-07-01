@@ -165,25 +165,39 @@ export const ManageAccountAudit = ({
               )}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="userName">Tên đăng nhập</Label>
-              <Input
-                id="userName"
-                {...register('userName', {
-                  required: 'Vui lòng nhập tên đăng nhập',
-                })}
-              />
-            </div>
+            {auditMode === 'create' && (
+              <div className="space-y-2">
+                <Label htmlFor="userName">Tên đăng nhập</Label>
+                <Input
+                  id="userName"
+                  {...register('userName', {
+                    required: 'Vui lòng nhập tên đăng nhập',
+                  })}
+                />
+                {errors.userName && (
+                  <p className="text-red-500 text-sm">
+                    {errors.userName.message}
+                  </p>
+                )}
+              </div>
+            )}
 
-            <div className="space-y-2">
-              <Label htmlFor="password">Mật khẩu</Label>
-              <Input
-                id="password"
-                {...register('password', {
-                  required: 'Vui lòng nhập mật khẩu',
-                })}
-              />
-            </div>
+            {auditMode === 'create' && (
+              <div className="space-y-2">
+                <Label htmlFor="password">Mật khẩu</Label>
+                <Input
+                  id="password"
+                  {...register('password', {
+                    required: 'Vui lòng nhập mật khẩu',
+                  })}
+                />
+                {errors.password && (
+                  <p className="text-red-500 text-sm">
+                    {errors.password.message}
+                  </p>
+                )}
+              </div>
+            )}
 
             <div className="space-y-2">
               <Label htmlFor="phone">Số điện thoại</Label>

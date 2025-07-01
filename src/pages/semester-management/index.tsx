@@ -5,7 +5,6 @@ import {
   Plus,
   Filter,
   MoreHorizontal,
-  Shield,
   CheckCircle,
   XCircle,
   Clock,
@@ -49,30 +48,14 @@ import { semestersQueries } from '@/api/actions/semesters/semesters.queries'
 import { Semester } from '@/api/actions/semesters/semesters.types'
 import { toast } from 'react-toastify'
 import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { SemesterFormData, semesterSchema } from '@/schema/semesterSchema'
+import { adminAccountQueries } from '@/api/actions/admin-account/admin-account.queries'
+import { roleQueries } from '@/api/actions/roles/role.queries'
+import { OverviewSemesterClass } from '@/components/features/semester-class/overview-semester-class'
 
-// Zod schema for validation
-const semesterSchema = z.object({
-  name: z.string().min(1, 'Vui lòng nhập tên học kỳ'),
-  subject: z.string().min(1, 'Vui lòng nhập môn học'),
-  semester: z
-    .number()
-    .min(1, 'Học kỳ phải là số dương')
-    .max(8, 'Học kỳ không được vượt quá 8'),
-  academicYear: z
-    .string()
-    .min(1, 'Vui lòng nhập năm học')
-    .regex(/^\d{4}-\d{4}$/, 'Năm học phải có định dạng YYYY-YYYY'),
-  locToPass: z.number().min(0, 'LOC để pass phải là số không âm'),
-  teacherId: z.string().min(1, 'Vui lòng chọn giảng viên'),
-  isActive: z.boolean(),
-})
-
-type SemesterFormData = z.infer<typeof semesterSchema>
-
-export default function SemesterManagement() {
+export const SemesterManagement = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
@@ -85,12 +68,24 @@ export default function SemesterManagement() {
     ...semestersQueries.getAll(),
   })
 
+  const { data: rolesData } = useQuery({
+    ...roleQueries.getAll(),
+  })
+
+  const { data: teachersData } = useQuery({
+    ...adminAccountQueries.getAll({
+      roleId: rolesData?.find(role => role.name === 'Teacher')?.id,
+      isActive: 'true',
+    }),
+  })
+
   // Create form
   const {
     register: registerCreate,
     handleSubmit: handleSubmitCreate,
     reset: resetCreate,
     formState: { errors: errorsCreate },
+    control: controlCreate,
   } = useForm<SemesterFormData>({
     resolver: zodResolver(semesterSchema),
     defaultValues: {
@@ -206,11 +201,8 @@ export default function SemesterManagement() {
   })
 
   const handleCreateSemester = async (data: SemesterFormData) => {
-    try {
-      await createSemesterClassMutation(data)
-    } catch (error) {
-      console.error('Error creating semester:', error)
-    }
+    console.log(data)
+    await createSemesterClassMutation(data)
   }
 
   const handleEditSemester = (data: SemesterFormData) => {
@@ -240,14 +232,6 @@ export default function SemesterManagement() {
     setIsEditModalOpen(true)
   }
 
-  const stats = {
-    total: semesters.length,
-    current: semesters.filter(s => getSemesterStatus(s) === 'current').length,
-    completed: semesters.filter(s => getSemesterStatus(s) === 'completed')
-      .length,
-    upcoming: semesters.filter(s => getSemesterStatus(s) === 'upcoming').length,
-    active: semesters.filter(s => s.isActive).length,
-  }
 
   if (isLoading) {
     return (
@@ -271,94 +255,7 @@ export default function SemesterManagement() {
       </div>
 
       <div className="max-w-7xl mx-auto py-8">
-        {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">
-                    Tổng học kỳ
-                  </p>
-                  <p className="text-2xl font-semibold text-gray-900">
-                    {stats.total}
-                  </p>
-                </div>
-                <div className="p-2 bg-blue-50 rounded-lg">
-                  <Calendar className="h-5 w-5 text-blue-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Hiện tại</p>
-                  <p className="text-2xl font-semibold text-gray-900">
-                    {stats.current}
-                  </p>
-                </div>
-                <div className="p-2 bg-green-50 rounded-lg">
-                  <Star className="h-5 w-5 text-green-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">
-                    Hoàn thành
-                  </p>
-                  <p className="text-2xl font-semibold text-gray-900">
-                    {stats.completed}
-                  </p>
-                </div>
-                <div className="p-2 bg-blue-50 rounded-lg">
-                  <CheckCircle className="h-5 w-5 text-blue-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Sắp tới</p>
-                  <p className="text-2xl font-semibold text-gray-900">
-                    {stats.upcoming}
-                  </p>
-                </div>
-                <div className="p-2 bg-yellow-50 rounded-lg">
-                  <Clock className="h-5 w-5 text-yellow-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">
-                    Đang hoạt động
-                  </p>
-                  <p className="text-2xl font-semibold text-gray-900">
-                    {stats.active}
-                  </p>
-                </div>
-                <div className="p-2 bg-green-50 rounded-lg">
-                  <Shield className="h-5 w-5 text-green-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <OverviewSemesterClass />
 
         {/* Filters and Actions */}
         <div className="flex items-center justify-between mb-6">
@@ -501,13 +398,26 @@ export default function SemesterManagement() {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="teacherId">ID Giảng viên *</Label>
-                      <Input
-                        id="teacherId"
-                        placeholder="VD: teacher123"
-                        {...registerCreate('teacherId')}
-                        className={
-                          errorsCreate.teacherId ? 'border-red-500' : ''
-                        }
+                      <Controller
+                        name="teacherId"
+                        control={controlCreate}
+                        render={({ field }) => (
+                          <Select
+                            value={field.value}
+                            onValueChange={field.onChange}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Chọn giảng viên" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {teachersData?.map(teacher => (
+                                <SelectItem key={teacher.id} value={teacher.id}>
+                                  {teacher.fullName}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        )}
                       />
                       {errorsCreate.teacherId && (
                         <p className="text-sm text-red-600">
@@ -591,7 +501,7 @@ export default function SemesterManagement() {
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600 mb-3">
                         <div>
                           <span className="font-medium">Mã học kỳ:</span>
-                          <div>{semester.id}</div>
+                          <div>{semester.academicYear}</div>
                         </div>
                         <div>
                           <span className="font-medium">Học kỳ:</span>
