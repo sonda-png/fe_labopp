@@ -1,6 +1,5 @@
 import { FC } from 'react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import {
   Card,
   CardContent,
@@ -17,22 +16,37 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Link, useMatch, useNavigate } from '@tanstack/react-router'
+import { Link, useNavigate, useSearch } from '@tanstack/react-router'
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google'
-import { useMutation } from '@/hooks'
 import { LoginMutationResponse } from '@/api/actions/auth/auth.types'
-import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
-import { toast } from 'react-toastify'
 import { authStore } from '@/stores/authStore'
+import { getNavigateByRole } from '@/utils/helpers/getNavigateByRole'
+import { useMutation } from '@/hooks'
+import { toast } from 'react-toastify'
+import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
+import { Input } from '@/components/ui/input'
 
 export const LoginPage: FC = () => {
   const { setAuthData } = authStore()
-  // const path = useMatch({ from: '/login' })
+  const search = useSearch({ strict: false })
+
   const navigate = useNavigate()
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
     // Handle login logic here
     navigate({ to: '/class-manage' })
+  }
+
+  const handleLoginNavigate = (role: string) => {
+    if (search.redirectTo) {
+      navigate({ to: '/' + search.redirectTo, replace: true })
+      return
+    }
+    const path = getNavigateByRole(role)
+    if (path) {
+      navigate({ to: path, replace: true })
+    }
   }
 
   const { mutateAsync: loginMutation } = useMutation('loginMutation', {
@@ -44,9 +58,10 @@ export const LoginPage: FC = () => {
         role: res.role,
         token: res.token,
       })
-      // tìm tanstack để lấy được path params
 
-      // navigate({ to: path?.pathname ?? '/class-manage' })
+      toast.success('Login success')
+      // handle login navigate
+      handleLoginNavigate(res.role)
     },
     onError: (error: StandardizedApiError) => {
       toast.error(error.message)
@@ -64,10 +79,10 @@ export const LoginPage: FC = () => {
       {/* Left side - Login form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-50 p-4 sm:p-8">
         <Card className="w-full max-w-[400px]">
-          <CardHeader>
-            <CardTitle className="text-2xl text-center">Đăng nhập</CardTitle>
-            <CardDescription className="text-center">
-              Chào mừng trở lại! Vui lòng nhập thông tin của bạn
+          <CardHeader className="text-center pb-6">
+            <CardTitle className="text-3xl font-bold">Welcome Back</CardTitle>
+            <CardDescription className="text-lg">
+              Sign in to access your account
             </CardDescription>
           </CardHeader>
           <form onSubmit={handleLogin}>
@@ -122,15 +137,7 @@ export const LoginPage: FC = () => {
                 </div>
               </div>
               <div className="w-full flex justify-center">
-                <GoogleLogin
-                  width={'100%'}
-                  onSuccess={async (credentialResponse: CredentialResponse) => {
-                    await handleGoogleLogin(credentialResponse)
-                  }}
-                  onError={() => {
-                    console.log('Login Failed')
-                  }}
-                />
+                <GoogleLogin width={'100%'} onSuccess={handleGoogleLogin} />
               </div>
               <div className="text-sm text-center">
                 <Link
