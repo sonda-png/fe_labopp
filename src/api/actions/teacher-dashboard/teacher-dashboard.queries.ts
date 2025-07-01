@@ -1,6 +1,6 @@
 import { queryFactoryOptions } from "@/api/utils/queryFactoryOptions";
 import { AxiosInstance } from "axios";
-import { DashboardResponse, TeacherClass,DashboardData } from "./teacher-dashboard.type";
+import { TeacherClass, DashboardData } from "./teacher-dashboard.type";
 
 export const teacherDashboardQueries = {
   dashboard: (classId: string) =>

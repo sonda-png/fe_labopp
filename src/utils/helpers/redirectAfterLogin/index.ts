@@ -11,7 +11,7 @@ export const getLoginUrlWithRedirect = (currentPath?: string): string => {
     return '/login'
   }
   
-  return `/login?redirect=${encodeURIComponent(path)}`
+  return `/login?redirectTo=${encodeURIComponent(path)}`
 }
 
 /**

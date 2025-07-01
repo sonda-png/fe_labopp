@@ -1,9 +1,7 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import {
-  Users,
   BookOpen,
   FileText,
   CheckCircle,
@@ -29,9 +27,9 @@ export const TeacherDashboard = () => {
 
   // Calculate stats from class list
   const totalClasses = data?.length || 0
-  const totalStudents = 0 // You may want to sum students from another API or extend TeacherClass
-  const activeAssignments = 0 // Placeholder, update if you have this info
-  const pendingGrades = 0 // Placeholder, update if you have this info
+  // const totalStudents = 0 // You may want to sum students from another API or extend TeacherClass
+  // const activeAssignments = 0 // Placeholder, update if you have this info
+  // const pendingGrades = 0 // Placeholder, update if you have this info
 
   // For class details modal/expand, prepare state
   const [selectedClass, setSelectedClass] = useState<TeacherClass | null>(null)

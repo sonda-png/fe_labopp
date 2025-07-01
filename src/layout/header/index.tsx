@@ -23,13 +23,12 @@ import { useNavigate } from '@tanstack/react-router'
 import { getLoginUrlWithRedirect } from '@/utils/helpers/redirectAfterLogin'
 
 export const HeaderComponent = () => {
-  const { authValues } = authStore()
+  const { authValues, clearTokens } = authStore()
   const navigate = useNavigate()
+
   const handleLogout = () => {
-    const loginUrl = getLoginUrlWithRedirect()
-    
-    authStore.getState().clearTokens()
-    navigate({ to: loginUrl })
+    clearTokens()
+    navigate({ to: '/login' })
   }
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-4 sticky top-0 z-50">
@@ -78,11 +77,9 @@ export const HeaderComponent = () => {
                     className="flex items-center gap-3 text-gray-900 px-2 py-1 rounded-full hover:bg-orange-50 transition"
                   >
                     <Avatar className="h-8 w-8">
-                      <AvatarImage
-                        src="/placeholder.svg?height=32&width=32"
-                      />
+                      <AvatarImage />
                       <AvatarFallback className="bg-orange-500 text-white">
-                        {authValues.email?.[0]?.toUpperCase() || 'U'}
+                        {authValues.email?.[0] || 'U'}
                       </AvatarFallback>
                     </Avatar>
                     <div className="text-left hidden md:block">
@@ -107,11 +104,7 @@ export const HeaderComponent = () => {
                     Cài đặt hệ thống
                   </DropdownMenuItem>
                   <Separator />
-                  <DropdownMenuItem
-                    onClick={() => {
-                      handleLogout()
-                    }}
-                  >
+                  <DropdownMenuItem onClick={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4" />
                     Đăng xuất
                   </DropdownMenuItem>
