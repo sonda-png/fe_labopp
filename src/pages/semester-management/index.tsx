@@ -161,7 +161,7 @@ export const SemesterManagement = () => {
   const getStatusText = (status: string) => {
     switch (status) {
       case 'current':
-        return 'Học kỳ hiện tại'
+        return 'Current Semester'
       case 'completed':
         return 'Đã hoàn thành'
       case 'upcoming':
@@ -169,7 +169,7 @@ export const SemesterManagement = () => {
       case 'inactive':
         return 'Không hoạt động'
       default:
-        return 'Không xác định'
+        return 'Unknown'
     }
   }
 
@@ -249,8 +249,8 @@ export const SemesterManagement = () => {
       <div className="flex items-center gap-3">
         <Calendar className="h-8 w-8 text-orange-500" />
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Quản lý học kỳ</h1>
-          <p className="text-gray-600">Quản lý học kỳ và lớp học</p>
+          <h1 className="text-2xl font-bold text-gray-900">Semester Management</h1>
+          <p className="text-gray-600">Manage semesters and classes</p>
         </div>
       </div>
 
@@ -263,7 +263,7 @@ export const SemesterManagement = () => {
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
-                placeholder="Tìm kiếm học kỳ..."
+                placeholder="Search semesters..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
                 className="pl-10 w-80 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
@@ -272,7 +272,7 @@ export const SemesterManagement = () => {
 
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-48">
-                <SelectValue placeholder="Trạng thái" />
+                <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Tất cả trạng thái</SelectItem>
@@ -285,7 +285,7 @@ export const SemesterManagement = () => {
 
             <Button variant="outline">
               <Filter className="mr-2 h-4 w-4" />
-              Bộ lọc nâng cao
+              Advanced Filters
             </Button>
           </div>
 
@@ -293,14 +293,14 @@ export const SemesterManagement = () => {
             <DialogTrigger asChild>
               <Button className="bg-orange-500 hover:bg-orange-600">
                 <Plus className="mr-2 h-4 w-4" />
-                Thêm học kỳ mới
+                Add New Semester
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-3xl">
               <DialogHeader>
-                <DialogTitle>Tạo học kỳ mới</DialogTitle>
+                <DialogTitle>Create New Semester</DialogTitle>
                 <DialogDescription>
-                  Nhập thông tin để tạo học kỳ mới cho hệ thống
+                  Enter information to create a new semester for the system
                 </DialogDescription>
               </DialogHeader>
               <form onSubmit={handleSubmitCreate(handleCreateSemester)}>
@@ -494,7 +494,7 @@ export const SemesterManagement = () => {
                             variant="outline"
                             className="border-red-200 text-red-700"
                           >
-                            Đã vô hiệu hóa
+                            Disabled
                           </Badge>
                         )}
                       </div>
@@ -523,7 +523,7 @@ export const SemesterManagement = () => {
                       <div className="text-xs text-gray-500">
                         Tạo ngày{' '}
                         {new Date(semester.createdAt).toLocaleDateString(
-                          'vi-VN'
+                          'en-US'
                         )}
                       </div>
                     </div>
@@ -541,11 +541,11 @@ export const SemesterManagement = () => {
                           onClick={() => openEditModal(semester)}
                         >
                           <Edit className="mr-2 h-4 w-4" />
-                          Chỉnh sửa
+                          Edit
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <Eye className="mr-2 h-4 w-4" />
-                          Xem chi tiết
+                          View Details
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
@@ -554,12 +554,12 @@ export const SemesterManagement = () => {
                           {semester.isActive ? (
                             <>
                               <XCircle className="mr-2 h-4 w-4" />
-                              Vô hiệu hóa
+                              Disable
                             </>
                           ) : (
                             <>
                               <CheckCircle className="mr-2 h-4 w-4" />
-                              Kích hoạt
+                              Enable
                             </>
                           )}
                         </DropdownMenuItem>
@@ -580,9 +580,9 @@ export const SemesterManagement = () => {
         <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
           <DialogContent className="max-w-3xl">
             <DialogHeader>
-              <DialogTitle>Chỉnh sửa học kỳ</DialogTitle>
+              <DialogTitle>Edit Semester</DialogTitle>
               <DialogDescription>
-                Cập nhật thông tin học kỳ {selectedSemester?.name}
+                Update information for semester {selectedSemester?.name}
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmitEdit(handleEditSemester)}>
@@ -728,10 +728,10 @@ export const SemesterManagement = () => {
             <CardContent>
               <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Không tìm thấy học kỳ
+                No semesters found
               </h3>
               <p className="text-gray-600 mb-4">
-                Không có học kỳ nào phù hợp với tiêu chí tìm kiếm.
+                No semesters match your search criteria.
               </p>
               <Button
                 variant="outline"
@@ -740,7 +740,7 @@ export const SemesterManagement = () => {
                   setStatusFilter('all')
                 }}
               >
-                Xóa bộ lọc
+                Clear Filters
               </Button>
             </CardContent>
           </Card>

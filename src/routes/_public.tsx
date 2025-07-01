@@ -1,6 +1,7 @@
 import { authStore } from '@/stores/authStore'
 import { getNavigateByRole } from '@/utils/helpers/getNavigateByRole'
 import { createFileRoute, redirect } from '@tanstack/react-router'
+import { getRedirectPath } from '@/utils/helpers/redirectAfterLogin'
 
 export const Route = createFileRoute('/_public')({
   beforeLoad: async () => {

@@ -20,6 +20,7 @@ import {
 } from 'lucide-react'
 import { authStore } from '@/stores/authStore'
 import { useNavigate } from '@tanstack/react-router'
+import { getLoginUrlWithRedirect } from '@/utils/helpers/redirectAfterLogin'
 
 export const HeaderComponent = () => {
   const { authValues, clearTokens } = authStore()
@@ -84,7 +85,7 @@ export const HeaderComponent = () => {
                     <div className="text-left hidden md:block">
                       <div className="font-medium">{authValues.email}</div>
                       <div className="text-xs text-gray-500">
-                        {authValues.email}
+                        {authValues.role}
                       </div>
                     </div>
                     <ChevronDown className="h-4 w-4" />
