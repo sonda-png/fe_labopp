@@ -81,6 +81,8 @@ export const ManageAccountAudit = ({
       await handleCreateAccount({
         ...data,
         department: 'CNTT',
+        userName: data.userName,
+        password: data.password,
       })
     } else {
       await handleUpdateAccount({
@@ -161,6 +163,26 @@ export const ManageAccountAudit = ({
               {errors.email && (
                 <p className="text-red-500 text-sm">{errors.email.message}</p>
               )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="userName">Tên đăng nhập</Label>
+              <Input
+                id="userName"
+                {...register('userName', {
+                  required: 'Vui lòng nhập tên đăng nhập',
+                })}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="password">Mật khẩu</Label>
+              <Input
+                id="password"
+                {...register('password', {
+                  required: 'Vui lòng nhập mật khẩu',
+                })}
+              />
             </div>
 
             <div className="space-y-2">
