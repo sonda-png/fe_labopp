@@ -52,7 +52,7 @@ export default function StudentSubmission() {
       simulateUpload()
     } else {
       setFile(null)
-      setErrorMessage("Chỉ chấp nhận file ZIP. Vui lòng nén file trước khi tải lên.")
+      setErrorMessage("Only ZIP files are accepted. Please compress your files before uploading.")
       setUploadStatus("error")
     }
   }
@@ -90,12 +90,12 @@ export default function StudentSubmission() {
 
   const handleSubmit = () => {
     if (!file) {
-      setErrorMessage("Vui lòng chọn file để nộp bài.")
+      setErrorMessage("Please select a file to submit.")
       return
     }
 
-    const action = submissionStatus === "submit" ? "nộp bài" : "lưu bản nháp"
-    alert(`Đã ${action} thành công!`)
+    const action = submissionStatus === "submit" ? "submit" : "save draft"
+    alert(`Successfully ${action}!`)
   }
 
   return (
@@ -104,7 +104,7 @@ export default function StudentSubmission() {
       <div className="bg-orange-500 text-white p-6 rounded-lg mb-6">
         <div className="flex items-center gap-2 mb-2">
           <FileCode size={24} />
-          <h2 className="text-xl font-bold">Nộp bài tập</h2>
+          <h2 className="text-xl font-bold">Submit Assignment</h2>
         </div>
         <p>Summer2025 - LAB211 - SE1973</p>
       </div>
@@ -114,41 +114,41 @@ export default function StudentSubmission() {
         <div className="md:col-span-2">
           <Card>
             <CardHeader>
-              <CardTitle>Nộp bài Assignment</CardTitle>
-              <CardDescription>Vui lòng nộp bài đúng định dạng yêu cầu</CardDescription>
+              <CardTitle>Submit Assignment</CardTitle>
+              <CardDescription>Please submit your assignment in the required format</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Assignment Details */}
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <h3 className="text-sm font-medium text-muted-foreground">Môn học</h3>
+                    <h3 className="text-sm font-medium text-muted-foreground">Subject</h3>
                     <p className="font-medium">LAB 02 - Java OOP</p>
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-muted-foreground">Mã bài tập</h3>
+                    <h3 className="text-sm font-medium text-muted-foreground">Assignment Code</h3>
                     <p className="font-medium">J1.S.P0002</p>
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-muted-foreground">Tên bài tập</h3>
+                    <h3 className="text-sm font-medium text-muted-foreground">Assignment Name</h3>
                     <p className="font-medium">Selection sort algorithm</p>
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-muted-foreground">LOC yêu cầu</h3>
+                    <h3 className="text-sm font-medium text-muted-foreground">Required LOC</h3>
                     <p className="font-medium">150</p>
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-muted-foreground">Ngày bắt đầu</h3>
+                    <h3 className="text-sm font-medium text-muted-foreground">Start Date</h3>
                     <p className="font-medium">2025-05-07</p>
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-muted-foreground">Hạn nộp</h3>
+                    <h3 className="text-sm font-medium text-muted-foreground">Due Date</h3>
                     <p className="font-medium text-red-500">2025-08-10</p>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="text-sm font-medium text-muted-foreground">Mô tả</h3>
+                  <h3 className="text-sm font-medium text-muted-foreground">Description</h3>
                   <p className="text-sm mt-1">
                     Implement the selection sort algorithm in Java. The program should allow users to input an array
                     of integers and display the sorted result using the selection sort algorithm. Include detailed
@@ -162,7 +162,7 @@ export default function StudentSubmission() {
               {/* File Upload */}
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="submission-files">File bài nộp</Label>
+                  <Label htmlFor="submission-files">Submission File</Label>
 
                   {!file && (
                     <div
@@ -181,12 +181,12 @@ export default function StudentSubmission() {
                           <FileArchive size={24} />
                         </div>
                         <div className="space-y-1">
-                          <p className="font-medium">Kéo thả file ZIP hoặc nhấn để chọn file</p>
-                          <p className="text-sm text-muted-foreground">Chỉ chấp nhận file ZIP, tối đa 50MB</p>
+                          <p className="font-medium">Drag and drop ZIP file or click to select file</p>
+                          <p className="text-sm text-muted-foreground">Only ZIP files accepted, maximum 50MB</p>
                         </div>
                         <Button variant="outline" size="sm" className="mt-2">
                           <Upload className="h-4 w-4 mr-2" />
-                          Chọn file
+                          Choose File
                         </Button>
                       </div>
                       <input
@@ -227,7 +227,7 @@ export default function StudentSubmission() {
                       {uploadStatus === "uploading" && (
                         <div className="mt-4 space-y-1">
                           <div className="flex justify-between text-sm">
-                            <span>Đang tải lên...</span>
+                            <span>Uploading...</span>
                             <span>{uploadProgress}%</span>
                           </div>
                           <Progress value={uploadProgress} className="h-2" />
@@ -237,7 +237,7 @@ export default function StudentSubmission() {
                       {uploadStatus === "success" && (
                         <div className="mt-4 flex items-center gap-2 text-sm text-green-600">
                           <Check className="h-4 w-4" />
-                          <span>Tải lên thành công</span>
+                          <span>Upload successful</span>
                         </div>
                       )}
                     </div>
@@ -245,13 +245,13 @@ export default function StudentSubmission() {
 
                   <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
                     <FileCode className="h-4 w-4" />
-                    <span>Bạn có thể nén file bằng WinRAR, 7-Zip hoặc công cụ nén file có sẵn trên máy tính</span>
+                    <span>You can compress files using WinRAR, 7-Zip, or built-in compression tools on your computer</span>
                   </div>
                 </div>
 
                 {/* Status Selection */}
                 <div>
-                  <Label htmlFor="status">Trạng thái</Label>
+                  <Label htmlFor="status">Status</Label>
                   <RadioGroup
                     value={submissionStatus}
                     onValueChange={setSubmissionStatus}
@@ -270,10 +270,10 @@ export default function StudentSubmission() {
 
                 {/* Comment */}
                 <div>
-                  <Label htmlFor="comment">Ghi chú (không bắt buộc)</Label>
+                  <Label htmlFor="comment">Comment (optional)</Label>
                   <Input
                     id="comment"
-                    placeholder="Nhập ghi chú cho giảng viên..."
+                    placeholder="Enter comment for instructor..."
                     className="mt-1"
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
@@ -282,8 +282,8 @@ export default function StudentSubmission() {
               </div>
             </CardContent>
             <CardFooter className="flex justify-between">
-              <Button variant="outline">Hủy</Button>
-              <Button onClick={handleSubmit}>{submissionStatus === "submit" ? "Nộp bài" : "Lưu bản nháp"}</Button>
+              <Button variant="outline">Cancel</Button>
+              <Button onClick={handleSubmit}>{submissionStatus === "submit" ? "Submit" : "Save Draft"}</Button>
             </CardFooter>
           </Card>
         </div>
@@ -292,36 +292,36 @@ export default function StudentSubmission() {
         <div>
           <Card>
             <CardHeader>
-              <CardTitle>Hướng dẫn nộp bài</CardTitle>
+              <CardTitle>Submission Instructions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <h3 className="font-medium">1. Chuẩn bị file</h3>
+                <h3 className="font-medium">1. Prepare your files</h3>
                 <p className="text-sm text-muted-foreground">
-                  Đảm bảo code của bạn đã được kiểm tra và chạy thử trước khi nộp.
+                  Make sure your code has been tested and runs correctly before submitting.
                 </p>
               </div>
 
               <div className="space-y-2">
-                <h3 className="font-medium">2. Nén file thành ZIP</h3>
+                <h3 className="font-medium">2. Compress files to ZIP</h3>
                 <p className="text-sm text-muted-foreground">
-                  Nén tất cả file cần thiết vào một file ZIP duy nhất.
+                  Compress all necessary files into a single ZIP file.
                 </p>
               </div>
 
               <div className="space-y-2">
-                <h3 className="font-medium">3. Tải lên hệ thống</h3>
+                <h3 className="font-medium">3. Upload to system</h3>
                 <p className="text-sm text-muted-foreground">
-                  Tải file ZIP lên hệ thống bằng cách kéo thả hoặc chọn file.
+                  Upload the ZIP file to the system by dragging and dropping or selecting the file.
                 </p>
               </div>
 
               <div className="space-y-2">
-                <h3 className="font-medium">4. Chọn trạng thái</h3>
+                <h3 className="font-medium">4. Choose status</h3>
                 <p className="text-sm text-muted-foreground">
-                  <strong>Draft:</strong> Lưu bài nộp nhưng chưa gửi cho giảng viên.
+                  <strong>Draft:</strong> Save your submission but don't send it to the instructor yet.
                   <br />
-                  <strong>Submit:</strong> Gửi bài nộp chính thức cho giảng viên.
+                  <strong>Submit:</strong> Send your submission officially to the instructor.
                 </p>
               </div>
             </CardContent>
