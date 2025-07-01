@@ -76,6 +76,7 @@ export const LoginPage: FC = () => {
     await loginMutation({
       idToken: credentialResponse.credential ?? '',
     })
+    console.log(credentialResponse)
   }
 
   return (

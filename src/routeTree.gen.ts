@@ -29,6 +29,7 @@ import { Route as AuthHomeIndexImport } from './routes/_auth/home/index'
 import { Route as AuthFapSyncIndexImport } from './routes/_auth/fap-sync/index'
 import { Route as AuthClassManageIndexImport } from './routes/_auth/class-manage/index'
 import { Route as AuthAssignmentlistIndexImport } from './routes/_auth/assignmentlist/index'
+import { Route as AuthAssignmentStatisticIndexImport } from './routes/_auth/assignment-statistic/index'
 import { Route as AuthAssignmentManageIndexImport } from './routes/_auth/assignment-manage/index'
 import { Route as AuthAssignmentBankIndexImport } from './routes/_auth/assignment-bank/index'
 import { Route as AuthAcademicOutcomeReportIndexImport } from './routes/_auth/academic-outcome-report/index'
@@ -147,6 +148,13 @@ const AuthAssignmentlistIndexRoute = AuthAssignmentlistIndexImport.update({
   getParentRoute: () => AuthRoute,
 } as any)
 
+const AuthAssignmentStatisticIndexRoute =
+  AuthAssignmentStatisticIndexImport.update({
+    id: '/assignment-statistic/',
+    path: '/assignment-statistic/',
+    getParentRoute: () => AuthRoute,
+  } as any)
+
 const AuthAssignmentManageIndexRoute = AuthAssignmentManageIndexImport.update({
   id: '/assignment-manage/',
   path: '/assignment-manage/',
@@ -248,6 +256,13 @@ declare module '@tanstack/react-router' {
       path: '/assignment-manage'
       fullPath: '/assignment-manage'
       preLoaderRoute: typeof AuthAssignmentManageIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/assignment-statistic/': {
+      id: '/_auth/assignment-statistic/'
+      path: '/assignment-statistic'
+      fullPath: '/assignment-statistic'
+      preLoaderRoute: typeof AuthAssignmentStatisticIndexImport
       parentRoute: typeof AuthImport
     }
     '/_auth/assignmentlist/': {
@@ -393,6 +408,7 @@ interface AuthRouteChildren {
   AuthAcademicOutcomeReportIndexRoute: typeof AuthAcademicOutcomeReportIndexRoute
   AuthAssignmentBankIndexRoute: typeof AuthAssignmentBankIndexRoute
   AuthAssignmentManageIndexRoute: typeof AuthAssignmentManageIndexRoute
+  AuthAssignmentStatisticIndexRoute: typeof AuthAssignmentStatisticIndexRoute
   AuthAssignmentlistIndexRoute: typeof AuthAssignmentlistIndexRoute
   AuthClassManageIndexRoute: typeof AuthClassManageIndexRoute
   AuthFapSyncIndexRoute: typeof AuthFapSyncIndexRoute
@@ -414,6 +430,7 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthAcademicOutcomeReportIndexRoute: AuthAcademicOutcomeReportIndexRoute,
   AuthAssignmentBankIndexRoute: AuthAssignmentBankIndexRoute,
   AuthAssignmentManageIndexRoute: AuthAssignmentManageIndexRoute,
+  AuthAssignmentStatisticIndexRoute: AuthAssignmentStatisticIndexRoute,
   AuthAssignmentlistIndexRoute: AuthAssignmentlistIndexRoute,
   AuthClassManageIndexRoute: AuthClassManageIndexRoute,
   AuthFapSyncIndexRoute: AuthFapSyncIndexRoute,
@@ -458,6 +475,7 @@ export interface FileRoutesByFullPath {
   '/academic-outcome-report': typeof AuthAcademicOutcomeReportIndexRoute
   '/assignment-bank': typeof AuthAssignmentBankIndexRoute
   '/assignment-manage': typeof AuthAssignmentManageIndexRoute
+  '/assignment-statistic': typeof AuthAssignmentStatisticIndexRoute
   '/assignmentlist': typeof AuthAssignmentlistIndexRoute
   '/class-manage': typeof AuthClassManageIndexRoute
   '/fap-sync': typeof AuthFapSyncIndexRoute
@@ -486,6 +504,7 @@ export interface FileRoutesByTo {
   '/academic-outcome-report': typeof AuthAcademicOutcomeReportIndexRoute
   '/assignment-bank': typeof AuthAssignmentBankIndexRoute
   '/assignment-manage': typeof AuthAssignmentManageIndexRoute
+  '/assignment-statistic': typeof AuthAssignmentStatisticIndexRoute
   '/assignmentlist': typeof AuthAssignmentlistIndexRoute
   '/class-manage': typeof AuthClassManageIndexRoute
   '/fap-sync': typeof AuthFapSyncIndexRoute
@@ -516,6 +535,7 @@ export interface FileRoutesById {
   '/_auth/academic-outcome-report/': typeof AuthAcademicOutcomeReportIndexRoute
   '/_auth/assignment-bank/': typeof AuthAssignmentBankIndexRoute
   '/_auth/assignment-manage/': typeof AuthAssignmentManageIndexRoute
+  '/_auth/assignment-statistic/': typeof AuthAssignmentStatisticIndexRoute
   '/_auth/assignmentlist/': typeof AuthAssignmentlistIndexRoute
   '/_auth/class-manage/': typeof AuthClassManageIndexRoute
   '/_auth/fap-sync/': typeof AuthFapSyncIndexRoute
@@ -546,6 +566,7 @@ export interface FileRouteTypes {
     | '/academic-outcome-report'
     | '/assignment-bank'
     | '/assignment-manage'
+    | '/assignment-statistic'
     | '/assignmentlist'
     | '/class-manage'
     | '/fap-sync'
@@ -573,6 +594,7 @@ export interface FileRouteTypes {
     | '/academic-outcome-report'
     | '/assignment-bank'
     | '/assignment-manage'
+    | '/assignment-statistic'
     | '/assignmentlist'
     | '/class-manage'
     | '/fap-sync'
@@ -601,6 +623,7 @@ export interface FileRouteTypes {
     | '/_auth/academic-outcome-report/'
     | '/_auth/assignment-bank/'
     | '/_auth/assignment-manage/'
+    | '/_auth/assignment-statistic/'
     | '/_auth/assignmentlist/'
     | '/_auth/class-manage/'
     | '/_auth/fap-sync/'
@@ -660,6 +683,7 @@ export const routeTree = rootRoute
         "/_auth/academic-outcome-report/",
         "/_auth/assignment-bank/",
         "/_auth/assignment-manage/",
+        "/_auth/assignment-statistic/",
         "/_auth/assignmentlist/",
         "/_auth/class-manage/",
         "/_auth/fap-sync/",
@@ -700,6 +724,10 @@ export const routeTree = rootRoute
     },
     "/_auth/assignment-manage/": {
       "filePath": "_auth/assignment-manage/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/assignment-statistic/": {
+      "filePath": "_auth/assignment-statistic/index.ts",
       "parent": "/_auth"
     },
     "/_auth/assignmentlist/": {
