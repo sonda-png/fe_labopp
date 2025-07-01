@@ -1,4 +1,3 @@
-import React from 'react'
 import { useQuery } from '@/hooks'
 import { teacherDashboardQueries } from '@/api/actions/teacher-dashboard/teacher-dashboard.queries'
 import { DashboardData } from '@/api/actions/teacher-dashboard/teacher-dashboard.type'
@@ -11,7 +10,7 @@ interface DashboardDataProps {
   onBack?: () => void
 }
 
-export function dashboard({ classId, onBack }: DashboardDataProps) {
+export const DashboardTeacher = ({ classId, onBack }: DashboardDataProps) => {
   const { data, isLoading } = useQuery(
     teacherDashboardQueries.dashboard(classId)
   )
