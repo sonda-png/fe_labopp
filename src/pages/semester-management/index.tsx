@@ -2,16 +2,9 @@ import { useState } from 'react'
 import {
   Calendar,
   Search,
-  Bell,
-  Settings,
-  LogOut,
-  ChevronDown,
-  Eye,
-  Edit,
   Plus,
   Filter,
   MoreHorizontal,
-  User,
   Shield,
   CheckCircle,
   XCircle,
@@ -20,12 +13,13 @@ import {
   Trash2,
   Save,
   X,
+  Edit,
+  Eye,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   Select,
   SelectContent,
@@ -50,79 +44,109 @@ import {
 } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
-import { useQuery } from '@/hooks'
+import { useQuery, useMutation } from '@/hooks'
 import { semestersQueries } from '@/api/actions/semesters/semesters.queries'
+import { Semester } from '@/api/actions/semesters/semesters.types'
+import { toast } from 'react-toastify'
+import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
+import { z } from 'zod'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 
-// Mock data for semesters
-const semesters = [
-  {
-    id: 1,
-    name: 'HK1 2024-2025',
-    startDate: '2024-09-01',
-    endDate: '2025-01-15',
-    status: 'current',
-    isActive: true,
-    createdAt: '2024-08-15',
-    createdBy: 'Trưởng bộ môn CNTT',
-    totalClasses: 45,
-    totalStudents: 1250,
-  },
-  {
-    id: 2,
-    name: 'HK2 2023-2024',
-    startDate: '2024-02-01',
-    endDate: '2024-06-30',
-    status: 'completed',
-    isActive: true,
-    createdAt: '2024-01-15',
-    createdBy: 'Trưởng bộ môn CNTT',
-    totalClasses: 42,
-    totalStudents: 1180,
-  },
-  {
-    id: 3,
-    name: 'HK1 2023-2024',
-    startDate: '2023-09-01',
-    endDate: '2024-01-15',
-    status: 'completed',
-    isActive: true,
-    createdAt: '2023-08-15',
-    createdBy: 'Trưởng bộ môn CNTT',
-    totalClasses: 38,
-    totalStudents: 1100,
-  },
-  {
-    id: 4,
-    name: 'HK2 2022-2023',
-    startDate: '2023-02-01',
-    endDate: '2023-06-30',
-    status: 'archived',
-    isActive: false,
-    createdAt: '2023-01-15',
-    createdBy: 'Trưởng bộ môn CNTT',
-    totalClasses: 35,
-    totalStudents: 980,
-  },
-]
+// Zod schema for validation
+const semesterSchema = z.object({
+  name: z.string().min(1, 'Vui lòng nhập tên học kỳ'),
+  subject: z.string().min(1, 'Vui lòng nhập môn học'),
+  semester: z
+    .number()
+    .min(1, 'Học kỳ phải là số dương')
+    .max(8, 'Học kỳ không được vượt quá 8'),
+  academicYear: z
+    .string()
+    .min(1, 'Vui lòng nhập năm học')
+    .regex(/^\d{4}-\d{4}$/, 'Năm học phải có định dạng YYYY-YYYY'),
+  locToPass: z.number().min(0, 'LOC để pass phải là số không âm'),
+  teacherId: z.string().min(1, 'Vui lòng chọn giảng viên'),
+  isActive: z.boolean(),
+})
+
+type SemesterFormData = z.infer<typeof semesterSchema>
 
 export default function SemesterManagement() {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const [selectedSemester, setSelectedSemester] = useState(null)
+  const [selectedSemester, setSelectedSemester] = useState<Semester | null>(
+    null
+  )
 
-  const { data: semestersData } = useQuery({
+  const { data: semestersData, isLoading } = useQuery({
     ...semestersQueries.getAll(),
   })
 
-  const [formData, setFormData] = useState({
-    name: '',
-    startDate: '',
-    endDate: '',
-    isCurrent: false,
+  // Create form
+  const {
+    register: registerCreate,
+    handleSubmit: handleSubmitCreate,
+    reset: resetCreate,
+    formState: { errors: errorsCreate },
+  } = useForm<SemesterFormData>({
+    resolver: zodResolver(semesterSchema),
+    defaultValues: {
+      name: '',
+      subject: '',
+      semester: 1,
+      academicYear: '',
+      locToPass: 0,
+      teacherId: '',
+      isActive: true,
+    },
   })
-  const [errors, setErrors] = useState({})
+
+  // Edit form
+  const {
+    register: registerEdit,
+    handleSubmit: handleSubmitEdit,
+    reset: resetEdit,
+    formState: { errors: errorsEdit },
+  } = useForm<SemesterFormData>({
+    resolver: zodResolver(semesterSchema),
+  })
+
+  const {
+    mutateAsync: createSemesterClassMutation,
+    isPending: isCreateSemesterClassPending,
+  } = useMutation('createSemesterClass', {
+    onSuccess: (res: Semester) => {
+      console.log(res)
+      toast.success('Tạo học kỳ thành công')
+      setIsCreateModalOpen(false)
+      resetCreate()
+    },
+    onError: (error: StandardizedApiError) => {
+      toast.error(error.message)
+    },
+  })
+
+  const updateSemesterMutation = () => {
+    toast.error('Chức năng đang phát triển')
+  }
+
+  const deactivateSemesterMutation = () => {
+    toast.error('Chức năng đang phát triển')
+  }
+
+  const semesters: Semester[] = semestersData || []
+
+  const getSemesterStatus = (semester: Semester) => {
+    if (!semester.isActive) return 'inactive'
+    const year = parseInt(semester.academicYear.split('-')[0])
+    const currentYear = new Date().getFullYear()
+    if (year === currentYear) return 'current'
+    if (year < currentYear) return 'completed'
+    return 'upcoming'
+  }
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -130,7 +154,9 @@ export default function SemesterManagement() {
         return 'bg-green-500 hover:bg-green-600'
       case 'completed':
         return 'bg-blue-500 hover:bg-blue-600'
-      case 'archived':
+      case 'upcoming':
+        return 'bg-yellow-500 hover:bg-yellow-600'
+      case 'inactive':
         return 'bg-gray-500 hover:bg-gray-600'
       default:
         return 'bg-gray-500 hover:bg-gray-600'
@@ -143,8 +169,10 @@ export default function SemesterManagement() {
         return 'Học kỳ hiện tại'
       case 'completed':
         return 'Đã hoàn thành'
-      case 'archived':
-        return 'Đã lưu trữ'
+      case 'upcoming':
+        return 'Sắp diễn ra'
+      case 'inactive':
+        return 'Không hoạt động'
       default:
         return 'Không xác định'
     }
@@ -156,102 +184,86 @@ export default function SemesterManagement() {
         return <Star className="h-4 w-4" />
       case 'completed':
         return <CheckCircle className="h-4 w-4" />
-      case 'archived':
+      case 'upcoming':
         return <Clock className="h-4 w-4" />
+      case 'inactive':
+        return <XCircle className="h-4 w-4" />
       default:
         return <XCircle className="h-4 w-4" />
     }
   }
 
   const filteredSemesters = semesters.filter(semester => {
-    const matchesSearch = semester.name
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase())
-    const matchesStatus =
-      statusFilter === 'all' || semester.status === statusFilter
+    const matchesSearch =
+      semester.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      semester.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      semester.academicYear.toLowerCase().includes(searchTerm.toLowerCase())
+
+    const status = getSemesterStatus(semester)
+    const matchesStatus = statusFilter === 'all' || status === statusFilter
+
     return matchesSearch && matchesStatus
   })
 
-  const handleCreateSemester = () => {
-    setErrors({})
-
-    // Validation
-    if (!formData.name) {
-      setErrors(prev => ({ ...prev, name: 'Vui lòng nhập tên học kỳ' }))
-      return
+  const handleCreateSemester = async (data: SemesterFormData) => {
+    try {
+      await createSemesterClassMutation(data)
+    } catch (error) {
+      console.error('Error creating semester:', error)
     }
-    if (!formData.startDate) {
-      setErrors(prev => ({ ...prev, startDate: 'Vui lòng chọn ngày bắt đầu' }))
-      return
-    }
-    if (!formData.endDate) {
-      setErrors(prev => ({ ...prev, endDate: 'Vui lòng chọn ngày kết thúc' }))
-      return
-    }
-    if (new Date(formData.startDate) >= new Date(formData.endDate)) {
-      setErrors(prev => ({
-        ...prev,
-        endDate: 'Ngày kết thúc phải sau ngày bắt đầu',
-      }))
-      return
-    }
-
-    // Simulate API call
-    console.log('Creating semester:', formData)
-    setIsCreateModalOpen(false)
-    setFormData({ name: '', startDate: '', endDate: '', isCurrent: false })
   }
 
-  const handleEditSemester = () => {
-    setErrors({})
+  const handleEditSemester = (data: SemesterFormData) => {
+    console.log('Edit data:', data)
+    updateSemesterMutation()
+  }
 
-    // Validation similar to create
-    if (!formData.name) {
-      setErrors(prev => ({ ...prev, name: 'Vui lòng nhập tên học kỳ' }))
-      return
+  const handleToggleActive = (semester: Semester) => {
+    if (semester.isActive) {
+      deactivateSemesterMutation()
+    } else {
+      // Activate functionality
     }
-
-    // Simulate API call
-    console.log('Updating semester:', formData)
-    setIsEditModalOpen(false)
-    setSelectedSemester(null)
-    setFormData({ name: '', startDate: '', endDate: '', isCurrent: false })
   }
 
-  const handleSetCurrent = (semesterId: number) => {
-    // Simulate API call to set current semester
-    console.log('Setting current semester:', semesterId)
-  }
-
-  const handleToggleActive = (semesterId: number) => {
-    // Simulate API call to toggle active status
-    console.log('Toggling active status for semester:', semesterId)
-  }
-
-  const openEditModal = (semester: any) => {
+  const openEditModal = (semester: Semester) => {
     setSelectedSemester(semester)
-    setFormData({
+    resetEdit({
       name: semester.name,
-      startDate: semester.startDate,
-      endDate: semester.endDate,
-      isCurrent: semester.status === 'current',
+      subject: '', // Will need to get from API
+      semester: semester.semester,
+      academicYear: semester.academicYear,
+      locToPass: 0, // Will need to get from API
+      teacherId: '', // Will need to get from API
+      isActive: semester.isActive,
     })
     setIsEditModalOpen(true)
   }
 
   const stats = {
     total: semesters.length,
-    current: semesters.filter(s => s.status === 'current').length,
-    completed: semesters.filter(s => s.status === 'completed').length,
-    archived: semesters.filter(s => s.status === 'archived').length,
+    current: semesters.filter(s => getSemesterStatus(s) === 'current').length,
+    completed: semesters.filter(s => getSemesterStatus(s) === 'completed')
+      .length,
+    upcoming: semesters.filter(s => getSemesterStatus(s) === 'upcoming').length,
     active: semesters.filter(s => s.isActive).length,
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Đang tải dữ liệu...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="flex items-center gap-3">
         <Calendar className="h-8 w-8 text-orange-500" />
-
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Quản lý học kỳ</h1>
           <p className="text-gray-600">Quản lý học kỳ và lớp học</p>
@@ -317,13 +329,13 @@ export default function SemesterManagement() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Lưu trữ</p>
+                  <p className="text-sm font-medium text-gray-600">Sắp tới</p>
                   <p className="text-2xl font-semibold text-gray-900">
-                    {stats.archived}
+                    {stats.upcoming}
                   </p>
                 </div>
-                <div className="p-2 bg-gray-50 rounded-lg">
-                  <Clock className="h-5 w-5 text-gray-600" />
+                <div className="p-2 bg-yellow-50 rounded-lg">
+                  <Clock className="h-5 w-5 text-yellow-600" />
                 </div>
               </div>
             </CardContent>
@@ -369,7 +381,8 @@ export default function SemesterManagement() {
                 <SelectItem value="all">Tất cả trạng thái</SelectItem>
                 <SelectItem value="current">Học kỳ hiện tại</SelectItem>
                 <SelectItem value="completed">Đã hoàn thành</SelectItem>
-                <SelectItem value="archived">Đã lưu trữ</SelectItem>
+                <SelectItem value="upcoming">Sắp diễn ra</SelectItem>
+                <SelectItem value="inactive">Không hoạt động</SelectItem>
               </SelectContent>
             </Select>
 
@@ -386,101 +399,154 @@ export default function SemesterManagement() {
                 Thêm học kỳ mới
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl">
+            <DialogContent className="max-w-3xl">
               <DialogHeader>
                 <DialogTitle>Tạo học kỳ mới</DialogTitle>
                 <DialogDescription>
                   Nhập thông tin để tạo học kỳ mới cho hệ thống
                 </DialogDescription>
               </DialogHeader>
-              <div className="grid grid-cols-1 gap-4 py-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Tên học kỳ *</Label>
-                  <Input
-                    id="name"
-                    placeholder="VD: HK1 2024-2025"
-                    value={formData.name}
-                    onChange={e =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
-                    className={errors.name ? 'border-red-500' : ''}
-                  />
-                  {errors.name && (
-                    <p className="text-sm text-red-600">{errors.name}</p>
-                  )}
-                </div>
+              <form onSubmit={handleSubmitCreate(handleCreateSemester)}>
+                <div className="grid grid-cols-1 gap-4 py-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="name">Tên học kỳ *</Label>
+                      <Input
+                        id="name"
+                        placeholder="VD: OOP K19"
+                        {...registerCreate('name')}
+                        className={errorsCreate.name ? 'border-red-500' : ''}
+                      />
+                      {errorsCreate.name && (
+                        <p className="text-sm text-red-600">
+                          {errorsCreate.name.message}
+                        </p>
+                      )}
+                    </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="startDate">Ngày bắt đầu *</Label>
-                    <Input
-                      id="startDate"
-                      type="date"
-                      value={formData.startDate}
-                      onChange={e =>
-                        setFormData({ ...formData, startDate: e.target.value })
-                      }
-                      className={errors.startDate ? 'border-red-500' : ''}
-                    />
-                    {errors.startDate && (
-                      <p className="text-sm text-red-600">{errors.startDate}</p>
-                    )}
+                    <div className="space-y-2">
+                      <Label htmlFor="subject">Môn học *</Label>
+                      <Input
+                        id="subject"
+                        placeholder="VD: Object-Oriented Programming"
+                        {...registerCreate('subject')}
+                        className={errorsCreate.subject ? 'border-red-500' : ''}
+                      />
+                      {errorsCreate.subject && (
+                        <p className="text-sm text-red-600">
+                          {errorsCreate.subject.message}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="endDate">Ngày kết thúc *</Label>
-                    <Input
-                      id="endDate"
-                      type="date"
-                      value={formData.endDate}
-                      onChange={e =>
-                        setFormData({ ...formData, endDate: e.target.value })
-                      }
-                      className={errors.endDate ? 'border-red-500' : ''}
-                    />
-                    {errors.endDate && (
-                      <p className="text-sm text-red-600">{errors.endDate}</p>
-                    )}
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="semester">Học kỳ *</Label>
+                      <Input
+                        id="semester"
+                        type="number"
+                        min="1"
+                        max="8"
+                        placeholder="VD: 1, 2, 3"
+                        {...registerCreate('semester', { valueAsNumber: true })}
+                        className={
+                          errorsCreate.semester ? 'border-red-500' : ''
+                        }
+                      />
+                      {errorsCreate.semester && (
+                        <p className="text-sm text-red-600">
+                          {errorsCreate.semester.message}
+                        </p>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="academicYear">Năm học *</Label>
+                      <Input
+                        id="academicYear"
+                        placeholder="VD: 2023-2024"
+                        {...registerCreate('academicYear')}
+                        className={
+                          errorsCreate.academicYear ? 'border-red-500' : ''
+                        }
+                      />
+                      {errorsCreate.academicYear && (
+                        <p className="text-sm text-red-600">
+                          {errorsCreate.academicYear.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="locToPass">LOC để pass *</Label>
+                      <Input
+                        id="locToPass"
+                        type="number"
+                        min="0"
+                        placeholder="VD: 1000"
+                        {...registerCreate('locToPass', {
+                          valueAsNumber: true,
+                        })}
+                        className={
+                          errorsCreate.locToPass ? 'border-red-500' : ''
+                        }
+                      />
+                      {errorsCreate.locToPass && (
+                        <p className="text-sm text-red-600">
+                          {errorsCreate.locToPass.message}
+                        </p>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="teacherId">ID Giảng viên *</Label>
+                      <Input
+                        id="teacherId"
+                        placeholder="VD: teacher123"
+                        {...registerCreate('teacherId')}
+                        className={
+                          errorsCreate.teacherId ? 'border-red-500' : ''
+                        }
+                      />
+                      {errorsCreate.teacherId && (
+                        <p className="text-sm text-red-600">
+                          {errorsCreate.teacherId.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-2 p-4 bg-orange-50 rounded-lg">
+                    <Switch id="isActive" {...registerCreate('isActive')} />
+                    <Label htmlFor="isActive" className="text-sm font-medium">
+                      Kích hoạt học kỳ
+                    </Label>
                   </div>
                 </div>
-
-                <div className="flex items-center space-x-2 p-4 bg-orange-50 rounded-lg">
-                  <Switch
-                    id="isCurrent"
-                    checked={formData.isCurrent}
-                    onCheckedChange={checked =>
-                      setFormData({ ...formData, isCurrent: checked })
-                    }
-                  />
-                  <Label htmlFor="isCurrent" className="text-sm font-medium">
-                    Đặt làm học kỳ hiện tại
-                  </Label>
+                <div className="flex justify-end space-x-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      setIsCreateModalOpen(false)
+                      resetCreate()
+                    }}
+                  >
+                    Hủy
+                  </Button>
+                  <Button
+                    type="submit"
+                    className="bg-orange-500 hover:bg-orange-600"
+                    disabled={isCreateSemesterClassPending}
+                  >
+                    <Save className="mr-2 h-4 w-4" />
+                    {isCreateSemesterClassPending
+                      ? 'Đang tạo...'
+                      : 'Tạo học kỳ'}
+                  </Button>
                 </div>
-
-                {formData.isCurrent && (
-                  <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                    <p className="text-sm text-yellow-800">
-                      <strong>Lưu ý:</strong> Chỉ được phép có 1 học kỳ hiện tại
-                      tại một thời điểm. Học kỳ hiện tại trước đó sẽ được chuyển
-                      sang trạng thái "Đã hoàn thành".
-                    </p>
-                  </div>
-                )}
-              </div>
-              <div className="flex justify-end space-x-2">
-                <Button
-                  variant="outline"
-                  onClick={() => setIsCreateModalOpen(false)}
-                >
-                  Hủy
-                </Button>
-                <Button
-                  className="bg-orange-500 hover:bg-orange-600"
-                  onClick={handleCreateSemester}
-                >
-                  <Save className="mr-2 h-4 w-4" />
-                  Tạo học kỳ
-                </Button>
-              </div>
+              </form>
             </DialogContent>
           </Dialog>
         </div>
@@ -503,10 +569,14 @@ export default function SemesterManagement() {
                         <h3 className="text-xl font-semibold text-gray-900">
                           {semester.name}
                         </h3>
-                        <Badge className={getStatusColor(semester.status)}>
-                          {getStatusIcon(semester.status)}
+                        <Badge
+                          className={getStatusColor(
+                            getSemesterStatus(semester)
+                          )}
+                        >
+                          {getStatusIcon(getSemesterStatus(semester))}
                           <span className="ml-1">
-                            {getStatusText(semester.status)}
+                            {getStatusText(getSemesterStatus(semester))}
                           </span>
                         </Badge>
                         {!semester.isActive && (
@@ -520,32 +590,28 @@ export default function SemesterManagement() {
                       </div>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600 mb-3">
                         <div>
-                          <span className="font-medium">Bắt đầu:</span>
+                          <span className="font-medium">Mã học kỳ:</span>
+                          <div>{semester.id}</div>
+                        </div>
+                        <div>
+                          <span className="font-medium">Học kỳ:</span>
+                          <div>Học kỳ {semester.semester}</div>
+                        </div>
+                        <div>
+                          <span className="font-medium">Năm học:</span>
+                          <div>{semester.academicYear}</div>
+                        </div>
+                        <div>
+                          <span className="font-medium">Trạng thái:</span>
                           <div>
-                            {new Date(semester.startDate).toLocaleDateString(
-                              'vi-VN'
-                            )}
+                            {semester.isActive
+                              ? 'Hoạt động'
+                              : 'Không hoạt động'}
                           </div>
-                        </div>
-                        <div>
-                          <span className="font-medium">Kết thúc:</span>
-                          <div>
-                            {new Date(semester.endDate).toLocaleDateString(
-                              'vi-VN'
-                            )}
-                          </div>
-                        </div>
-                        <div>
-                          <span className="font-medium">Số lớp:</span>
-                          <div>{semester.totalClasses} lớp</div>
-                        </div>
-                        <div>
-                          <span className="font-medium">Sinh viên:</span>
-                          <div>{semester.totalStudents} người</div>
                         </div>
                       </div>
                       <div className="text-xs text-gray-500">
-                        Tạo bởi {semester.createdBy} •{' '}
+                        Tạo ngày{' '}
                         {new Date(semester.createdAt).toLocaleDateString(
                           'vi-VN'
                         )}
@@ -554,19 +620,7 @@ export default function SemesterManagement() {
                   </div>
 
                   <div className="flex items-center space-x-2">
-                    {semester.status !== 'current' && semester.isActive && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleSetCurrent(semester.id)}
-                        className="border-green-200 text-green-700 hover:bg-green-50"
-                      >
-                        <Star className="mr-2 h-4 w-4" />
-                        Đặt hiện tại
-                      </Button>
-                    )}
-
-                    <DropdownMenu>
+                    <DropdownMenu modal={false}>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="sm">
                           <MoreHorizontal className="h-4 w-4" />
@@ -585,7 +639,7 @@ export default function SemesterManagement() {
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
-                          onClick={() => handleToggleActive(semester.id)}
+                          onClick={() => handleToggleActive(semester)}
                         >
                           {semester.isActive ? (
                             <>
@@ -599,12 +653,10 @@ export default function SemesterManagement() {
                             </>
                           )}
                         </DropdownMenuItem>
-                        {semester.status !== 'current' && (
-                          <DropdownMenuItem className="text-red-600">
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Xóa học kỳ
-                          </DropdownMenuItem>
-                        )}
+                        <DropdownMenuItem className="text-red-600">
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Xóa học kỳ
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
@@ -616,92 +668,147 @@ export default function SemesterManagement() {
 
         {/* Edit Modal */}
         <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-3xl">
             <DialogHeader>
               <DialogTitle>Chỉnh sửa học kỳ</DialogTitle>
               <DialogDescription>
                 Cập nhật thông tin học kỳ {selectedSemester?.name}
               </DialogDescription>
             </DialogHeader>
-            <div className="grid grid-cols-1 gap-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="editName">Tên học kỳ *</Label>
-                <Input
-                  id="editName"
-                  placeholder="VD: HK1 2024-2025"
-                  value={formData.name}
-                  onChange={e =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
-                  className={errors.name ? 'border-red-500' : ''}
-                />
-                {errors.name && (
-                  <p className="text-sm text-red-600">{errors.name}</p>
-                )}
-              </div>
+            <form onSubmit={handleSubmitEdit(handleEditSemester)}>
+              <div className="grid grid-cols-1 gap-4 py-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="editName">Tên học kỳ *</Label>
+                    <Input
+                      id="editName"
+                      placeholder="VD: OOP K19"
+                      {...registerEdit('name')}
+                      className={errorsEdit.name ? 'border-red-500' : ''}
+                    />
+                    {errorsEdit.name && (
+                      <p className="text-sm text-red-600">
+                        {errorsEdit.name.message}
+                      </p>
+                    )}
+                  </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="editStartDate">Ngày bắt đầu *</Label>
-                  <Input
-                    id="editStartDate"
-                    type="date"
-                    value={formData.startDate}
-                    onChange={e =>
-                      setFormData({ ...formData, startDate: e.target.value })
-                    }
-                    className={errors.startDate ? 'border-red-500' : ''}
-                  />
-                  {errors.startDate && (
-                    <p className="text-sm text-red-600">{errors.startDate}</p>
-                  )}
+                  <div className="space-y-2">
+                    <Label htmlFor="editSubject">Môn học *</Label>
+                    <Input
+                      id="editSubject"
+                      placeholder="VD: Object-Oriented Programming"
+                      {...registerEdit('subject')}
+                      className={errorsEdit.subject ? 'border-red-500' : ''}
+                    />
+                    {errorsEdit.subject && (
+                      <p className="text-sm text-red-600">
+                        {errorsEdit.subject.message}
+                      </p>
+                    )}
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="editEndDate">Ngày kết thúc *</Label>
-                  <Input
-                    id="editEndDate"
-                    type="date"
-                    value={formData.endDate}
-                    onChange={e =>
-                      setFormData({ ...formData, endDate: e.target.value })
-                    }
-                    className={errors.endDate ? 'border-red-500' : ''}
-                  />
-                  {errors.endDate && (
-                    <p className="text-sm text-red-600">{errors.endDate}</p>
-                  )}
-                </div>
-              </div>
 
-              <div className="flex items-center space-x-2 p-4 bg-orange-50 rounded-lg">
-                <Switch
-                  id="editIsCurrent"
-                  checked={formData.isCurrent}
-                  onCheckedChange={checked =>
-                    setFormData({ ...formData, isCurrent: checked })
-                  }
-                />
-                <Label htmlFor="editIsCurrent" className="text-sm font-medium">
-                  Đặt làm học kỳ hiện tại
-                </Label>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="editSemester">Học kỳ *</Label>
+                    <Input
+                      id="editSemester"
+                      type="number"
+                      min="1"
+                      max="8"
+                      placeholder="VD: 1, 2, 3"
+                      {...registerEdit('semester', { valueAsNumber: true })}
+                      className={errorsEdit.semester ? 'border-red-500' : ''}
+                    />
+                    {errorsEdit.semester && (
+                      <p className="text-sm text-red-600">
+                        {errorsEdit.semester.message}
+                      </p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="editAcademicYear">Năm học *</Label>
+                    <Input
+                      id="editAcademicYear"
+                      placeholder="VD: 2023-2024"
+                      {...registerEdit('academicYear')}
+                      className={
+                        errorsEdit.academicYear ? 'border-red-500' : ''
+                      }
+                    />
+                    {errorsEdit.academicYear && (
+                      <p className="text-sm text-red-600">
+                        {errorsEdit.academicYear.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="editLocToPass">LOC để pass *</Label>
+                    <Input
+                      id="editLocToPass"
+                      type="number"
+                      min="0"
+                      placeholder="VD: 1000"
+                      {...registerEdit('locToPass', { valueAsNumber: true })}
+                      className={errorsEdit.locToPass ? 'border-red-500' : ''}
+                    />
+                    {errorsEdit.locToPass && (
+                      <p className="text-sm text-red-600">
+                        {errorsEdit.locToPass.message}
+                      </p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="editTeacherId">ID Giảng viên *</Label>
+                    <Input
+                      id="editTeacherId"
+                      placeholder="VD: teacher123"
+                      {...registerEdit('teacherId')}
+                      className={errorsEdit.teacherId ? 'border-red-500' : ''}
+                    />
+                    {errorsEdit.teacherId && (
+                      <p className="text-sm text-red-600">
+                        {errorsEdit.teacherId.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-2 p-4 bg-orange-50 rounded-lg">
+                  <Switch id="editIsActive" {...registerEdit('isActive')} />
+                  <Label htmlFor="editIsActive" className="text-sm font-medium">
+                    Kích hoạt học kỳ
+                  </Label>
+                </div>
               </div>
-            </div>
-            <div className="flex justify-end space-x-2">
-              <Button
-                variant="outline"
-                onClick={() => setIsEditModalOpen(false)}
-              >
-                <X className="mr-2 h-4 w-4" />
-                Hủy
-              </Button>
-              <Button
-                className="bg-orange-500 hover:bg-orange-600"
-                onClick={handleEditSemester}
-              >
-                <Save className="mr-2 h-4 w-4" />
-                Cập nhật
-              </Button>
-            </div>
+              <div className="flex justify-end space-x-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setIsEditModalOpen(false)
+                    resetEdit()
+                  }}
+                >
+                  <X className="mr-2 h-4 w-4" />
+                  Hủy
+                </Button>
+                <Button
+                  type="submit"
+                  className="bg-orange-500 hover:bg-orange-600"
+                  disabled={isCreateSemesterClassPending}
+                >
+                  <Save className="mr-2 h-4 w-4" />
+                  {isCreateSemesterClassPending
+                    ? 'Đang cập nhật...'
+                    : 'Cập nhật'}
+                </Button>
+              </div>
+            </form>
           </DialogContent>
         </Dialog>
 
