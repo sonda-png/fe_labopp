@@ -39,37 +39,37 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 // Sidebar menu items for student
 const menuItems = [
   {
-    title: "Tổng quan",
+    title: "Overview",
     url: "#",
     icon: Home,
     isActive: false,
   },
   {
-    title: "Kết quả bài tập",
+    title: "Assignment Results",
     url: "#",
     icon: FileText,
     isActive: true,
   },
   {
-    title: "Bảng xếp hạng LOC",
+    title: "LOC Ranking",
     url: "#",
     icon: Trophy,
     isActive: false,
   },
   {
-    title: "Lịch sử nộp bài",
+    title: "Submission History",
     url: "#",
     icon: BookOpen,
     isActive: false,
   },
   {
-    title: "Lịch học",
+    title: "Class Schedule",
     url: "#",
     icon: Calendar,
     isActive: false,
   },
   {
-    title: "Thông báo",
+    title: "Notifications",
     url: "#",
     icon: Bell,
     isActive: false,
@@ -222,7 +222,7 @@ export default function StudentResults() {
           <div className="flex flex-1 items-center gap-4">
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <Input placeholder="Tìm kiếm sinh viên, bài tập..." className="pl-10 border-gray-200" />
+              <Input placeholder="Search students, assignments..." className="pl-10 border-gray-200" />
             </div>
             <div className="flex items-center gap-3">
               <Button variant="ghost" size="icon">
@@ -248,7 +248,7 @@ export default function StudentResults() {
           <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg p-6 text-white">
             <div className="flex items-center gap-3 mb-2">
               <FileText className="w-6 h-6" />
-              <h1 className="text-2xl font-bold">Kết quả bài tập</h1>
+              <h1 className="text-2xl font-bold">Assignment Results</h1>
             </div>
             <p className="text-orange-100">Summer2025 - LAB211 - SE1973</p>
           </div>
@@ -262,7 +262,7 @@ export default function StudentResults() {
                     <CheckCircle className="w-5 h-5 text-green-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Bài đã Pass</p>
+                    <p className="text-sm text-gray-600">Passed Assignments</p>
                     <p className="text-2xl font-bold text-green-600">
                       {passedAssignments}/{totalAssignments}
                     </p>
@@ -278,7 +278,7 @@ export default function StudentResults() {
                     <Code className="w-5 h-5 text-blue-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">LOC trung bình</p>
+                    <p className="text-sm text-gray-600">Average LOC</p>
                     <p className="text-2xl font-bold text-blue-600">{averageLOC}</p>
                   </div>
                 </div>
@@ -292,7 +292,7 @@ export default function StudentResults() {
                     <Clock className="w-5 h-5 text-yellow-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Đang chờ</p>
+                    <p className="text-sm text-gray-600">Pending</p>
                     <p className="text-2xl font-bold text-yellow-600">1</p>
                   </div>
                 </div>
@@ -306,7 +306,7 @@ export default function StudentResults() {
                     <XCircle className="w-5 h-5 text-red-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Bị từ chối</p>
+                    <p className="text-sm text-gray-600">Rejected</p>
                     <p className="text-2xl font-bold text-red-600">1</p>
                   </div>
                 </div>
@@ -319,7 +319,7 @@ export default function StudentResults() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <FileText className="w-5 h-5" />
-                Danh sách bài tập
+                Assignment List
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -338,7 +338,7 @@ export default function StudentResults() {
                           </Badge>
                           {assignment.grade && (
                             <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-                              Điểm: {assignment.grade}
+                              Grade: {assignment.grade}
                             </Badge>
                           )}
                         </div>
@@ -352,11 +352,11 @@ export default function StudentResults() {
                           </div>
                           <div className="flex items-center gap-1">
                             <Calendar className="w-4 h-4" />
-                            <span>Nộp: {assignment.submittedDate}</span>
+                            <span>Submitted: {assignment.submittedDate}</span>
                           </div>
                           <div className="flex items-center gap-1">
                             <Clock className="w-4 h-4" />
-                            <span>Hạn: {assignment.deadline}</span>
+                            <span>Deadline: {assignment.deadline}</span>
                           </div>
                         </div>
                       </div>
@@ -366,7 +366,7 @@ export default function StudentResults() {
                     <div className="bg-gray-50 rounded-lg p-3 mt-3">
                       <div className="flex items-center gap-2 mb-2">
                         <MessageSquare className="w-4 h-4 text-gray-600" />
-                        <span className="text-sm font-medium text-gray-700">Feedback từ giảng viên</span>
+                        <span className="text-sm font-medium text-gray-700">Instructor Feedback</span>
                         <span className="text-xs text-gray-500">- {assignment.instructor}</span>
                       </div>
                       <p className="text-sm text-gray-700 leading-relaxed">{assignment.feedback}</p>

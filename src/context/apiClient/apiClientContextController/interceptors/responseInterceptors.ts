@@ -1,7 +1,9 @@
-import axios, { type AxiosError, AxiosResponse } from 'axios'
+import { type AxiosError, AxiosResponse } from 'axios'
 import { getStandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError'
-import { ExtendedAxiosRequestConfig } from '@/api/types/types'
 import { ApiResponse } from '../../apiClientContext/ApiClientContext.types'
+import { authStore } from '@/stores/authStore'
+import { getLoginUrlWithRedirect } from '@/utils/helpers/redirectAfterLogin'
+import { toast } from 'react-toastify'
 
 export function responseSuccessInterceptor<T>(
   response: AxiosResponse<ApiResponse<T>>
@@ -12,35 +14,19 @@ export function responseSuccessInterceptor<T>(
 export const useResponseFailureInterceptor = async (
   error: AxiosError<unknown>
 ) => {
-  // const { setAuthData, clearTokens, accessToken, refreshToken } = authStore.getState();
-
+  const { clearTokens } = authStore.getState();
+  const loginUrl = getLoginUrlWithRedirect()
   const standarizedError = getStandardizedApiError(error)
-
-  const originalRequest = error.config as ExtendedAxiosRequestConfig
-  if (standarizedError.statusCode === 401 && originalRequest?._retry) {
-    // clearTokens();
-
-    window.location.replace('/login')
-
+  if (standarizedError.statusCode === 401) {
+    clearTokens();
+    window.location.replace(loginUrl)
+    toast.error('Session expired, please login again')
     return Promise.reject(standarizedError)
   }
-  if (standarizedError.statusCode === 401 && originalRequest) {
-    originalRequest._retry = true
-    try {
-      // const { data } = await axios.post<RefreshTokenMutationResponse>(refreshTokenUrl, {
-      //   accessToken: accessToken,
-      //   refreshToken: refreshToken,
-      // });
-      //
-      // setAuthData(data.accessToken ?? '', refreshToken ?? '', '', '', '', '');
-
-      return axios(originalRequest)
-    } catch {
-      // clearTokens();
-      window.location.replace('/login')
-
-      return Promise.reject(standarizedError)
-    }
+  if (standarizedError.statusCode === 403) {
+    window.location.replace('/forbidden')
+    return Promise.reject(standarizedError)
   }
+
   return Promise.reject(standarizedError)
 }

@@ -78,10 +78,6 @@ export const ManageAccountSuspend = ({
   )
 
   const onSubmit = async (data: SuspendAccountSchema) => {
-    console.log([
-      adminAccountQueries.getAll().queryKey,
-      adminAccountQueries.getDetail(id).queryKey,
-    ])
     if (!userToSuspend?.id) return
 
     await handleSuspendAccount({

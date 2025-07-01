@@ -180,7 +180,7 @@ export default function AssignmentBank() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isViewModalOpen, setIsViewModalOpen] = useState(false)
-  const [selectedAssignment, setSelectedAssignment] = useState(null)
+  const [selectedAssignment, setSelectedAssignment] = useState<any>(null)
   const [formData, setFormData] = useState({
     title: '',
     code: '',
@@ -195,7 +195,11 @@ export default function AssignmentBank() {
     tags: '',
     isPublic: true,
   })
-  const [errors, setErrors] = useState({})
+  const [errors, setErrors] = useState<{
+    title?: string
+    code?: string
+    description?: string
+  }>({})
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -213,13 +217,13 @@ export default function AssignmentBank() {
   const getStatusText = (status: string) => {
     switch (status) {
       case 'active':
-        return 'Đang sử dụng'
+        return 'Active'
       case 'draft':
-        return 'Bản nháp'
+        return 'Draft'
       case 'archived':
-        return 'Đã lưu trữ'
+        return 'Archived'
       default:
-        return 'Không xác định'
+        return 'Unknown'
     }
   }
 
@@ -246,10 +250,10 @@ export default function AssignmentBank() {
   }
 
   const getDifficultyText = (difficulty: number) => {
-    if (difficulty <= 2) return 'Dễ'
-    if (difficulty <= 3) return 'Trung bình'
-    if (difficulty <= 4) return 'Khó'
-    return 'Rất khó'
+    if (difficulty <= 2) return 'Easy'
+    if (difficulty <= 3) return 'Medium'
+    if (difficulty <= 4) return 'Hard'
+    return 'Very Hard'
   }
 
   const filteredAssignments = assignments.filter(assignment => {
@@ -297,17 +301,17 @@ export default function AssignmentBank() {
 
     // Validation
     if (!formData.title) {
-      setErrors(prev => ({ ...prev, title: 'Vui lòng nhập tiêu đề bài tập' }))
+      setErrors(prev => ({ ...prev, title: 'Please enter assignment title' }))
       return
     }
     if (!formData.code) {
-      setErrors(prev => ({ ...prev, code: 'Vui lòng nhập mã bài tập' }))
+      setErrors(prev => ({ ...prev, code: 'Please enter assignment code' }))
       return
     }
     if (!formData.description) {
       setErrors(prev => ({
         ...prev,
-        description: 'Vui lòng nhập mô tả bài tập',
+        description: 'Please enter assignment description',
       }))
       return
     }
@@ -323,7 +327,7 @@ export default function AssignmentBank() {
 
     // Validation similar to create
     if (!formData.title) {
-      setErrors(prev => ({ ...prev, title: 'Vui lòng nhập tiêu đề bài tập' }))
+      setErrors(prev => ({ ...prev, title: 'Please enter assignment title' }))
       return
     }
 
@@ -335,7 +339,7 @@ export default function AssignmentBank() {
   }
 
   const handleDeleteAssignment = (assignmentId: number) => {
-    if (confirm('Bạn có chắc chắn muốn xóa bài tập này?')) {
+    if (confirm('Are you sure you want to delete this assignment?')) {
       console.log('Deleting assignment:', assignmentId)
     }
   }
@@ -419,9 +423,9 @@ export default function AssignmentBank() {
 
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
-            Quản lý ngân hàng đề
+            Assignment Bank Management
           </h1>
-          <p className="text-gray-600">Quản lý ngân hàng đề thi</p>
+          <p className="text-gray-600">Assignment bank management</p>
         </div>
       </div>
       <div className="max-w-7xl mx-auto py-8">
@@ -432,7 +436,7 @@ export default function AssignmentBank() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">
-                    Tổng bài tập
+                    Total Assignments
                   </p>
                   <p className="text-2xl font-semibold text-gray-900">
                     {stats.total}
@@ -450,7 +454,7 @@ export default function AssignmentBank() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">
-                    Đang sử dụng
+                    Active
                   </p>
                   <p className="text-2xl font-semibold text-gray-900">
                     {stats.active}
@@ -467,7 +471,7 @@ export default function AssignmentBank() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Bản nháp</p>
+                  <p className="text-sm font-medium text-gray-600">Draft</p>
                   <p className="text-2xl font-semibold text-gray-900">
                     {stats.draft}
                   </p>
@@ -483,7 +487,7 @@ export default function AssignmentBank() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Lưu trữ</p>
+                  <p className="text-sm font-medium text-gray-600">Archived</p>
                   <p className="text-2xl font-semibold text-gray-900">
                     {stats.archived}
                   </p>
@@ -500,7 +504,7 @@ export default function AssignmentBank() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">
-                    Sử dụng TB
+                    Avg. Usage
                   </p>
                   <p className="text-2xl font-semibold text-gray-900">
                     {stats.avgUsage}
@@ -520,7 +524,7 @@ export default function AssignmentBank() {
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
-                placeholder="Tìm kiếm bài tập, mã, tags..."
+                placeholder="Search assignments, code, tags..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
                 className="pl-10 w-80 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
@@ -529,22 +533,22 @@ export default function AssignmentBank() {
 
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-40">
-                <SelectValue placeholder="Trạng thái" />
+                <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tất cả</SelectItem>
-                <SelectItem value="active">Đang sử dụng</SelectItem>
-                <SelectItem value="draft">Bản nháp</SelectItem>
-                <SelectItem value="archived">Lưu trữ</SelectItem>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="draft">Draft</SelectItem>
+                <SelectItem value="archived">Archived</SelectItem>
               </SelectContent>
             </Select>
 
             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
               <SelectTrigger className="w-48">
-                <SelectValue placeholder="Danh mục" />
+                <SelectValue placeholder="Category" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tất cả danh mục</SelectItem>
+                <SelectItem value="all">All Categories</SelectItem>
                 {categories.map(category => (
                   <SelectItem key={category} value={category}>
                     {category}
@@ -558,20 +562,20 @@ export default function AssignmentBank() {
               onValueChange={setDifficultyFilter}
             >
               <SelectTrigger className="w-32">
-                <SelectValue placeholder="Độ khó" />
+                <SelectValue placeholder="Difficulty" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tất cả</SelectItem>
-                <SelectItem value="1">Dễ (1-2)</SelectItem>
-                <SelectItem value="3">TB (3)</SelectItem>
-                <SelectItem value="4">Khó (4)</SelectItem>
-                <SelectItem value="5">Rất khó (5)</SelectItem>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="1">Easy (1-2)</SelectItem>
+                <SelectItem value="3">Medium (3)</SelectItem>
+                <SelectItem value="4">Hard (4)</SelectItem>
+                <SelectItem value="5">Very Hard (5)</SelectItem>
               </SelectContent>
             </Select>
 
             <Button variant="outline">
               <Filter className="mr-2 h-4 w-4" />
-              Bộ lọc nâng cao
+              Advanced Filter
             </Button>
           </div>
 
@@ -596,23 +600,23 @@ export default function AssignmentBank() {
                   onClick={resetForm}
                 >
                   <Plus className="mr-2 h-4 w-4" />
-                  Thêm bài tập mới
+                  Add New Assignment
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
-                  <DialogTitle>Tạo bài tập mới</DialogTitle>
+                  <DialogTitle>Create New Assignment</DialogTitle>
                   <DialogDescription>
-                    Nhập thông tin để tạo bài Lab Assignment mới
+                    Enter information to create a new Lab Assignment
                   </DialogDescription>
                 </DialogHeader>
                 <div className="grid grid-cols-1 gap-4 py-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="title">Tiêu đề bài tập *</Label>
+                      <Label htmlFor="title">Assignment Title *</Label>
                       <Input
                         id="title"
-                        placeholder="VD: Selection Sort Algorithm"
+                        placeholder="e.g. Selection Sort Algorithm"
                         value={formData.title}
                         onChange={e =>
                           setFormData({ ...formData, title: e.target.value })
@@ -624,10 +628,10 @@ export default function AssignmentBank() {
                       )}
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="code">Mã bài tập *</Label>
+                      <Label htmlFor="code">Assignment Code *</Label>
                       <Input
                         id="code"
-                        placeholder="VD: J1.S.P0002"
+                        placeholder="e.g. J1.S.P0002"
                         value={formData.code}
                         onChange={e =>
                           setFormData({ ...formData, code: e.target.value })
@@ -641,10 +645,10 @@ export default function AssignmentBank() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="description">Mô tả bài tập *</Label>
+                    <Label htmlFor="description">Assignment Description *</Label>
                     <Textarea
                       id="description"
-                      placeholder="Mô tả chi tiết về bài tập..."
+                      placeholder="Detailed description about the assignment..."
                       value={formData.description}
                       onChange={e =>
                         setFormData({
@@ -663,10 +667,10 @@ export default function AssignmentBank() {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="topic">Chủ đề</Label>
+                      <Label htmlFor="topic">Topic</Label>
                       <Input
                         id="topic"
-                        placeholder="VD: Java OOP manual grading"
+                        placeholder="e.g. Java OOP manual grading"
                         value={formData.topic}
                         onChange={e =>
                           setFormData({ ...formData, topic: e.target.value })
@@ -674,7 +678,7 @@ export default function AssignmentBank() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="category">Danh mục</Label>
+                      <Label htmlFor="category">Category</Label>
                       <Select
                         value={formData.category}
                         onValueChange={value =>
@@ -682,7 +686,7 @@ export default function AssignmentBank() {
                         }
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Chọn danh mục" />
+                          <SelectValue placeholder="Select Category" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="Algorithm Implementation">
@@ -707,7 +711,7 @@ export default function AssignmentBank() {
                     <Label htmlFor="background">Background</Label>
                     <Textarea
                       id="background"
-                      placeholder="Kiến thức nền tảng và bối cảnh của bài tập..."
+                      placeholder="Background knowledge and context of the assignment..."
                       value={formData.background}
                       onChange={e =>
                         setFormData({ ...formData, background: e.target.value })
@@ -733,7 +737,7 @@ export default function AssignmentBank() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="difficulty">Độ khó (1-5)</Label>
+                      <Label htmlFor="difficulty">Difficulty (1-5)</Label>
                       <Select
                         value={formData.difficulty}
                         onValueChange={value =>
@@ -741,20 +745,20 @@ export default function AssignmentBank() {
                         }
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Chọn độ khó" />
+                          <SelectValue placeholder="Select Difficulty" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="1">1 - Rất dễ</SelectItem>
-                          <SelectItem value="2">2 - Dễ</SelectItem>
-                          <SelectItem value="3">3 - Trung bình</SelectItem>
-                          <SelectItem value="4">4 - Khó</SelectItem>
-                          <SelectItem value="5">5 - Rất khó</SelectItem>
+                          <SelectItem value="1">1 - Very Easy</SelectItem>
+                          <SelectItem value="2">2 - Easy</SelectItem>
+                          <SelectItem value="3">3 - Medium</SelectItem>
+                          <SelectItem value="4">4 - Hard</SelectItem>
+                          <SelectItem value="5">5 - Very Hard</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="estimatedTime">
-                        Thời gian ước tính (phút)
+                        Estimated Time (minutes)
                       </Label>
                       <Input
                         id="estimatedTime"
@@ -773,7 +777,7 @@ export default function AssignmentBank() {
 
                   <div className="space-y-2">
                     <Label>Program Specifications</Label>
-                    {formData.specifications.map((spec, index) => (
+                    {formData.specifications.map((spec: string, index: number) => (
                       <div key={index} className="flex items-center space-x-2">
                         <Input
                           placeholder={`Specification ${index + 1}`}
@@ -801,15 +805,15 @@ export default function AssignmentBank() {
                       onClick={addSpecification}
                     >
                       <Plus className="mr-2 h-4 w-4" />
-                      Thêm specification
+                      Add specification
                     </Button>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="tags">Tags (phân cách bằng dấu phẩy)</Label>
+                    <Label htmlFor="tags">Tags (comma separated)</Label>
                     <Input
                       id="tags"
-                      placeholder="VD: sorting, algorithm, java, beginner"
+                      placeholder="e.g. sorting, algorithm, java, beginner"
                       value={formData.tags}
                       onChange={e =>
                         setFormData({ ...formData, tags: e.target.value })
@@ -826,7 +830,7 @@ export default function AssignmentBank() {
                       }
                     />
                     <Label htmlFor="isPublic" className="text-sm font-medium">
-                      Công khai bài tập (cho phép giảng viên khác sử dụng)
+                      Make assignment public (allow other instructors to use)
                     </Label>
                   </div>
                 </div>
@@ -836,14 +840,14 @@ export default function AssignmentBank() {
                     onClick={() => setIsCreateModalOpen(false)}
                   >
                     <X className="mr-2 h-4 w-4" />
-                    Hủy
+                    Cancel
                   </Button>
                   <Button
                     className="bg-orange-500 hover:bg-orange-600"
                     onClick={handleCreateAssignment}
                   >
                     <Save className="mr-2 h-4 w-4" />
-                    Tạo bài tập
+                    Create Assignment
                   </Button>
                 </div>
               </DialogContent>
@@ -885,15 +889,14 @@ export default function AssignmentBank() {
                           variant="outline"
                           className={getDifficultyColor(assignment.difficulty)}
                         >
-                          {getDifficultyText(assignment.difficulty)} (
-                          {assignment.difficulty}/5)
+                          {getDifficultyText(assignment.difficulty)} ({assignment.difficulty}/5)
                         </Badge>
                         {!assignment.isPublic && (
                           <Badge
                             variant="outline"
                             className="border-gray-200 text-gray-700"
                           >
-                            Riêng tư
+                            Private
                           </Badge>
                         )}
                       </div>
@@ -904,7 +907,7 @@ export default function AssignmentBank() {
 
                       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm text-gray-600 mb-3">
                         <div>
-                          <span className="font-medium">Chủ đề:</span>
+                          <span className="font-medium">Topic:</span>
                           <div className="text-gray-900">
                             {assignment.topic}
                           </div>
@@ -916,19 +919,19 @@ export default function AssignmentBank() {
                           </div>
                         </div>
                         <div>
-                          <span className="font-medium">Thời gian:</span>
+                          <span className="font-medium">Estimated Time:</span>
                           <div className="text-gray-900">
-                            {assignment.estimatedTime} phút
+                            {assignment.estimatedTime} minutes
                           </div>
                         </div>
                         <div>
-                          <span className="font-medium">Sử dụng:</span>
+                          <span className="font-medium">Usage Count:</span>
                           <div className="text-gray-900">
-                            {assignment.usageCount} lần
+                            {assignment.usageCount} times
                           </div>
                         </div>
                         <div>
-                          <span className="font-medium">Tỷ lệ pass:</span>
+                          <span className="font-medium">Pass Rate:</span>
                           <div className="text-gray-900">
                             {assignment.passRate}%
                           </div>
@@ -937,7 +940,7 @@ export default function AssignmentBank() {
 
                       <div className="flex items-center space-x-2 mb-3">
                         <span className="text-sm text-gray-600">Tags:</span>
-                        {assignment.tags.map((tag, index) => (
+                        {assignment.tags.map((tag: string, index: number) => (
                           <Badge
                             key={index}
                             variant="secondary"
@@ -949,15 +952,9 @@ export default function AssignmentBank() {
                       </div>
 
                       <div className="text-xs text-gray-500">
-                        Tạo:{' '}
-                        {new Date(assignment.createdAt).toLocaleDateString(
-                          'vi-VN'
-                        )}{' '}
-                        • Cập nhật:{' '}
-                        {new Date(assignment.updatedAt).toLocaleDateString(
-                          'vi-VN'
-                        )}{' '}
-                        • Bởi: {assignment.createdBy}
+                        Created: {new Date(assignment.createdAt).toLocaleDateString('en-US')}
+                        • Updated: {new Date(assignment.updatedAt).toLocaleDateString('en-US')}
+                        • By: {assignment.createdBy}
                       </div>
                     </div>
                   </div>
@@ -969,7 +966,7 @@ export default function AssignmentBank() {
                       onClick={() => openViewModal(assignment)}
                     >
                       <Eye className="mr-2 h-4 w-4" />
-                      Xem
+                      View
                     </Button>
 
                     <DropdownMenu>
@@ -983,13 +980,13 @@ export default function AssignmentBank() {
                           onClick={() => openEditModal(assignment)}
                         >
                           <Edit className="mr-2 h-4 w-4" />
-                          Chỉnh sửa
+                          Edit
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => handleDuplicateAssignment(assignment)}
                         >
                           <Copy className="mr-2 h-4 w-4" />
-                          Nhân bản
+                          Duplicate
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <Download className="mr-2 h-4 w-4" />
@@ -1001,7 +998,7 @@ export default function AssignmentBank() {
                           onClick={() => handleDeleteAssignment(assignment.id)}
                         >
                           <Trash2 className="mr-2 h-4 w-4" />
-                          Xóa bài tập
+                          Delete Assignment
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -1016,17 +1013,15 @@ export default function AssignmentBank() {
         <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Chỉnh sửa bài tập</DialogTitle>
+              <DialogTitle>Edit Assignment</DialogTitle>
               <DialogDescription>
-                Cập nhật thông tin bài tập {selectedAssignment?.title}
+                Update assignment information {selectedAssignment?.title}
               </DialogDescription>
             </DialogHeader>
-            {/* Form content similar to create modal */}
             <div className="grid grid-cols-1 gap-4 py-4">
-              {/* Same form fields as create modal */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="editTitle">Tiêu đề bài tập *</Label>
+                  <Label htmlFor="editTitle">Assignment Title *</Label>
                   <Input
                     id="editTitle"
                     value={formData.title}
@@ -1040,7 +1035,7 @@ export default function AssignmentBank() {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="editCode">Mã bài tập *</Label>
+                  <Label htmlFor="editCode">Assignment Code *</Label>
                   <Input
                     id="editCode"
                     value={formData.code}
@@ -1054,7 +1049,6 @@ export default function AssignmentBank() {
                   )}
                 </div>
               </div>
-              {/* Add other form fields as needed */}
             </div>
             <div className="flex justify-end space-x-2">
               <Button
@@ -1062,14 +1056,14 @@ export default function AssignmentBank() {
                 onClick={() => setIsEditModalOpen(false)}
               >
                 <X className="mr-2 h-4 w-4" />
-                Hủy
+                Cancel
               </Button>
               <Button
                 className="bg-orange-500 hover:bg-orange-600"
                 onClick={handleEditAssignment}
               >
                 <Save className="mr-2 h-4 w-4" />
-                Cập nhật
+                Update
               </Button>
             </div>
           </DialogContent>
@@ -1088,22 +1082,22 @@ export default function AssignmentBank() {
                   {selectedAssignment?.code}
                 </Badge>
               </DialogTitle>
-              <DialogDescription>Chi tiết bài Lab Assignment</DialogDescription>
+              <DialogDescription>Lab Assignment Details</DialogDescription>
             </DialogHeader>
             {selectedAssignment && (
               <div className="space-y-6 py-4">
                 <div className="grid grid-cols-2 gap-6">
                   <div>
                     <h4 className="font-medium text-gray-900 mb-2">
-                      Thông tin cơ bản
+                      Basic Information
                     </h4>
                     <div className="space-y-2 text-sm">
                       <div>
-                        <span className="font-medium">Chủ đề:</span>{' '}
+                        <span className="font-medium">Topic:</span>{' '}
                         {selectedAssignment.topic}
                       </div>
                       <div>
-                        <span className="font-medium">Danh mục:</span>{' '}
+                        <span className="font-medium">Category:</span>{' '}
                         {selectedAssignment.category}
                       </div>
                       <div>
@@ -1111,42 +1105,42 @@ export default function AssignmentBank() {
                         {selectedAssignment.targetLOC}
                       </div>
                       <div>
-                        <span className="font-medium">Độ khó:</span>{' '}
+                        <span className="font-medium">Difficulty:</span>{' '}
                         {selectedAssignment.difficulty}/5
                       </div>
                       <div>
-                        <span className="font-medium">Thời gian ước tính:</span>{' '}
-                        {selectedAssignment.estimatedTime} phút
+                        <span className="font-medium">Estimated Time:</span>{' '}
+                        {selectedAssignment.estimatedTime} minutes
                       </div>
                     </div>
                   </div>
                   <div>
                     <h4 className="font-medium text-gray-900 mb-2">
-                      Thống kê sử dụng
+                      Usage Statistics
                     </h4>
                     <div className="space-y-2 text-sm">
                       <div>
-                        <span className="font-medium">Số lần sử dụng:</span>{' '}
+                        <span className="font-medium">Usage Count:</span>{' '}
                         {selectedAssignment.usageCount}
                       </div>
                       <div>
-                        <span className="font-medium">Tỷ lệ pass:</span>{' '}
+                        <span className="font-medium">Pass Rate:</span>{' '}
                         {selectedAssignment.passRate}%
                       </div>
                       <div>
-                        <span className="font-medium">Trạng thái:</span>{' '}
+                        <span className="font-medium">Status:</span>{' '}
                         {getStatusText(selectedAssignment.status)}
                       </div>
                       <div>
-                        <span className="font-medium">Công khai:</span>{' '}
-                        {selectedAssignment.isPublic ? 'Có' : 'Không'}
+                        <span className="font-medium">Public:</span>{' '}
+                        {selectedAssignment.isPublic ? 'Yes' : 'No'}
                       </div>
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <h4 className="font-medium text-gray-900 mb-2">Mô tả</h4>
+                  <h4 className="font-medium text-gray-900 mb-2">Description</h4>
                   <p className="text-gray-700 text-sm">
                     {selectedAssignment.description}
                   </p>
@@ -1164,7 +1158,7 @@ export default function AssignmentBank() {
                     Program Specifications
                   </h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
-                    {selectedAssignment.specifications.map((spec, index) => (
+                    {selectedAssignment.specifications.map((spec: string, index: number) => (
                       <li key={index}>{spec}</li>
                     ))}
                   </ul>
@@ -1173,7 +1167,7 @@ export default function AssignmentBank() {
                 <div>
                   <h4 className="font-medium text-gray-900 mb-2">Tags</h4>
                   <div className="flex flex-wrap gap-2">
-                    {selectedAssignment.tags.map((tag, index) => (
+                    {selectedAssignment.tags.map((tag: string, index: number) => (
                       <Badge
                         key={index}
                         variant="secondary"
@@ -1191,7 +1185,7 @@ export default function AssignmentBank() {
                 variant="outline"
                 onClick={() => setIsViewModalOpen(false)}
               >
-                Đóng
+                Close
               </Button>
               <Button
                 className="bg-orange-500 hover:bg-orange-600"
@@ -1201,7 +1195,7 @@ export default function AssignmentBank() {
                 }}
               >
                 <Edit className="mr-2 h-4 w-4" />
-                Chỉnh sửa
+                Edit
               </Button>
             </div>
           </DialogContent>
@@ -1213,10 +1207,10 @@ export default function AssignmentBank() {
             <CardContent>
               <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Không tìm thấy bài tập
+                No assignments found
               </h3>
               <p className="text-gray-600 mb-4">
-                Không có bài tập nào phù hợp với tiêu chí tìm kiếm.
+                No assignments match the search criteria.
               </p>
               <Button
                 variant="outline"
@@ -1227,7 +1221,7 @@ export default function AssignmentBank() {
                   setDifficultyFilter('all')
                 }}
               >
-                Xóa bộ lọc
+                Clear filters
               </Button>
             </CardContent>
           </Card>

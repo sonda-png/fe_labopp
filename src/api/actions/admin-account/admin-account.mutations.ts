@@ -1,10 +1,11 @@
 import { AxiosInstance } from "axios";
-import { AuditAccountArgs, ChangeStatusAccountArgs, UpdateAccountArgs } from "./admin-account.type";
+import { AuditAccountArgs, ChangePassArgs, ChangeStatusAccountArgs, UpdateAccountArgs } from "./admin-account.type";
 
 export const accountMutations = {
     createAccount: (client: AxiosInstance) => handleCreateAccount(client),
     updateAccount: (client: AxiosInstance) => handleUpdateAccount(client),
     changeStatusAccount: (client: AxiosInstance) => handleChangeStatusAccount(client),
+    changePass: (client: AxiosInstance) => handleChangePass(client),
 }
 
 
@@ -20,3 +21,6 @@ const handleChangeStatusAccount = (client: AxiosInstance) => async (body: Change
     return await client.post<void>('/admin/accounts/status', body)
 }
 
+const handleChangePass = (client: AxiosInstance) => async (body: ChangePassArgs) => {
+    return await client.post<void>('/admin/accounts/change-password', body)
+}

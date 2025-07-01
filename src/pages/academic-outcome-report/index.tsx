@@ -153,7 +153,7 @@ const monthlyTrend = [
 
 const difficultyStats = [
   {
-    difficulty: 'Dễ (1-2)',
+    difficulty: 'Easy (1-2)',
     count: 45,
     passed: 41,
     passRate: 91.1,
@@ -167,14 +167,14 @@ const difficultyStats = [
     color: '#F59E0B',
   },
   {
-    difficulty: 'Khó (4)',
+    difficulty: 'Hard (4)',
     count: 32,
     passed: 19,
     passRate: 59.4,
     color: '#EF4444',
   },
   {
-    difficulty: 'Rất khó (5)',
+    difficulty: 'Very Hard (5)',
     count: 12,
     passed: 5,
     passRate: 41.7,
@@ -237,7 +237,7 @@ export default function AcademicOutcomeReport() {
 
   const chartConfig = {
     passRate: {
-      label: 'Tỷ lệ Pass (%)',
+      label: 'Pass Rate (%)',
       color: 'hsl(var(--chart-1))',
     },
     submissions: {
@@ -245,11 +245,11 @@ export default function AcademicOutcomeReport() {
       color: 'hsl(var(--chart-2))',
     },
     passed: {
-      label: 'Đã Pass',
+      label: 'Passed',
       color: 'hsl(var(--chart-3))',
     },
     avgLOC: {
-      label: 'LOC Trung bình',
+      label: 'Average LOC',
       color: 'hsl(var(--chart-4))',
     },
   }
@@ -276,11 +276,10 @@ export default function AcademicOutcomeReport() {
 
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
-            Thống kê kết quả học tập
+            Academic Outcome Report
           </h1>
           <p className="text-gray-600">
-            {' '}
-            Phân tích tỷ lệ pass và hiệu suất sinh viên người dùng
+            Analyze pass rates and student performance
           </p>
         </div>
       </div>
@@ -290,7 +289,7 @@ export default function AcademicOutcomeReport() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-gray-900">
-                Bộ lọc thống kê
+                Statistics Filters
               </h3>
               <div className="flex items-center space-x-3">
                 <Button variant="outline" onClick={exportToExcel}>
@@ -303,11 +302,11 @@ export default function AcademicOutcomeReport() {
                 </Button>
                 <Button variant="outline" onClick={shareReport}>
                   <Share2 className="mr-2 h-4 w-4" />
-                  Chia sẻ
+                  Share
                 </Button>
                 <Button className="bg-orange-500 hover:bg-orange-600">
                   <RefreshCw className="mr-2 h-4 w-4" />
-                  Cập nhật
+                  Update
                 </Button>
               </div>
             </div>
@@ -315,7 +314,7 @@ export default function AcademicOutcomeReport() {
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  Học kỳ
+                  Semester
                 </label>
                 <Select
                   value={selectedSemester}
@@ -334,14 +333,14 @@ export default function AcademicOutcomeReport() {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  Lớp học
+                  Class
                 </label>
                 <Select value={selectedClass} onValueChange={setSelectedClass}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Tất cả lớp</SelectItem>
+                    <SelectItem value="all">All Classes</SelectItem>
                     <SelectItem value="LAB211-SE1973">LAB211-SE1973</SelectItem>
                     <SelectItem value="LAB211-SE1968">LAB211-SE1968</SelectItem>
                     <SelectItem value="LAB211-IA1908">LAB211-IA1908</SelectItem>
@@ -351,7 +350,7 @@ export default function AcademicOutcomeReport() {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  Bài tập
+                  Assignment
                 </label>
                 <Select
                   value={selectedAssignment}
@@ -361,7 +360,7 @@ export default function AcademicOutcomeReport() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Tất cả bài tập</SelectItem>
+                    <SelectItem value="all">All Assignments</SelectItem>
                     <SelectItem value="J1.S.P0002">Selection Sort</SelectItem>
                     <SelectItem value="J1.S.P0003">Binary Search</SelectItem>
                     <SelectItem value="J1.S.P0010">
@@ -373,28 +372,28 @@ export default function AcademicOutcomeReport() {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  Khoảng thời gian
+                  Date Range
                 </label>
                 <Select value={dateRange} onValueChange={setDateRange}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Tất cả</SelectItem>
-                    <SelectItem value="7days">7 ngày qua</SelectItem>
-                    <SelectItem value="30days">30 ngày qua</SelectItem>
-                    <SelectItem value="90days">90 ngày qua</SelectItem>
+                    <SelectItem value="all">All</SelectItem>
+                    <SelectItem value="7days">Last 7 days</SelectItem>
+                    <SelectItem value="30days">Last 30 days</SelectItem>
+                    <SelectItem value="90days">Last 90 days</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  Tìm kiếm
+                  Search
                 </label>
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                  <Input placeholder="Tìm kiếm..." className="pl-10" />
+                  <Input placeholder="Search..." className="pl-10" />
                 </div>
               </div>
             </div>
@@ -408,7 +407,7 @@ export default function AcademicOutcomeReport() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">
-                    Tổng sinh viên
+                    Total Students
                   </p>
                   <p className="text-2xl font-semibold text-gray-900">
                     {overallStats.totalStudents}
@@ -416,7 +415,7 @@ export default function AcademicOutcomeReport() {
                   <div className="flex items-center mt-1">
                     <TrendingUp className="h-4 w-4 text-orange-500 mr-1" />
                     <span className="text-sm text-orange-600">
-                      +5.2% so với kỳ trước
+                      +5.2% compared to previous semester
                     </span>
                   </div>
                 </div>
@@ -432,7 +431,7 @@ export default function AcademicOutcomeReport() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">
-                    Tỷ lệ Pass tổng
+                    Overall Pass Rate
                   </p>
                   <p className="text-2xl font-semibold text-gray-900">
                     {overallStats.overallPassRate}%
@@ -440,7 +439,7 @@ export default function AcademicOutcomeReport() {
                   <div className="flex items-center mt-1">
                     <TrendingUp className="h-4 w-4 text-orange-500 mr-1" />
                     <span className="text-sm text-orange-600">
-                      +2.1% so với kỳ trước
+                      +2.1% compared to previous semester
                     </span>
                   </div>
                 </div>
@@ -456,7 +455,7 @@ export default function AcademicOutcomeReport() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">
-                    LOC trung bình
+                    Average LOC
                   </p>
                   <p className="text-2xl font-semibold text-gray-900">
                     {overallStats.averageLOC}
@@ -472,7 +471,7 @@ export default function AcademicOutcomeReport() {
                       {Math.round(
                         (overallStats.averageLOC / overallStats.targetLOC) * 100
                       )}
-                      % mục tiêu
+                      % of target
                     </span>
                   </div>
                 </div>
@@ -488,7 +487,7 @@ export default function AcademicOutcomeReport() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">
-                    Tổng submissions
+                    Total Submissions
                   </p>
                   <p className="text-2xl font-semibold text-gray-900">
                     {overallStats.totalSubmissions}
@@ -496,7 +495,7 @@ export default function AcademicOutcomeReport() {
                   <div className="flex items-center mt-1">
                     <TrendingDown className="h-4 w-4 text-red-500 mr-1" />
                     <span className="text-sm text-red-600">
-                      -1.5% so với kỳ trước
+                      -1.5% compared to previous semester
                     </span>
                   </div>
                 </div>
@@ -515,11 +514,11 @@ export default function AcademicOutcomeReport() {
           className="space-y-6"
         >
           <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="overview">Tổng quan</TabsTrigger>
-            <TabsTrigger value="classes">Theo lớp</TabsTrigger>
-            <TabsTrigger value="assignments">Theo bài tập</TabsTrigger>
-            <TabsTrigger value="trends">Xu hướng</TabsTrigger>
-            <TabsTrigger value="performance">Hiệu suất</TabsTrigger>
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="classes">By Class</TabsTrigger>
+            <TabsTrigger value="assignments">By Assignment</TabsTrigger>
+            <TabsTrigger value="trends">Trends</TabsTrigger>
+            <TabsTrigger value="performance">Performance</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
@@ -529,7 +528,7 @@ export default function AcademicOutcomeReport() {
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2">
                     <PieChart className="h-5 w-5" />
-                    <span>Tỷ lệ Pass theo độ khó</span>
+                    <span>Pass Rate by Difficulty</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -570,7 +569,7 @@ export default function AcademicOutcomeReport() {
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2">
                     <BarChart3 className="h-5 w-5" />
-                    <span>Phân bố LOC sinh viên</span>
+                    <span>Student LOC Distribution</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -594,7 +593,7 @@ export default function AcademicOutcomeReport() {
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <Award className="h-5 w-5" />
-                  <span>Top 5 sinh viên xuất sắc</span>
+                  <span>Top 5 Outstanding Students</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -647,7 +646,7 @@ export default function AcademicOutcomeReport() {
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <BarChart3 className="h-5 w-5" />
-                  <span>Tỷ lệ Pass theo lớp học</span>
+                  <span>Pass Rate by Class</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -667,7 +666,7 @@ export default function AcademicOutcomeReport() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Chi tiết theo lớp</CardTitle>
+                <CardTitle>Class Details</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="overflow-x-auto">
@@ -675,22 +674,22 @@ export default function AcademicOutcomeReport() {
                     <thead className="bg-gray-50 border-b">
                       <tr>
                         <th className="text-left p-4 font-medium text-gray-900">
-                          Lớp học
+                          Class
                         </th>
                         <th className="text-left p-4 font-medium text-gray-900">
-                          Tổng SV
+                          Total Students
                         </th>
                         <th className="text-left p-4 font-medium text-gray-900">
-                          Đã Pass
+                          Passed
                         </th>
                         <th className="text-left p-4 font-medium text-gray-900">
-                          Tỷ lệ Pass
+                          Pass Rate
                         </th>
                         <th className="text-left p-4 font-medium text-gray-900">
-                          LOC TB
+                          Avg LOC
                         </th>
                         <th className="text-left p-4 font-medium text-gray-900">
-                          Trạng thái
+                          Status
                         </th>
                       </tr>
                     </thead>
@@ -728,10 +727,10 @@ export default function AcademicOutcomeReport() {
                               }
                             >
                               {cls.passRate >= 75
-                                ? 'Tốt'
+                                ? 'Good'
                                 : cls.passRate >= 60
-                                  ? 'Trung bình'
-                                  : 'Cần cải thiện'}
+                                  ? 'Average'
+                                  : 'Needs Improvement'}
                             </Badge>
                           </td>
                         </tr>
@@ -748,7 +747,7 @@ export default function AcademicOutcomeReport() {
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <BarChart3 className="h-5 w-5" />
-                  <span>Tỷ lệ Pass theo bài tập</span>
+                  <span>Pass Rate by Assignment</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -768,7 +767,7 @@ export default function AcademicOutcomeReport() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Chi tiết theo bài tập</CardTitle>
+                <CardTitle>Assignment Details</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="overflow-x-auto">
@@ -776,22 +775,22 @@ export default function AcademicOutcomeReport() {
                     <thead className="bg-gray-50 border-b">
                       <tr>
                         <th className="text-left p-4 font-medium text-gray-900">
-                          Bài tập
+                          Assignment
                         </th>
                         <th className="text-left p-4 font-medium text-gray-900">
-                          Mã
+                          Code
                         </th>
                         <th className="text-left p-4 font-medium text-gray-900">
                           Submissions
                         </th>
                         <th className="text-left p-4 font-medium text-gray-900">
-                          Đã Pass
+                          Passed
                         </th>
                         <th className="text-left p-4 font-medium text-gray-900">
-                          Tỷ lệ Pass
+                          Pass Rate
                         </th>
                         <th className="text-left p-4 font-medium text-gray-900">
-                          LOC TB
+                          Avg LOC
                         </th>
                       </tr>
                     </thead>
@@ -846,7 +845,7 @@ export default function AcademicOutcomeReport() {
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <LineChart className="h-5 w-5" />
-                  <span>Xu hướng tỷ lệ Pass theo tháng</span>
+                  <span>Monthly Pass Rate Trend</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -881,7 +880,7 @@ export default function AcademicOutcomeReport() {
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2">
                     <Activity className="h-5 w-5" />
-                    <span>Submissions theo tháng</span>
+                    <span>Monthly Submissions</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -906,7 +905,7 @@ export default function AcademicOutcomeReport() {
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2">
                     <TrendingUp className="h-5 w-5" />
-                    <span>Số lượng Pass theo tháng</span>
+                    <span>Monthly Pass Count</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -931,7 +930,7 @@ export default function AcademicOutcomeReport() {
               <Card>
                 <CardHeader>
                   <CardTitle className="text-center">
-                    Hiệu suất tổng thể
+                    Overall Performance
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="text-center">
@@ -964,13 +963,13 @@ export default function AcademicOutcomeReport() {
                       </span>
                     </div>
                   </div>
-                  <p className="text-sm text-gray-600">Tỷ lệ Pass tổng thể</p>
+                  <p className="text-sm text-gray-600">Overall Pass Rate</p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-center">Tiến độ LOC</CardTitle>
+                  <CardTitle className="text-center">LOC Progress</CardTitle>
                 </CardHeader>
                 <CardContent className="text-center">
                   <div className="relative inline-flex items-center justify-center w-32 h-32 mb-4">
@@ -1014,7 +1013,7 @@ export default function AcademicOutcomeReport() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-center">Hoạt động lớp</CardTitle>
+                  <CardTitle className="text-center">Class Activity</CardTitle>
                 </CardHeader>
                 <CardContent className="text-center">
                   <div className="relative inline-flex items-center justify-center w-32 h-32 mb-4">
@@ -1046,7 +1045,7 @@ export default function AcademicOutcomeReport() {
                       </span>
                     </div>
                   </div>
-                  <p className="text-sm text-gray-600">Lớp đang hoạt động</p>
+                  <p className="text-sm text-gray-600">Active Classes</p>
                 </CardContent>
               </Card>
             </div>
@@ -1054,7 +1053,7 @@ export default function AcademicOutcomeReport() {
             {/* Performance Metrics */}
             <Card>
               <CardHeader>
-                <CardTitle>Chỉ số hiệu suất chi tiết</CardTitle>
+                <CardTitle>Detailed Performance Metrics</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -1062,7 +1061,7 @@ export default function AcademicOutcomeReport() {
                     <div className="text-2xl font-bold text-orange-600 mb-2">
                       85.9%
                     </div>
-                    <div className="text-sm text-gray-600">Bài tập dễ nhất</div>
+                    <div className="text-sm text-gray-600">Easiest Assignment</div>
                     <div className="text-xs text-gray-500 mt-1">
                       Calculator App
                     </div>
@@ -1071,9 +1070,7 @@ export default function AcademicOutcomeReport() {
                     <div className="text-2xl font-bold text-red-600 mb-2">
                       66.7%
                     </div>
-                    <div className="text-sm text-gray-600">
-                      Bài tập khó nhất
-                    </div>
+                    <div className="text-sm text-gray-600">Hardest Assignment</div>
                     <div className="text-xs text-gray-500 mt-1">
                       File Processing
                     </div>
@@ -1082,7 +1079,7 @@ export default function AcademicOutcomeReport() {
                     <div className="text-2xl font-bold text-orange-600 mb-2">
                       81.25%
                     </div>
-                    <div className="text-sm text-gray-600">Lớp tốt nhất</div>
+                    <div className="text-sm text-gray-600">Best Class</div>
                     <div className="text-xs text-gray-500 mt-1">
                       LAB211-IA1908
                     </div>
@@ -1091,9 +1088,7 @@ export default function AcademicOutcomeReport() {
                     <div className="text-2xl font-bold text-orange-600 mb-2">
                       64.5%
                     </div>
-                    <div className="text-sm text-gray-600">
-                      Lớp cần cải thiện
-                    </div>
+                    <div className="text-sm text-gray-600">Class Needs Improvement</div>
                     <div className="text-xs text-gray-500 mt-1">
                       LAB211-SE1967
                     </div>

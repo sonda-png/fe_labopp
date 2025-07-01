@@ -431,7 +431,7 @@ export const ForgotPasswordPage = (): ReactNode => {
                     mật khẩu mới.
                   </p>
                 </div>
-                <Link href="/login">
+                <Link to="/login">
                   <Button className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-medium py-2.5">
                     Đăng nhập ngay
                   </Button>
