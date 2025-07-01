@@ -1,22 +1,20 @@
-import { queryFactoryOptions } from "@/api/utils/queryFactoryOptions";
-import { SemesterResponse } from "./semesters.types";
-import { AxiosInstance } from "axios";
-
+import { queryFactoryOptions } from '@/api/utils/queryFactoryOptions'
+import { AxiosInstance } from 'axios';
+import { Semester } from './semesters.types';
 /* Semesters queries */
 export const semestersQueries = {
     all: () => ['semesters'],
-    getAll: (
-    ) =>
+    getAll: () =>
         queryFactoryOptions({
             queryKey: [
                 ...semestersQueries.all(),
                 'list',
             ],
-            queryFn: getSemestersList,
+            queryFn: getAllSemesters,
             enabled: true,
         }),
 }
 
-const getSemestersList = (client: AxiosInstance) => async () => {
-    return (await client.get<SemesterResponse[]>('/head_subject/semester/semester')).data
-}
+const getAllSemesters = (client: AxiosInstance) => async () => {
+    return ((await client.get<Semester[]>('/head_subject/semester/semester')).data);
+};

@@ -2,17 +2,9 @@ import { useState } from 'react'
 import {
   Calendar,
   Search,
-  Bell,
-  Settings,
-  LogOut,
-  ChevronDown,
-  Eye,
-  Edit,
   Plus,
   Filter,
   MoreHorizontal,
-  User,
-  Shield,
   CheckCircle,
   XCircle,
   Clock,
@@ -20,12 +12,13 @@ import {
   Trash2,
   Save,
   X,
+  Edit,
+  Eye,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   Select,
   SelectContent,
@@ -50,93 +43,105 @@ import {
 } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
-import { useQuery } from '@/hooks'
+import { useQuery, useMutation } from '@/hooks'
 import { semestersQueries } from '@/api/actions/semesters/semesters.queries'
+import { Semester } from '@/api/actions/semesters/semesters.types'
+import { toast } from 'react-toastify'
+import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
+import { Controller, useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { SemesterFormData, semesterSchema } from '@/schema/semesterSchema'
+import { adminAccountQueries } from '@/api/actions/admin-account/admin-account.queries'
+import { roleQueries } from '@/api/actions/roles/role.queries'
+import { OverviewSemesterClass } from '@/components/features/semester-class/overview-semester-class'
 
-// Mock data for semesters
-const semesters = [
-  {
-    id: 1,
-    name: 'HK1 2024-2025',
-    startDate: '2024-09-01',
-    endDate: '2025-01-15',
-    status: 'current',
-    isActive: true,
-    createdAt: '2024-08-15',
-    createdBy: 'Head of IT Department',
-    totalClasses: 45,
-    totalStudents: 1250,
-  },
-  {
-    id: 2,
-    name: 'HK2 2023-2024',
-    startDate: '2024-02-01',
-    endDate: '2024-06-30',
-    status: 'completed',
-    isActive: true,
-    createdAt: '2024-01-15',
-    createdBy: 'Head of IT Department',
-    totalClasses: 42,
-    totalStudents: 1180,
-  },
-  {
-    id: 3,
-    name: 'HK1 2023-2024',
-    startDate: '2023-09-01',
-    endDate: '2024-01-15',
-    status: 'completed',
-    isActive: true,
-    createdAt: '2023-08-15',
-    createdBy: 'Head of IT Department',
-    totalClasses: 38,
-    totalStudents: 1100,
-  },
-  {
-    id: 4,
-    name: 'HK2 2022-2023',
-    startDate: '2023-02-01',
-    endDate: '2023-06-30',
-    status: 'archived',
-    isActive: false,
-    createdAt: '2023-01-15',
-    createdBy: 'Head of IT Department',
-    totalClasses: 35,
-    totalStudents: 980,
-  },
-]
-
-// Type definitions
-type Semester = typeof semesters[0]
-type FormData = {
-  name: string
-  startDate: string
-  endDate: string
-  isCurrent: boolean
-}
-type FormErrors = {
-  name?: string
-  startDate?: string
-  endDate?: string
-}
-
-export default function SemesterManagement() {
+export const SemesterManagement = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const [selectedSemester, setSelectedSemester] = useState(null)
+  const [selectedSemester, setSelectedSemester] = useState<Semester | null>(
+    null
+  )
 
-  const { data: semestersData } = useQuery({
+  const { data: semestersData, isLoading } = useQuery({
     ...semestersQueries.getAll(),
   })
 
-  const [formData, setFormData] = useState({
-    name: '',
-    startDate: '',
-    endDate: '',
-    isCurrent: false,
+  const { data: rolesData } = useQuery({
+    ...roleQueries.getAll(),
   })
-  const [errors, setErrors] = useState<FormErrors>({})
+
+  const { data: teachersData } = useQuery({
+    ...adminAccountQueries.getAll({
+      roleId: rolesData?.find(role => role.name === 'Teacher')?.id,
+      isActive: 'true',
+    }),
+  })
+
+  // Create form
+  const {
+    register: registerCreate,
+    handleSubmit: handleSubmitCreate,
+    reset: resetCreate,
+    formState: { errors: errorsCreate },
+    control: controlCreate,
+  } = useForm<SemesterFormData>({
+    resolver: zodResolver(semesterSchema),
+    defaultValues: {
+      name: '',
+      subject: '',
+      semester: 1,
+      academicYear: '',
+      locToPass: 0,
+      teacherId: '',
+      isActive: true,
+    },
+  })
+
+  // Edit form
+  const {
+    register: registerEdit,
+    handleSubmit: handleSubmitEdit,
+    reset: resetEdit,
+    formState: { errors: errorsEdit },
+  } = useForm<SemesterFormData>({
+    resolver: zodResolver(semesterSchema),
+  })
+
+  const {
+    mutateAsync: createSemesterClassMutation,
+    isPending: isCreateSemesterClassPending,
+  } = useMutation('createSemesterClass', {
+    onSuccess: (res: Semester) => {
+      console.log(res)
+      toast.success('Tạo học kỳ thành công')
+      setIsCreateModalOpen(false)
+      resetCreate()
+    },
+    onError: (error: StandardizedApiError) => {
+      toast.error(error.message)
+    },
+  })
+
+  const updateSemesterMutation = () => {
+    toast.error('Chức năng đang phát triển')
+  }
+
+  const deactivateSemesterMutation = () => {
+    toast.error('Chức năng đang phát triển')
+  }
+
+  const semesters: Semester[] = semestersData || []
+
+  const getSemesterStatus = (semester: Semester) => {
+    if (!semester.isActive) return 'inactive'
+    const year = parseInt(semester.academicYear.split('-')[0])
+    const currentYear = new Date().getFullYear()
+    if (year === currentYear) return 'current'
+    if (year < currentYear) return 'completed'
+    return 'upcoming'
+  }
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -144,7 +149,9 @@ export default function SemesterManagement() {
         return 'bg-green-500 hover:bg-green-600'
       case 'completed':
         return 'bg-blue-500 hover:bg-blue-600'
-      case 'archived':
+      case 'upcoming':
+        return 'bg-yellow-500 hover:bg-yellow-600'
+      case 'inactive':
         return 'bg-gray-500 hover:bg-gray-600'
       default:
         return 'bg-gray-500 hover:bg-gray-600'
@@ -156,9 +163,11 @@ export default function SemesterManagement() {
       case 'current':
         return 'Current Semester'
       case 'completed':
-        return 'Completed'
-      case 'archived':
-        return 'Archived'
+        return 'Đã hoàn thành'
+      case 'upcoming':
+        return 'Sắp diễn ra'
+      case 'inactive':
+        return 'Không hoạt động'
       default:
         return 'Unknown'
     }
@@ -170,102 +179,75 @@ export default function SemesterManagement() {
         return <Star className="h-4 w-4" />
       case 'completed':
         return <CheckCircle className="h-4 w-4" />
-      case 'archived':
+      case 'upcoming':
         return <Clock className="h-4 w-4" />
+      case 'inactive':
+        return <XCircle className="h-4 w-4" />
       default:
         return <XCircle className="h-4 w-4" />
     }
   }
 
   const filteredSemesters = semesters.filter(semester => {
-    const matchesSearch = semester.name
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase())
-    const matchesStatus =
-      statusFilter === 'all' || semester.status === statusFilter
+    const matchesSearch =
+      semester.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      semester.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      semester.academicYear.toLowerCase().includes(searchTerm.toLowerCase())
+
+    const status = getSemesterStatus(semester)
+    const matchesStatus = statusFilter === 'all' || status === statusFilter
+
     return matchesSearch && matchesStatus
   })
 
-  const handleCreateSemester = () => {
-    setErrors({})
-
-    // Validation
-    if (!formData.name) {
-      setErrors(prev => ({ ...prev, name: 'Please enter semester name' }))
-      return
-    }
-    if (!formData.startDate) {
-      setErrors(prev => ({ ...prev, startDate: 'Please select start date' }))
-      return
-    }
-    if (!formData.endDate) {
-      setErrors(prev => ({ ...prev, endDate: 'Please select end date' }))
-      return
-    }
-    if (new Date(formData.startDate) >= new Date(formData.endDate)) {
-      setErrors(prev => ({
-        ...prev,
-        endDate: 'End date must be after start date',
-      }))
-      return
-    }
-
-    // Simulate API call
-    console.log('Creating semester:', formData)
-    setIsCreateModalOpen(false)
-    setFormData({ name: '', startDate: '', endDate: '', isCurrent: false })
+  const handleCreateSemester = async (data: SemesterFormData) => {
+    console.log(data)
+    await createSemesterClassMutation(data)
   }
 
-  const handleEditSemester = () => {
-    setErrors({})
+  const handleEditSemester = (data: SemesterFormData) => {
+    console.log('Edit data:', data)
+    updateSemesterMutation()
+  }
 
-    // Validation similar to create
-    if (!formData.name) {
-      setErrors(prev => ({ ...prev, name: 'Please enter semester name' }))
-      return
+  const handleToggleActive = (semester: Semester) => {
+    if (semester.isActive) {
+      deactivateSemesterMutation()
+    } else {
+      // Activate functionality
     }
-
-    // Simulate API call
-    console.log('Updating semester:', formData)
-    setIsEditModalOpen(false)
-    setSelectedSemester(null)
-    setFormData({ name: '', startDate: '', endDate: '', isCurrent: false })
   }
 
-  const handleSetCurrent = (semesterId: number) => {
-    // Simulate API call to set current semester
-    console.log('Setting current semester:', semesterId)
-  }
-
-  const handleToggleActive = (semesterId: number) => {
-    // Simulate API call to toggle active status
-    console.log('Toggling active status for semester:', semesterId)
-  }
-
-  const openEditModal = (semester: any) => {
+  const openEditModal = (semester: Semester) => {
     setSelectedSemester(semester)
-    setFormData({
+    resetEdit({
       name: semester.name,
-      startDate: semester.startDate,
-      endDate: semester.endDate,
-      isCurrent: semester.status === 'current',
+      subject: '', // Will need to get from API
+      semester: semester.semester,
+      academicYear: semester.academicYear,
+      locToPass: 0, // Will need to get from API
+      teacherId: '', // Will need to get from API
+      isActive: semester.isActive,
     })
     setIsEditModalOpen(true)
   }
 
-  const stats = {
-    total: semesters.length,
-    current: semesters.filter(s => s.status === 'current').length,
-    completed: semesters.filter(s => s.status === 'completed').length,
-    archived: semesters.filter(s => s.status === 'archived').length,
-    active: semesters.filter(s => s.isActive).length,
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Đang tải dữ liệu...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="flex items-center gap-3">
         <Calendar className="h-8 w-8 text-orange-500" />
-
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Semester Management</h1>
           <p className="text-gray-600">Manage semesters and classes</p>
@@ -273,94 +255,7 @@ export default function SemesterManagement() {
       </div>
 
       <div className="max-w-7xl mx-auto py-8">
-        {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">
-                    Total Semesters
-                  </p>
-                  <p className="text-2xl font-semibold text-gray-900">
-                    {stats.total}
-                  </p>
-                </div>
-                <div className="p-2 bg-blue-50 rounded-lg">
-                  <Calendar className="h-5 w-5 text-blue-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Current</p>
-                  <p className="text-2xl font-semibold text-gray-900">
-                    {stats.current}
-                  </p>
-                </div>
-                <div className="p-2 bg-green-50 rounded-lg">
-                  <Star className="h-5 w-5 text-green-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">
-                    Completed
-                  </p>
-                  <p className="text-2xl font-semibold text-gray-900">
-                    {stats.completed}
-                  </p>
-                </div>
-                <div className="p-2 bg-blue-50 rounded-lg">
-                  <CheckCircle className="h-5 w-5 text-blue-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Archived</p>
-                  <p className="text-2xl font-semibold text-gray-900">
-                    {stats.archived}
-                  </p>
-                </div>
-                <div className="p-2 bg-gray-50 rounded-lg">
-                  <Clock className="h-5 w-5 text-gray-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">
-                    Active
-                  </p>
-                  <p className="text-2xl font-semibold text-gray-900">
-                    {stats.active}
-                  </p>
-                </div>
-                <div className="p-2 bg-green-50 rounded-lg">
-                  <Shield className="h-5 w-5 text-green-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <OverviewSemesterClass />
 
         {/* Filters and Actions */}
         <div className="flex items-center justify-between mb-6">
@@ -380,10 +275,11 @@ export default function SemesterManagement() {
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All statuses</SelectItem>
-                <SelectItem value="current">Current semester</SelectItem>
-                <SelectItem value="completed">Completed</SelectItem>
-                <SelectItem value="archived">Archived</SelectItem>
+                <SelectItem value="all">Tất cả trạng thái</SelectItem>
+                <SelectItem value="current">Học kỳ hiện tại</SelectItem>
+                <SelectItem value="completed">Đã hoàn thành</SelectItem>
+                <SelectItem value="upcoming">Sắp diễn ra</SelectItem>
+                <SelectItem value="inactive">Không hoạt động</SelectItem>
               </SelectContent>
             </Select>
 
@@ -400,100 +296,167 @@ export default function SemesterManagement() {
                 Add New Semester
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl">
+            <DialogContent className="max-w-3xl">
               <DialogHeader>
                 <DialogTitle>Create New Semester</DialogTitle>
                 <DialogDescription>
                   Enter information to create a new semester for the system
                 </DialogDescription>
               </DialogHeader>
-              <div className="grid grid-cols-1 gap-4 py-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Semester Name *</Label>
-                  <Input
-                    id="name"
-                    placeholder="E.g.: HK1 2024-2025"
-                    value={formData.name}
-                    onChange={e =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
-                    className={errors.name ? 'border-red-500' : ''}
-                  />
-                  {errors.name && (
-                    <p className="text-sm text-red-600">{errors.name}</p>
-                  )}
-                </div>
+              <form onSubmit={handleSubmitCreate(handleCreateSemester)}>
+                <div className="grid grid-cols-1 gap-4 py-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="name">Tên học kỳ *</Label>
+                      <Input
+                        id="name"
+                        placeholder="VD: OOP K19"
+                        {...registerCreate('name')}
+                        className={errorsCreate.name ? 'border-red-500' : ''}
+                      />
+                      {errorsCreate.name && (
+                        <p className="text-sm text-red-600">
+                          {errorsCreate.name.message}
+                        </p>
+                      )}
+                    </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="startDate">Start Date *</Label>
-                    <Input
-                      id="startDate"
-                      type="date"
-                      value={formData.startDate}
-                      onChange={e =>
-                        setFormData({ ...formData, startDate: e.target.value })
-                      }
-                      className={errors.startDate ? 'border-red-500' : ''}
-                    />
-                    {errors.startDate && (
-                      <p className="text-sm text-red-600">{errors.startDate}</p>
-                    )}
+                    <div className="space-y-2">
+                      <Label htmlFor="subject">Môn học *</Label>
+                      <Input
+                        id="subject"
+                        placeholder="VD: Object-Oriented Programming"
+                        {...registerCreate('subject')}
+                        className={errorsCreate.subject ? 'border-red-500' : ''}
+                      />
+                      {errorsCreate.subject && (
+                        <p className="text-sm text-red-600">
+                          {errorsCreate.subject.message}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="endDate">End Date *</Label>
-                    <Input
-                      id="endDate"
-                      type="date"
-                      value={formData.endDate}
-                      onChange={e =>
-                        setFormData({ ...formData, endDate: e.target.value })
-                      }
-                      className={errors.endDate ? 'border-red-500' : ''}
-                    />
-                    {errors.endDate && (
-                      <p className="text-sm text-red-600">{errors.endDate}</p>
-                    )}
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="semester">Học kỳ *</Label>
+                      <Input
+                        id="semester"
+                        type="number"
+                        min="1"
+                        max="8"
+                        placeholder="VD: 1, 2, 3"
+                        {...registerCreate('semester', { valueAsNumber: true })}
+                        className={
+                          errorsCreate.semester ? 'border-red-500' : ''
+                        }
+                      />
+                      {errorsCreate.semester && (
+                        <p className="text-sm text-red-600">
+                          {errorsCreate.semester.message}
+                        </p>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="academicYear">Năm học *</Label>
+                      <Input
+                        id="academicYear"
+                        placeholder="VD: 2023-2024"
+                        {...registerCreate('academicYear')}
+                        className={
+                          errorsCreate.academicYear ? 'border-red-500' : ''
+                        }
+                      />
+                      {errorsCreate.academicYear && (
+                        <p className="text-sm text-red-600">
+                          {errorsCreate.academicYear.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="locToPass">LOC để pass *</Label>
+                      <Input
+                        id="locToPass"
+                        type="number"
+                        min="0"
+                        placeholder="VD: 1000"
+                        {...registerCreate('locToPass', {
+                          valueAsNumber: true,
+                        })}
+                        className={
+                          errorsCreate.locToPass ? 'border-red-500' : ''
+                        }
+                      />
+                      {errorsCreate.locToPass && (
+                        <p className="text-sm text-red-600">
+                          {errorsCreate.locToPass.message}
+                        </p>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="teacherId">ID Giảng viên *</Label>
+                      <Controller
+                        name="teacherId"
+                        control={controlCreate}
+                        render={({ field }) => (
+                          <Select
+                            value={field.value}
+                            onValueChange={field.onChange}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Chọn giảng viên" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {teachersData?.map(teacher => (
+                                <SelectItem key={teacher.id} value={teacher.id}>
+                                  {teacher.fullName}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
+                      {errorsCreate.teacherId && (
+                        <p className="text-sm text-red-600">
+                          {errorsCreate.teacherId.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-2 p-4 bg-orange-50 rounded-lg">
+                    <Switch id="isActive" {...registerCreate('isActive')} />
+                    <Label htmlFor="isActive" className="text-sm font-medium">
+                      Kích hoạt học kỳ
+                    </Label>
                   </div>
                 </div>
-
-                <div className="flex items-center space-x-2 p-4 bg-orange-50 rounded-lg">
-                  <Switch
-                    id="isCurrent"
-                    checked={formData.isCurrent}
-                    onCheckedChange={checked =>
-                      setFormData({ ...formData, isCurrent: checked })
-                    }
-                  />
-                  <Label htmlFor="isCurrent" className="text-sm font-medium">
-                    Set as current semester
-                  </Label>
+                <div className="flex justify-end space-x-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      setIsCreateModalOpen(false)
+                      resetCreate()
+                    }}
+                  >
+                    Hủy
+                  </Button>
+                  <Button
+                    type="submit"
+                    className="bg-orange-500 hover:bg-orange-600"
+                    disabled={isCreateSemesterClassPending}
+                  >
+                    <Save className="mr-2 h-4 w-4" />
+                    {isCreateSemesterClassPending
+                      ? 'Đang tạo...'
+                      : 'Tạo học kỳ'}
+                  </Button>
                 </div>
-
-                {formData.isCurrent && (
-                  <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                    <p className="text-sm text-yellow-800">
-                      <strong>Note:</strong> Only one current semester is allowed at a time. 
-                      The previous current semester will be changed to "Completed" status.
-                    </p>
-                  </div>
-                )}
-              </div>
-              <div className="flex justify-end space-x-2">
-                <Button
-                  variant="outline"
-                  onClick={() => setIsCreateModalOpen(false)}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="bg-orange-500 hover:bg-orange-600"
-                  onClick={handleCreateSemester}
-                >
-                  <Save className="mr-2 h-4 w-4" />
-                  Create Semester
-                </Button>
-              </div>
+              </form>
             </DialogContent>
           </Dialog>
         </div>
@@ -516,10 +479,14 @@ export default function SemesterManagement() {
                         <h3 className="text-xl font-semibold text-gray-900">
                           {semester.name}
                         </h3>
-                        <Badge className={getStatusColor(semester.status)}>
-                          {getStatusIcon(semester.status)}
+                        <Badge
+                          className={getStatusColor(
+                            getSemesterStatus(semester)
+                          )}
+                        >
+                          {getStatusIcon(getSemesterStatus(semester))}
                           <span className="ml-1">
-                            {getStatusText(semester.status)}
+                            {getStatusText(getSemesterStatus(semester))}
                           </span>
                         </Badge>
                         {!semester.isActive && (
@@ -533,32 +500,28 @@ export default function SemesterManagement() {
                       </div>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600 mb-3">
                         <div>
-                          <span className="font-medium">Start:</span>
+                          <span className="font-medium">Mã học kỳ:</span>
+                          <div>{semester.academicYear}</div>
+                        </div>
+                        <div>
+                          <span className="font-medium">Học kỳ:</span>
+                          <div>Học kỳ {semester.semester}</div>
+                        </div>
+                        <div>
+                          <span className="font-medium">Năm học:</span>
+                          <div>{semester.academicYear}</div>
+                        </div>
+                        <div>
+                          <span className="font-medium">Trạng thái:</span>
                           <div>
-                            {new Date(semester.startDate).toLocaleDateString(
-                              'en-US'
-                            )}
+                            {semester.isActive
+                              ? 'Hoạt động'
+                              : 'Không hoạt động'}
                           </div>
-                        </div>
-                        <div>
-                          <span className="font-medium">End:</span>
-                          <div>
-                            {new Date(semester.endDate).toLocaleDateString(
-                              'en-US'
-                            )}
-                          </div>
-                        </div>
-                        <div>
-                          <span className="font-medium">Classes:</span>
-                          <div>{semester.totalClasses} classes</div>
-                        </div>
-                        <div>
-                          <span className="font-medium">Students:</span>
-                          <div>{semester.totalStudents} students</div>
                         </div>
                       </div>
                       <div className="text-xs text-gray-500">
-                        Created by {semester.createdBy} •{' '}
+                        Tạo ngày{' '}
                         {new Date(semester.createdAt).toLocaleDateString(
                           'en-US'
                         )}
@@ -567,19 +530,7 @@ export default function SemesterManagement() {
                   </div>
 
                   <div className="flex items-center space-x-2">
-                    {semester.status !== 'current' && semester.isActive && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleSetCurrent(semester.id)}
-                        className="border-green-200 text-green-700 hover:bg-green-50"
-                      >
-                        <Star className="mr-2 h-4 w-4" />
-                        Set Current
-                      </Button>
-                    )}
-
-                    <DropdownMenu>
+                    <DropdownMenu modal={false}>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="sm">
                           <MoreHorizontal className="h-4 w-4" />
@@ -598,7 +549,7 @@ export default function SemesterManagement() {
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
-                          onClick={() => handleToggleActive(semester.id)}
+                          onClick={() => handleToggleActive(semester)}
                         >
                           {semester.isActive ? (
                             <>
@@ -612,12 +563,10 @@ export default function SemesterManagement() {
                             </>
                           )}
                         </DropdownMenuItem>
-                        {semester.status !== 'current' && (
-                          <DropdownMenuItem className="text-red-600">
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Delete Semester
-                          </DropdownMenuItem>
-                        )}
+                        <DropdownMenuItem className="text-red-600">
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Xóa học kỳ
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
@@ -629,92 +578,147 @@ export default function SemesterManagement() {
 
         {/* Edit Modal */}
         <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-3xl">
             <DialogHeader>
               <DialogTitle>Edit Semester</DialogTitle>
               <DialogDescription>
                 Update information for semester {selectedSemester?.name}
               </DialogDescription>
             </DialogHeader>
-            <div className="grid grid-cols-1 gap-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="editName">Semester Name *</Label>
-                <Input
-                  id="editName"
-                  placeholder="E.g.: HK1 2024-2025"
-                  value={formData.name}
-                  onChange={e =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
-                  className={errors.name ? 'border-red-500' : ''}
-                />
-                {errors.name && (
-                  <p className="text-sm text-red-600">{errors.name}</p>
-                )}
-              </div>
+            <form onSubmit={handleSubmitEdit(handleEditSemester)}>
+              <div className="grid grid-cols-1 gap-4 py-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="editName">Tên học kỳ *</Label>
+                    <Input
+                      id="editName"
+                      placeholder="VD: OOP K19"
+                      {...registerEdit('name')}
+                      className={errorsEdit.name ? 'border-red-500' : ''}
+                    />
+                    {errorsEdit.name && (
+                      <p className="text-sm text-red-600">
+                        {errorsEdit.name.message}
+                      </p>
+                    )}
+                  </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="editStartDate">Start Date *</Label>
-                  <Input
-                    id="editStartDate"
-                    type="date"
-                    value={formData.startDate}
-                    onChange={e =>
-                      setFormData({ ...formData, startDate: e.target.value })
-                    }
-                    className={errors.startDate ? 'border-red-500' : ''}
-                  />
-                  {errors.startDate && (
-                    <p className="text-sm text-red-600">{errors.startDate}</p>
-                  )}
+                  <div className="space-y-2">
+                    <Label htmlFor="editSubject">Môn học *</Label>
+                    <Input
+                      id="editSubject"
+                      placeholder="VD: Object-Oriented Programming"
+                      {...registerEdit('subject')}
+                      className={errorsEdit.subject ? 'border-red-500' : ''}
+                    />
+                    {errorsEdit.subject && (
+                      <p className="text-sm text-red-600">
+                        {errorsEdit.subject.message}
+                      </p>
+                    )}
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="editEndDate">End Date *</Label>
-                  <Input
-                    id="editEndDate"
-                    type="date"
-                    value={formData.endDate}
-                    onChange={e =>
-                      setFormData({ ...formData, endDate: e.target.value })
-                    }
-                    className={errors.endDate ? 'border-red-500' : ''}
-                  />
-                  {errors.endDate && (
-                    <p className="text-sm text-red-600">{errors.endDate}</p>
-                  )}
-                </div>
-              </div>
 
-              <div className="flex items-center space-x-2 p-4 bg-orange-50 rounded-lg">
-                <Switch
-                  id="editIsCurrent"
-                  checked={formData.isCurrent}
-                  onCheckedChange={checked =>
-                    setFormData({ ...formData, isCurrent: checked })
-                  }
-                />
-                <Label htmlFor="editIsCurrent" className="text-sm font-medium">
-                  Set as current semester
-                </Label>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="editSemester">Học kỳ *</Label>
+                    <Input
+                      id="editSemester"
+                      type="number"
+                      min="1"
+                      max="8"
+                      placeholder="VD: 1, 2, 3"
+                      {...registerEdit('semester', { valueAsNumber: true })}
+                      className={errorsEdit.semester ? 'border-red-500' : ''}
+                    />
+                    {errorsEdit.semester && (
+                      <p className="text-sm text-red-600">
+                        {errorsEdit.semester.message}
+                      </p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="editAcademicYear">Năm học *</Label>
+                    <Input
+                      id="editAcademicYear"
+                      placeholder="VD: 2023-2024"
+                      {...registerEdit('academicYear')}
+                      className={
+                        errorsEdit.academicYear ? 'border-red-500' : ''
+                      }
+                    />
+                    {errorsEdit.academicYear && (
+                      <p className="text-sm text-red-600">
+                        {errorsEdit.academicYear.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="editLocToPass">LOC để pass *</Label>
+                    <Input
+                      id="editLocToPass"
+                      type="number"
+                      min="0"
+                      placeholder="VD: 1000"
+                      {...registerEdit('locToPass', { valueAsNumber: true })}
+                      className={errorsEdit.locToPass ? 'border-red-500' : ''}
+                    />
+                    {errorsEdit.locToPass && (
+                      <p className="text-sm text-red-600">
+                        {errorsEdit.locToPass.message}
+                      </p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="editTeacherId">ID Giảng viên *</Label>
+                    <Input
+                      id="editTeacherId"
+                      placeholder="VD: teacher123"
+                      {...registerEdit('teacherId')}
+                      className={errorsEdit.teacherId ? 'border-red-500' : ''}
+                    />
+                    {errorsEdit.teacherId && (
+                      <p className="text-sm text-red-600">
+                        {errorsEdit.teacherId.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-2 p-4 bg-orange-50 rounded-lg">
+                  <Switch id="editIsActive" {...registerEdit('isActive')} />
+                  <Label htmlFor="editIsActive" className="text-sm font-medium">
+                    Kích hoạt học kỳ
+                  </Label>
+                </div>
               </div>
-            </div>
-            <div className="flex justify-end space-x-2">
-              <Button
-                variant="outline"
-                onClick={() => setIsEditModalOpen(false)}
-              >
-                <X className="mr-2 h-4 w-4" />
-                Cancel
-              </Button>
-              <Button
-                className="bg-orange-500 hover:bg-orange-600"
-                onClick={handleEditSemester}
-              >
-                <Save className="mr-2 h-4 w-4" />
-                Update
-              </Button>
-            </div>
+              <div className="flex justify-end space-x-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setIsEditModalOpen(false)
+                    resetEdit()
+                  }}
+                >
+                  <X className="mr-2 h-4 w-4" />
+                  Hủy
+                </Button>
+                <Button
+                  type="submit"
+                  className="bg-orange-500 hover:bg-orange-600"
+                  disabled={isCreateSemesterClassPending}
+                >
+                  <Save className="mr-2 h-4 w-4" />
+                  {isCreateSemesterClassPending
+                    ? 'Đang cập nhật...'
+                    : 'Cập nhật'}
+                </Button>
+              </div>
+            </form>
           </DialogContent>
         </Dialog>
 

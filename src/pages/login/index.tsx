@@ -20,44 +20,32 @@ import { Link, useNavigate, useSearch } from '@tanstack/react-router'
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google'
 import { LoginMutationResponse } from '@/api/actions/auth/auth.types'
 import { authStore } from '@/stores/authStore'
+import { getNavigateByRole } from '@/utils/helpers/getNavigateByRole'
 import { useMutation } from '@/hooks'
 import { toast } from 'react-toastify'
 import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
 import { Input } from '@/components/ui/input'
-import { getRedirectPath } from '@/utils/helpers/redirectAfterLogin'
 
 export const LoginPage: FC = () => {
   const { setAuthData } = authStore()
+  const search = useSearch({ strict: false })
+
   const navigate = useNavigate()
-  
-  // Get URL search parameters (e.g., /login?redirect=/dashboard&token=abc -> { redirect: "/dashboard", token: "abc" })
-  const searchParams = useSearch({ from: '/_public/login/' })
-  
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
     // Handle login logic here
-    
-    // Navigate to redirect URL if provided in search params, otherwise go to default page
-    const redirectTo = getRedirectPath(searchParams)
-    navigate({ to: redirectTo })
+    navigate({ to: '/class-manage' })
   }
 
   const handleLoginNavigate = (role: string) => {
-    switch (role) {
-      case 'Admin':
-        navigate({ to: '/dashboard/admin' })
-        break
-      case 'Teacher':
-        navigate({ to: '/dashboard/teacher' })
-        break
-      case 'Student':
-        navigate({ to: '/dashboard/student' })
-        break
-      case 'Head Subject':
-        navigate({ to: '/dashboard/head-subject' })
-        break
-      default:
-        toast.error('Có lỗi xảy ra, vui lòng liên hệ admin để đăng nhập')
+    if (search.redirectTo) {
+      navigate({ to: '/' + search.redirectTo, replace: true })
+      return
+    }
+    const path = getNavigateByRole(role)
+    if (path) {
+      navigate({ to: path, replace: true })
     }
   }
 
@@ -70,17 +58,10 @@ export const LoginPage: FC = () => {
         role: res.role,
         token: res.token,
       })
-      
-      // Lấy đường dẫn trước khi logout từ localStorage
-      const preLogoutPath = localStorage.getItem('preLogoutPath')
-      if (preLogoutPath) {
-        localStorage.removeItem('preLogoutPath') // Xóa sau khi dùng
-        navigate({ to: preLogoutPath })
-      } else {
-        // Nếu không có thì dùng redirect mặc định
-        const redirectTo = getRedirectPath(searchParams)
-        navigate({ to: redirectTo })
-      }
+
+      toast.success('Login success')
+      // handle login navigate
+      handleLoginNavigate(res.role)
     },
     onError: (error: StandardizedApiError) => {
       toast.error(error.message)
@@ -91,7 +72,6 @@ export const LoginPage: FC = () => {
     await loginMutation({
       idToken: credentialResponse.credential ?? '',
     })
-    console.log(credentialResponse)
   }
 
   return (
