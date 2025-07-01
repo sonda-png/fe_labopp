@@ -42,6 +42,25 @@ export const LoginPage: FC = () => {
     navigate({ to: redirectTo })
   }
 
+  const handleLoginNavigate = (role: string) => {
+    switch (role) {
+      case 'Admin':
+        navigate({ to: '/dashboard/admin' })
+        break
+      case 'Teacher':
+        navigate({ to: '/dashboard/teacher' })
+        break
+      case 'Student':
+        navigate({ to: '/dashboard/student' })
+        break
+      case 'Head Subject':
+        navigate({ to: '/dashboard/head-subject' })
+        break
+      default:
+        toast.error('Có lỗi xảy ra, vui lòng liên hệ admin để đăng nhập')
+    }
+  }
+
   const { mutateAsync: loginMutation } = useMutation('loginMutation', {
     onSuccess: (res: LoginMutationResponse) => {
       setAuthData({
@@ -72,6 +91,7 @@ export const LoginPage: FC = () => {
     await loginMutation({
       idToken: credentialResponse.credential ?? '',
     })
+    console.log(credentialResponse)
   }
 
   return (
