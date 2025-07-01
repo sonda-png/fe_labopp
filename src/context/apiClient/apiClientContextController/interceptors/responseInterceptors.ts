@@ -1,6 +1,7 @@
 import { type AxiosError, AxiosResponse } from 'axios'
 import { getStandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError'
 import { ApiResponse } from '../../apiClientContext/ApiClientContext.types'
+import { toast } from 'react-toastify'
 
 export function responseSuccessInterceptor<T>(
   response: AxiosResponse<ApiResponse<T>>
@@ -11,6 +12,7 @@ export function responseSuccessInterceptor<T>(
 export const useResponseFailureInterceptor = async (
   error: AxiosError<unknown>
 ) => {
+  toast.error(error.message)
   // const { setAuthData, clearTokens, accessToken, refreshToken } = authStore.getState();
   const standarizedError = getStandardizedApiError(error)
   if (standarizedError.statusCode === 401) {
