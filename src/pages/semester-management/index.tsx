@@ -50,6 +50,8 @@ import {
 } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
+import { useQuery } from '@/hooks'
+import { semestersQueries } from '@/api/actions/semesters/semesters.queries'
 
 // Mock data for semesters
 const semesters = [
@@ -122,8 +124,13 @@ export default function SemesterManagement() {
   const [statusFilter, setStatusFilter] = useState('all')
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const [selectedSemester, setSelectedSemester] = useState<Semester | null>(null)
-  const [formData, setFormData] = useState<FormData>({
+  const [selectedSemester, setSelectedSemester] = useState(null)
+
+  const { data: semestersData } = useQuery({
+    ...semestersQueries.getAll(),
+  })
+
+  const [formData, setFormData] = useState({
     name: '',
     startDate: '',
     endDate: '',
