@@ -1,160 +1,175 @@
+"use client"
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Play, Settings, Users, BookOpen, GraduationCap } from "lucide-react"
-
-// Hard-coded data for classes
-const classData = [
-  {
-    id: 1,
-    name: "Summer2025 - LAB211 - IA1908",
-    status: "Inactive",
-    mentors: "Nguyễn Đình Mạnh Linh - LinhNDM3, Nguyễn Thị Hải Nang - nangnth",
-    studentsCount: 32,
-    assignmentsCount: 73,
-    subject: "LAB 02- Java OOP",
-  },
-  {
-    id: 2,
-    name: "Summer2025 - LAB211 - SE1967",
-    status: "Inactive",
-    mentors: "Nguyễn Đình Mạnh Linh - LinhNDM3, Nguyễn Thị Hải Nang - nangnth",
-    studentsCount: 31,
-    assignmentsCount: 72,
-    subject: "LAB 02- Java OOP",
-  },
-  {
-    id: 3,
-    name: "Summer2025 - LAB211 - SE1968",
-    status: "Inactive",
-    mentors: "Nguyễn Thị Hải Nang - nangnth",
-    studentsCount: 30,
-    assignmentsCount: 106,
-    subject: "LAB 02- Java OOP",
-  },
-  {
-    id: 4,
-    name: "Summer2025 - LAB211 - SE1973",
-    status: "Active",
-    mentors: "Nguyễn Thị Hải Nang - nangnth",
-    studentsCount: 30,
-    assignmentsCount: 127,
-    subject: "LAB 02- Java OOP",
-  },
-]
+import { Separator } from "@/components/ui/separator"
+import { Users, BookOpen, GraduationCap, Eye, Calendar, Hash } from "lucide-react"
+import { useQuery } from "@/hooks/useQuery/useQuery"
+import { teacherDashboardQueries } from "@/api/actions/teacher-dashboard/teacher-dashboard.queries"
+import type { TeacherClass } from "@/api/actions/teacher-dashboard/teacher-dashboard.type"
+import { authStore } from "@/stores/authStore"
+import { useNavigate } from "@tanstack/react-router"
 
 export default function ClassManagement() {
-  const handleStartLabServer = (classId: number, className: string) => {
-    console.log(`Starting lab server for class: ${className}`)
-    // Handle lab server initialization
+  const teacherId = authStore.getState().authValues.userId
+  const navigate = useNavigate()
+  console.log("Current Teacher ID:", teacherId)
+
+  const { data: classListData, isLoading, error } = useQuery(teacherDashboardQueries.classList(teacherId))
+  console.log("Class List Data:", classListData)
+
+  const handleViewClass = (classId: string) => {
+    navigate({ to: "/student-manage", search: { classId } })
   }
 
-  const handleClassSettings = (classId: number, className: string) => {
-    console.log(`Opening settings for class: ${className}`)
-    // Handle class settings
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
+          <p className="text-muted-foreground">Loading classes...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-12">
+        <div className="mx-auto w-24 h-24 bg-red-50 rounded-full flex items-center justify-center mb-4">
+          <GraduationCap className="h-12 w-12 text-red-500" />
+        </div>
+        <h3 className="text-lg font-semibold text-red-600 mb-2">Error loading classes</h3>
+        <p className="text-muted-foreground">{error?.message || "An error occurred"}</p>
+      </div>
+    )
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-3">
-        <GraduationCap className="h-8 w-8 text-orange-500" />
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Class Management</h1>
-          <p className="text-gray-600">View and access assigned classes</p>
+    <div className="container mx-auto p-6 space-y-8">
+      {/* Header Section */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div className="p-3 bg-orange-100 rounded-xl">
+            <GraduationCap className="h-8 w-8 text-orange-600" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Class Management</h1>
+            <p className="text-muted-foreground mt-1">Manage and access your assigned classes</p>
+          </div>
         </div>
+        <Badge variant="outline" className="px-3 py-1">
+          {classListData?.length || 0} Classes
+        </Badge>
       </div>
+
+      <Separator />
 
       {/* Class Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {classData.map((classItem) => (
-          <Card key={classItem.id} className="relative overflow-hidden border-0 shadow-lg">
-            <CardHeader className="pb-3">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <CardTitle className="text-lg font-semibold text-gray-900 mb-2">{classItem.name}</CardTitle>
+      {classListData && classListData.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {classListData.map((classItem: TeacherClass) => (
+            <Card
+              key={classItem.id}
+              className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md hover:shadow-xl hover:-translate-y-1"
+            >
+              <CardHeader className="pb-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <CardTitle className="text-lg font-semibold line-clamp-2 group-hover:text-orange-600 transition-colors">
+                      {classItem.name}
+                    </CardTitle>
+                    <p className="text-sm text-muted-foreground mt-1 font-mono">ID: {classItem.id}</p>
+                  </div>
                   <Badge
-                    variant={classItem.status === "Active" ? "default" : "secondary"}
+                    variant={classItem.isActive ? "default" : "secondary"}
                     className={
-                      classItem.status === "Active"
-                        ? "bg-green-100 text-green-800 hover:bg-green-100"
-                        : "bg-orange-100 text-orange-800 hover:bg-orange-100"
+                      classItem.isActive
+                        ? "bg-green-100 text-green-700 hover:bg-green-100 border-green-200"
+                        : "bg-orange-100 text-orange-700 hover:bg-orange-100 border-orange-200"
                     }
                   >
-                    {classItem.status === "Active" ? "Active" : "Inactive"}
+                    {classItem.isActive ? "Active" : "Inactive"}
                   </Badge>
                 </div>
-                <div className="flex gap-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="h-8 w-8 p-0 border-green-200 hover:bg-green-50"
-                    onClick={() => handleStartLabServer(classItem.id, classItem.name)}
-                  >
-                    <Play className="h-4 w-4 text-green-600" />
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="h-8 w-8 p-0 border-gray-200 hover:bg-gray-50"
-                    onClick={() => handleClassSettings(classItem.id, classItem.name)}
-                  >
-                    <Settings className="h-4 w-4 text-gray-600" />
-                  </Button>
-                </div>
-              </div>
-            </CardHeader>
+              </CardHeader>
 
-            <CardContent className="space-y-4">
-              {/* Mentors */}
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <GraduationCap className="h-4 w-4 text-gray-500" />
-                  <span className="text-sm font-medium text-gray-700">Mentors</span>
-                </div>
-                <p className="text-sm text-gray-600 leading-relaxed">{classItem.mentors}</p>
-              </div>
-
-              {/* Stats */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <Users className="h-4 w-4 text-blue-600" />
-                    <span className="text-sm font-medium text-gray-700">Students</span>
+              <CardContent className="space-y-4">
+                {/* Class Information Grid */}
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg">
+                    <BookOpen className="h-4 w-4 text-blue-600" />
+                    <div>
+                      <p className="font-medium text-muted-foreground">Subject</p>
+                      <p className="font-semibold">{classItem.subject}</p>
+                    </div>
                   </div>
-                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 hover:bg-blue-100">
-                    {classItem.studentsCount}
-                  </Badge>
-                </div>
 
-                <div className="flex items-center justify-between p-3 bg-cyan-50 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <BookOpen className="h-4 w-4 text-cyan-600" />
-                    <span className="text-sm font-medium text-gray-700">Assignments</span>
+                  <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg">
+                    <Calendar className="h-4 w-4 text-green-600" />
+                    <div>
+                      <p className="font-medium text-muted-foreground">Year</p>
+                      <p className="font-semibold">{classItem.academicYear}</p>
+                    </div>
                   </div>
-                  <Badge variant="secondary" className="bg-cyan-100 text-cyan-800 hover:bg-cyan-100">
-                    {classItem.assignmentsCount}
-                  </Badge>
+
+                  <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg">
+                    <Hash className="h-4 w-4 text-purple-600" />
+                    <div>
+                      <p className="font-medium text-muted-foreground">Semester</p>
+                      <p className="font-semibold">{classItem.semester}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg">
+                    <Users className="h-4 w-4 text-orange-600" />
+                    <div>
+                      <p className="font-medium text-muted-foreground">LOC Pass</p>
+                      <p className="font-semibold">{classItem.locToPass}</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
 
-            {/* Status indicator bar */}
-            <div
-              className={`absolute bottom-0 left-0 right-0 h-1 ${
-                classItem.status === "Active" ? "bg-green-500" : "bg-orange-400"
-              }`}
-            />
-          </Card>
-        ))}
-      </div>
+                <Separator />
 
-      {/* Empty state if no classes */}
-      {classData.length === 0 && (
-        <div className="text-center py-12">
-          <GraduationCap className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No classes available</h3>
-          <p className="text-gray-600">You haven't been assigned to any classes yet.</p>
+                {/* Action Buttons */}
+                <div className="flex gap-2 pt-2">
+                  <Button
+                    onClick={() => handleViewClass(classItem.id)}
+                    className="flex-1 bg-orange-600 hover:bg-orange-700 text-white"
+                    size="sm"
+                  >
+                    <Eye className="h-4 w-4 mr-2" />
+                    View Class
+                  </Button>
+                  <Button variant="outline" size="sm" className="hover:bg-muted bg-transparent">
+                    Details
+                  </Button>
+                </div>
+              </CardContent>
+
+              {/* Status Indicator */}
+              <div
+                className={`h-1 w-full ${
+                  classItem.isActive
+                    ? "bg-gradient-to-r from-green-400 to-green-600"
+                    : "bg-gradient-to-r from-orange-400 to-orange-600"
+                }`}
+              />
+            </Card>
+          ))}
+        </div>
+      ) : (
+        /* Empty State */
+        <div className="text-center py-16">
+          <div className="mx-auto w-32 h-32 bg-muted/30 rounded-full flex items-center justify-center mb-6">
+            <GraduationCap className="h-16 w-16 text-muted-foreground/50" />
+          </div>
+          <h3 className="text-xl font-semibold mb-2">No classes available</h3>
+          <p className="text-muted-foreground max-w-md mx-auto">
+            You haven't been assigned to any classes yet. Contact your administrator if you believe this is an error.
+          </p>
         </div>
       )}
     </div>
