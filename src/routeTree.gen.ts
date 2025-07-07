@@ -35,6 +35,7 @@ import { Route as AuthAssignmentManageIndexImport } from './routes/_auth/assignm
 import { Route as AuthAssignmentBankIndexImport } from './routes/_auth/assignment-bank/index'
 import { Route as AuthAcademicOutcomeReportIndexImport } from './routes/_auth/academic-outcome-report/index'
 import { Route as AuthAboutIndexImport } from './routes/_auth/about/index'
+import { Route as AuthTeacherAssignmentClassIdIndexImport } from './routes/_auth/teacher-assignment/$classId/index'
 import { Route as AuthDashboardTeacherIndexImport } from './routes/_auth/dashboard/teacher/index'
 import { Route as AuthDashboardStudentIndexImport } from './routes/_auth/dashboard/student/index'
 import { Route as AuthDashboardHeadSubjectIndexImport } from './routes/_auth/dashboard/head-subject/index'
@@ -186,6 +187,13 @@ const AuthAboutIndexRoute = AuthAboutIndexImport.update({
   path: '/about/',
   getParentRoute: () => AuthRoute,
 } as any)
+
+const AuthTeacherAssignmentClassIdIndexRoute =
+  AuthTeacherAssignmentClassIdIndexImport.update({
+    id: '/teacher-assignment/$classId/',
+    path: '/teacher-assignment/$classId/',
+    getParentRoute: () => AuthRoute,
+  } as any)
 
 const AuthDashboardTeacherIndexRoute = AuthDashboardTeacherIndexImport.update({
   id: '/dashboard/teacher/',
@@ -412,6 +420,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthDashboardTeacherIndexImport
       parentRoute: typeof AuthImport
     }
+    '/_auth/teacher-assignment/$classId/': {
+      id: '/_auth/teacher-assignment/$classId/'
+      path: '/teacher-assignment/$classId'
+      fullPath: '/teacher-assignment/$classId'
+      preLoaderRoute: typeof AuthTeacherAssignmentClassIdIndexImport
+      parentRoute: typeof AuthImport
+    }
   }
 }
 
@@ -438,6 +453,7 @@ interface AuthRouteChildren {
   AuthDashboardHeadSubjectIndexRoute: typeof AuthDashboardHeadSubjectIndexRoute
   AuthDashboardStudentIndexRoute: typeof AuthDashboardStudentIndexRoute
   AuthDashboardTeacherIndexRoute: typeof AuthDashboardTeacherIndexRoute
+  AuthTeacherAssignmentClassIdIndexRoute: typeof AuthTeacherAssignmentClassIdIndexRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
@@ -461,6 +477,8 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthDashboardHeadSubjectIndexRoute: AuthDashboardHeadSubjectIndexRoute,
   AuthDashboardStudentIndexRoute: AuthDashboardStudentIndexRoute,
   AuthDashboardTeacherIndexRoute: AuthDashboardTeacherIndexRoute,
+  AuthTeacherAssignmentClassIdIndexRoute:
+    AuthTeacherAssignmentClassIdIndexRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
@@ -512,6 +530,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/head-subject': typeof AuthDashboardHeadSubjectIndexRoute
   '/dashboard/student': typeof AuthDashboardStudentIndexRoute
   '/dashboard/teacher': typeof AuthDashboardTeacherIndexRoute
+  '/teacher-assignment/$classId': typeof AuthTeacherAssignmentClassIdIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -542,6 +561,7 @@ export interface FileRoutesByTo {
   '/dashboard/head-subject': typeof AuthDashboardHeadSubjectIndexRoute
   '/dashboard/student': typeof AuthDashboardStudentIndexRoute
   '/dashboard/teacher': typeof AuthDashboardTeacherIndexRoute
+  '/teacher-assignment/$classId': typeof AuthTeacherAssignmentClassIdIndexRoute
 }
 
 export interface FileRoutesById {
@@ -574,6 +594,7 @@ export interface FileRoutesById {
   '/_auth/dashboard/head-subject/': typeof AuthDashboardHeadSubjectIndexRoute
   '/_auth/dashboard/student/': typeof AuthDashboardStudentIndexRoute
   '/_auth/dashboard/teacher/': typeof AuthDashboardTeacherIndexRoute
+  '/_auth/teacher-assignment/$classId/': typeof AuthTeacherAssignmentClassIdIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -606,6 +627,7 @@ export interface FileRouteTypes {
     | '/dashboard/head-subject'
     | '/dashboard/student'
     | '/dashboard/teacher'
+    | '/teacher-assignment/$classId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -635,6 +657,7 @@ export interface FileRouteTypes {
     | '/dashboard/head-subject'
     | '/dashboard/student'
     | '/dashboard/teacher'
+    | '/teacher-assignment/$classId'
   id:
     | '__root__'
     | '/'
@@ -665,6 +688,7 @@ export interface FileRouteTypes {
     | '/_auth/dashboard/head-subject/'
     | '/_auth/dashboard/student/'
     | '/_auth/dashboard/teacher/'
+    | '/_auth/teacher-assignment/$classId/'
   fileRoutesById: FileRoutesById
 }
 
@@ -720,7 +744,8 @@ export const routeTree = rootRoute
         "/_auth/dashboard/admin/",
         "/_auth/dashboard/head-subject/",
         "/_auth/dashboard/student/",
-        "/_auth/dashboard/teacher/"
+        "/_auth/dashboard/teacher/",
+        "/_auth/teacher-assignment/$classId/"
       ]
     },
     "/_public": {
@@ -831,6 +856,10 @@ export const routeTree = rootRoute
     },
     "/_auth/dashboard/teacher/": {
       "filePath": "_auth/dashboard/teacher/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/teacher-assignment/$classId/": {
+      "filePath": "_auth/teacher-assignment/$classId/index.tsx",
       "parent": "/_auth"
     }
   }
