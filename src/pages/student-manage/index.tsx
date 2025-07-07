@@ -191,11 +191,6 @@ export default function StudentManagement() {
     }
   }
 
-  const getProgressColor = (progress: number) => {
-    if (progress >= 80) return 'bg-green-500'
-    if (progress >= 60) return 'bg-yellow-500'
-    return 'bg-red-500'
-  }
 
   return (
     <div className="p-6 space-y-6 w-full">
