@@ -1,4 +1,3 @@
-import { FC } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -9,13 +8,6 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { Link, useNavigate, useSearch } from '@tanstack/react-router'
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google'
 import { LoginMutationResponse } from '@/api/actions/auth/auth.types'
@@ -25,18 +17,24 @@ import { useMutation } from '@/hooks'
 import { toast } from 'react-toastify'
 import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
 import { Input } from '@/components/ui/input'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { loginSchema, LoginFormData } from '@/schema/loginSchema'
 
-export const LoginPage: FC = () => {
+export const LoginPage = () => {
   const { setAuthData } = authStore()
   const search = useSearch({ strict: false })
-
   const navigate = useNavigate()
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault()
-    // Handle login logic here
-    navigate({ to: '/class-manage' })
-  }
+  // Setup form with Zod validation
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    mode: 'onChange',
+  })
 
   const handleLoginNavigate = (role: string) => {
     if (search.redirectTo) {
@@ -49,27 +47,53 @@ export const LoginPage: FC = () => {
     }
   }
 
-  const { mutateAsync: loginMutation } = useMutation('loginMutation', {
-    onSuccess: (res: LoginMutationResponse) => {
-      setAuthData({
-        isAuthenticated: true,
-        userId: res.userId,
-        email: res.email,
-        role: res.role,
-        token: res.token,
-      })
+  const handleLoginSuccess = (res: LoginMutationResponse) => {
+    setAuthData({
+      isAuthenticated: true,
+      userId: res.userId,
+      email: res.email,
+      role: res.role,
+      token: res.token,
+    })
 
-      toast.success('Login success')
-      // handle login navigate
-      handleLoginNavigate(res.role)
-    },
-    onError: (error: StandardizedApiError) => {
-      toast.error(error.message)
-    },
-  })
+    toast.success('Login success')
+    // handle login navigate
+    handleLoginNavigate(res.role)
+  }
+
+  const { mutateAsync: googleLoginMutation } = useMutation(
+    'loginGoogleMutation',
+    {
+      onSuccess: (res: LoginMutationResponse) => {
+        handleLoginSuccess(res)
+      },
+      onError: (error: StandardizedApiError) => {
+        toast.error(error.message)
+      },
+    }
+  )
+
+  const { mutateAsync: credentialLoginMutation } = useMutation(
+    'credentialLogin',
+    {
+      onSuccess: (res: LoginMutationResponse) => {
+        handleLoginSuccess(res)
+      },
+      onError: (error: StandardizedApiError) => {
+        toast.error(error.message)
+      },
+    }
+  )
+
+  const handleLogin = async (data: LoginFormData) => {
+    await credentialLoginMutation({
+      userName: data.username,
+      password: data.password,
+    })
+  }
 
   const handleGoogleLogin = async (credentialResponse: CredentialResponse) => {
-    await loginMutation({
+    await googleLoginMutation({
       idToken: credentialResponse.credential ?? '',
     })
   }
@@ -85,46 +109,46 @@ export const LoginPage: FC = () => {
               Sign in to access your account
             </CardDescription>
           </CardHeader>
-          <form onSubmit={handleLogin}>
+          <form onSubmit={handleSubmit(handleLogin)}>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="facility">Cơ sở</Label>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Lựa chọn cơ sở" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="facility1">Hòa Lạc</SelectItem>
-                    <SelectItem value="facility2">Hồ Chí Minh</SelectItem>
-                    <SelectItem value="facility3">Đà Nẵng</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="username">Username</Label>
                 <Input
-                  id="email"
-                  type="email"
-                  placeholder="Nhập email"
-                  required
+                  id="username"
+                  type="text"
+                  placeholder="Enter username"
+                  {...register('username')}
+                  className={errors.username ? 'border-red-500' : ''}
                 />
+                {errors.username && (
+                  <p className="text-sm text-red-600 mt-1">
+                    {errors.username.message}
+                  </p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <Input
                   id="password"
                   type="password"
-                  placeholder="Nhập password"
-                  required
+                  placeholder="Enter password"
+                  {...register('password')}
+                  className={errors.password ? 'border-red-500' : ''}
                 />
+                {errors.password && (
+                  <p className="text-sm text-red-600 mt-1">
+                    {errors.password.message}
+                  </p>
+                )}
               </div>
             </CardContent>
             <CardFooter className="flex flex-col space-y-4">
               <Button
                 type="submit"
                 className="w-full bg-orange-500 hover:bg-orange-600 text-white"
+                disabled={isSubmitting}
               >
-                Đăng nhập
+                {isSubmitting ? 'Logging in...' : 'Login'}
               </Button>
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
@@ -132,7 +156,7 @@ export const LoginPage: FC = () => {
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
                   <span className="bg-gray-50 px-2 text-gray-500">
-                    Hoặc tiếp tục với
+                    Or continue with
                   </span>
                 </div>
               </div>
@@ -144,7 +168,7 @@ export const LoginPage: FC = () => {
                   to="/forgot-pass"
                   className="text-orange-500 hover:underline"
                 >
-                  Quên mật khẩu?
+                  Forgot password?
                 </Link>
               </div>
             </CardFooter>

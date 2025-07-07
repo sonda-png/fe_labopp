@@ -19,7 +19,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Checkbox } from '@/components/ui/checkbox'
 import { Badge } from '@/components/ui/badge'
 import {
   DropdownMenu,
@@ -59,7 +58,6 @@ import {
 } from 'lucide-react'
 import { useQuery, useMutation } from '@/hooks'
 import { getAssignmentList } from '@/api/actions/assignment-manage/assignment.query'
-import { assignmentMutations } from '@/api/actions/assignment-manage/assignment.mutation'
 import { Skeleton } from '@/components/ui/skeleton'
 import { toast } from 'react-toastify'
 import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'

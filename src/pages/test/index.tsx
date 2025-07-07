@@ -12,6 +12,7 @@ export const TestPage = () => {
   const { data: teacherAssignmentData } = useQuery({
     ...teacherAssignmentQueries.getAll('SE1732'),
   })
-
+  console.log(teacherDashboardData)
+  console.log(teacherAssignmentData)
   return <div>Test</div>
 }
