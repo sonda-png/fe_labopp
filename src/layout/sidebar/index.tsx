@@ -92,6 +92,12 @@ export const SidebarComponent = () => {
       icon: BarChart3,
       path: '/dashboard/teacher',
     },
+    {
+      id: '/teacher-submission',
+      label: 'Teacher submission -TC',
+      icon: BarChart3,
+      path: '/teacher-submission',
+    },
   ]
 
   const NavContent = () => (

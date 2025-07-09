@@ -19,6 +19,8 @@ import { Route as PublicNotFoundIndexImport } from './routes/_public/not-found/i
 import { Route as PublicLoginIndexImport } from './routes/_public/login/index'
 import { Route as PublicForgotPassIndexImport } from './routes/_public/forgot-pass/index'
 import { Route as PublicForbiddenIndexImport } from './routes/_public/forbidden/index'
+import { Route as AuthTeacherSubmissionIndexImport } from './routes/_auth/teacher-submission/index'
+import { Route as AuthTeacherGradeIndexImport } from './routes/_auth/teacher-grade/index'
 import { Route as AuthSubmitlabIndexImport } from './routes/_auth/submitlab/index'
 import { Route as AuthStudentdashboardIndexImport } from './routes/_auth/studentdashboard/index'
 import { Route as AuthStudentManageIndexImport } from './routes/_auth/student-manage/index'
@@ -84,6 +86,20 @@ const PublicForbiddenIndexRoute = PublicForbiddenIndexImport.update({
   id: '/forbidden/',
   path: '/forbidden/',
   getParentRoute: () => PublicRoute,
+} as any)
+
+const AuthTeacherSubmissionIndexRoute = AuthTeacherSubmissionIndexImport.update(
+  {
+    id: '/teacher-submission/',
+    path: '/teacher-submission/',
+    getParentRoute: () => AuthRoute,
+  } as any,
+)
+
+const AuthTeacherGradeIndexRoute = AuthTeacherGradeIndexImport.update({
+  id: '/teacher-grade/',
+  path: '/teacher-grade/',
+  getParentRoute: () => AuthRoute,
 } as any)
 
 const AuthSubmitlabIndexRoute = AuthSubmitlabIndexImport.update({
@@ -320,6 +336,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSubmitlabIndexImport
       parentRoute: typeof AuthImport
     }
+    '/_auth/teacher-grade/': {
+      id: '/_auth/teacher-grade/'
+      path: '/teacher-grade'
+      fullPath: '/teacher-grade'
+      preLoaderRoute: typeof AuthTeacherGradeIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/teacher-submission/': {
+      id: '/_auth/teacher-submission/'
+      path: '/teacher-submission'
+      fullPath: '/teacher-submission'
+      preLoaderRoute: typeof AuthTeacherSubmissionIndexImport
+      parentRoute: typeof AuthImport
+    }
     '/_public/forbidden/': {
       id: '/_public/forbidden/'
       path: '/forbidden'
@@ -403,6 +433,8 @@ interface AuthRouteChildren {
   AuthStudentManageIndexRoute: typeof AuthStudentManageIndexRoute
   AuthStudentdashboardIndexRoute: typeof AuthStudentdashboardIndexRoute
   AuthSubmitlabIndexRoute: typeof AuthSubmitlabIndexRoute
+  AuthTeacherGradeIndexRoute: typeof AuthTeacherGradeIndexRoute
+  AuthTeacherSubmissionIndexRoute: typeof AuthTeacherSubmissionIndexRoute
   AuthDashboardAdminIndexRoute: typeof AuthDashboardAdminIndexRoute
   AuthDashboardHeadSubjectIndexRoute: typeof AuthDashboardHeadSubjectIndexRoute
   AuthDashboardStudentIndexRoute: typeof AuthDashboardStudentIndexRoute
@@ -424,6 +456,8 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthStudentManageIndexRoute: AuthStudentManageIndexRoute,
   AuthStudentdashboardIndexRoute: AuthStudentdashboardIndexRoute,
   AuthSubmitlabIndexRoute: AuthSubmitlabIndexRoute,
+  AuthTeacherGradeIndexRoute: AuthTeacherGradeIndexRoute,
+  AuthTeacherSubmissionIndexRoute: AuthTeacherSubmissionIndexRoute,
   AuthDashboardAdminIndexRoute: AuthDashboardAdminIndexRoute,
   AuthDashboardHeadSubjectIndexRoute: AuthDashboardHeadSubjectIndexRoute,
   AuthDashboardStudentIndexRoute: AuthDashboardStudentIndexRoute,
@@ -468,6 +502,8 @@ export interface FileRoutesByFullPath {
   '/student-manage': typeof AuthStudentManageIndexRoute
   '/studentdashboard': typeof AuthStudentdashboardIndexRoute
   '/submitlab': typeof AuthSubmitlabIndexRoute
+  '/teacher-grade': typeof AuthTeacherGradeIndexRoute
+  '/teacher-submission': typeof AuthTeacherSubmissionIndexRoute
   '/forbidden': typeof PublicForbiddenIndexRoute
   '/forgot-pass': typeof PublicForgotPassIndexRoute
   '/login': typeof PublicLoginIndexRoute
@@ -496,6 +532,8 @@ export interface FileRoutesByTo {
   '/student-manage': typeof AuthStudentManageIndexRoute
   '/studentdashboard': typeof AuthStudentdashboardIndexRoute
   '/submitlab': typeof AuthSubmitlabIndexRoute
+  '/teacher-grade': typeof AuthTeacherGradeIndexRoute
+  '/teacher-submission': typeof AuthTeacherSubmissionIndexRoute
   '/forbidden': typeof PublicForbiddenIndexRoute
   '/forgot-pass': typeof PublicForgotPassIndexRoute
   '/login': typeof PublicLoginIndexRoute
@@ -526,6 +564,8 @@ export interface FileRoutesById {
   '/_auth/student-manage/': typeof AuthStudentManageIndexRoute
   '/_auth/studentdashboard/': typeof AuthStudentdashboardIndexRoute
   '/_auth/submitlab/': typeof AuthSubmitlabIndexRoute
+  '/_auth/teacher-grade/': typeof AuthTeacherGradeIndexRoute
+  '/_auth/teacher-submission/': typeof AuthTeacherSubmissionIndexRoute
   '/_public/forbidden/': typeof PublicForbiddenIndexRoute
   '/_public/forgot-pass/': typeof PublicForgotPassIndexRoute
   '/_public/login/': typeof PublicLoginIndexRoute
@@ -556,6 +596,8 @@ export interface FileRouteTypes {
     | '/student-manage'
     | '/studentdashboard'
     | '/submitlab'
+    | '/teacher-grade'
+    | '/teacher-submission'
     | '/forbidden'
     | '/forgot-pass'
     | '/login'
@@ -583,6 +625,8 @@ export interface FileRouteTypes {
     | '/student-manage'
     | '/studentdashboard'
     | '/submitlab'
+    | '/teacher-grade'
+    | '/teacher-submission'
     | '/forbidden'
     | '/forgot-pass'
     | '/login'
@@ -611,6 +655,8 @@ export interface FileRouteTypes {
     | '/_auth/student-manage/'
     | '/_auth/studentdashboard/'
     | '/_auth/submitlab/'
+    | '/_auth/teacher-grade/'
+    | '/_auth/teacher-submission/'
     | '/_public/forbidden/'
     | '/_public/forgot-pass/'
     | '/_public/login/'
@@ -670,6 +716,8 @@ export const routeTree = rootRoute
         "/_auth/student-manage/",
         "/_auth/studentdashboard/",
         "/_auth/submitlab/",
+        "/_auth/teacher-grade/",
+        "/_auth/teacher-submission/",
         "/_auth/dashboard/admin/",
         "/_auth/dashboard/head-subject/",
         "/_auth/dashboard/student/",
@@ -740,6 +788,14 @@ export const routeTree = rootRoute
     },
     "/_auth/submitlab/": {
       "filePath": "_auth/submitlab/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/teacher-grade/": {
+      "filePath": "_auth/teacher-grade/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/teacher-submission/": {
+      "filePath": "_auth/teacher-submission/index.tsx",
       "parent": "/_auth"
     },
     "/_public/forbidden/": {
