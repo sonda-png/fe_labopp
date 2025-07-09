@@ -1,7 +1,7 @@
 import { queryFactoryOptions } from "@/api/utils/queryFactoryOptions";
 import { AdminAccountQueryParams } from "../admin-account/admin-account.type";
 import { AxiosInstance } from "axios";
-import { TeacherStudentInClassResponse, TeacherStudentDetailResponse } from "./teacher-student.type";
+import { TeacherStudentInClassResponse, StudentProgressResponse } from "./teacher-student.type";
 
 export const teacherStudentQueries = {
     all: () => ['teacher-student'],
@@ -46,9 +46,9 @@ const getStudentDetail = (
     studentId: string
 ) =>
     (client: AxiosInstance) =>
-        async (): Promise<TeacherStudentDetailResponse> => {
+        async (): Promise<StudentProgressResponse> => {
             return (
-                await client.get<TeacherStudentDetailResponse>(`/teacher/students/${classId}/${studentId}`)
+                await client.get<StudentProgressResponse>(`/teacher/students/${classId}/${studentId}`)
             ).data
         }
 

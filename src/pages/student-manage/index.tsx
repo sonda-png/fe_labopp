@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Progress } from "@/components/ui/progress"
+import { Progress as ProgressUI } from "@/components/ui/progress"
 import {
   Search,
   Eye,
@@ -29,7 +29,7 @@ import {
 import { useNavigate, useSearch } from "@tanstack/react-router"
 import { useQuery } from "@/hooks/useQuery/useQuery"
 import { teacherStudentQueries } from "@/api/actions/teacher-student/teacher-student.queries"
-import type { Student } from "@/api/actions/teacher-student/teacher-student.type"
+import type { Student, StudentProgress, Progress } from "@/api/actions/teacher-student/teacher-student.type"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { format as formatDate } from "date-fns"
 
@@ -44,11 +44,10 @@ export default function StudentManagement() {
   const { data: studentsResponse, isLoading } = useQuery(teacherStudentQueries.getAll(classId))
 
   const { data: studentDetailResponse, isLoading: isLoadingDetail } = useQuery(
-    teacherStudentQueries.getStudentDetail(classId, selectedStudentId || ""),
-    {
-      enabled: !!selectedStudentId && !!classId,
-    },
+    teacherStudentQueries.getStudentDetail(classId, selectedStudentId || "")
   )
+
+  const studentDetail = studentDetailResponse as StudentProgress | undefined
 
   const [searchTerm, setSearchTerm] = useState("")
   const [filteredStudents, setFilteredStudents] = useState<Student[]>([])
@@ -267,7 +266,7 @@ export default function StudentManagement() {
                             {Math.round((student.passedAssignments / student.totalAssignments) * 100)}%
                           </span>
                         </div>
-                        <Progress
+                        <ProgressUI
                           value={(student.passedAssignments / student.totalAssignments) * 100}
                           className="h-2"
                         />
@@ -309,7 +308,7 @@ export default function StudentManagement() {
             <div className="flex items-center justify-center py-12">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
             </div>
-          ) : studentDetailResponse ? (
+          ) : studentDetail ? (
             <div className="space-y-6">
               {/* Student Profile Section */}
               <Card>
@@ -317,24 +316,24 @@ export default function StudentManagement() {
                   <div className="flex items-start gap-6">
                     <Avatar className="h-20 w-20">
                       <AvatarFallback className="text-xl font-semibold">
-                        {studentDetailResponse.fullName
+                        {studentDetail.fullName
                           .split(" ")
-                          .map((n) => n[0])
+                          .map((n: string) => n[0])
                           .join("")
                           .toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 space-y-4">
                       <div>
-                        <h3 className="text-2xl font-bold">{studentDetailResponse.fullName}</h3>
+                        <h3 className="text-2xl font-bold">{studentDetail.fullName}</h3>
                         <div className="flex items-center gap-4 mt-2 text-muted-foreground">
                           <div className="flex items-center gap-2">
                             <Mail className="h-4 w-4" />
-                            <span>{studentDetailResponse.email}</span>
+                            <span>{studentDetail.email}</span>
                           </div>
                           <div className="flex items-center gap-2">
                             <User className="h-4 w-4" />
-                            <span>{studentDetailResponse.studentId}</span>
+                            <span>{studentDetail.studentId}</span>
                           </div>
                         </div>
                       </div>
@@ -343,20 +342,20 @@ export default function StudentManagement() {
                       <div className="grid grid-cols-3 gap-4">
                         <div className="text-center p-3 bg-blue-50 rounded-lg">
                           <div className="text-2xl font-bold text-blue-600">
-                            {studentDetailResponse.progress?.length || 0}
+                            {studentDetail.progress?.length || 0}
                           </div>
                           <div className="text-sm text-muted-foreground">Total Assignments</div>
                         </div>
                         <div className="text-center p-3 bg-green-50 rounded-lg">
                           <div className="text-2xl font-bold text-green-600">
-                            {studentDetailResponse.progress?.filter((p) => p.status.toLowerCase() === "passed")
+                            {studentDetail.progress?.filter((p: Progress) => p.status.toLowerCase() === "passed")
                               .length || 0}
                           </div>
                           <div className="text-sm text-muted-foreground">Completed</div>
                         </div>
                         <div className="text-center p-3 bg-purple-50 rounded-lg">
                           <div className="text-2xl font-bold text-purple-600">
-                            {studentDetailResponse.progress?.reduce((acc, p) => acc + p.loc, 0) || 0}
+                            {studentDetail.progress?.reduce((acc: number, p: Progress) => acc + p.loc, 0) || 0}
                           </div>
                           <div className="text-sm text-muted-foreground">Total LOC</div>
                         </div>
@@ -376,7 +375,7 @@ export default function StudentManagement() {
                 </div>
 
                 <div className="grid gap-4">
-                  {studentDetailResponse.progress?.map((assignment, index) => (
+                  {studentDetail.progress?.map((assignment: Progress, index: number) => (
                     <Card key={index} className="hover:shadow-md transition-shadow">
                       <CardContent className="p-4">
                         <div className="flex items-start justify-between">

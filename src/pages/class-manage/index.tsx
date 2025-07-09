@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { Users, BookOpen, GraduationCap, Eye, Calendar, Hash } from "lucide-react"
+import { Users, BookOpen, GraduationCap, Eye, Calendar, Hash, Trophy } from "lucide-react"
 import { useQuery } from "@/hooks/useQuery/useQuery"
 import { teacherDashboardQueries } from "@/api/actions/teacher-dashboard/teacher-dashboard.queries"
 import type { TeacherClass } from "@/api/actions/teacher-dashboard/teacher-dashboard.type"
@@ -143,8 +143,14 @@ export default function ClassManagement() {
                     <Eye className="h-4 w-4 mr-2" />
                     View Class
                   </Button>
-                  <Button variant="outline" size="sm" className="hover:bg-muted bg-transparent">
-                    Details
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex-1 hover:bg-muted bg-transparent"
+                    onClick={() => navigate({ to: "/loc-ranking", search: { classId: classItem.id } })}
+                  >
+                    <Trophy className="h-4 w-4 mr-2" />
+                    LOC Ranking
                   </Button>
                 </div>
               </CardContent>
