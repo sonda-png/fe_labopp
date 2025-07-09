@@ -17,7 +17,7 @@ import { useQuery } from '@/hooks'
 import { teacherDashboardQueries } from '@/api/actions/teacher-dashboard/teacher-dashboard.queries'
 import { TeacherClass } from '@/api/actions/teacher-dashboard/teacher-dashboard.type'
 import { authStore } from '@/stores/authStore'
-import { dashboard as DashboardData } from '@/components/features/dashboard/teacher/dashboard-data'
+import { DashboardTeacher } from '@/components/features/dashboard/teacher/dashboard-data'
 
 export const TeacherDashboard = () => {
   const teacherId = authStore.getState().authValues.userId
@@ -40,7 +40,7 @@ export const TeacherDashboard = () => {
     <div className="space-y-6 bg-gray-50 min-h-screen p-4">
       {/* Nếu đã chọn class thì show dashboard */}
       {selectedClass ? (
-        <DashboardData
+        <DashboardTeacher
           classId={selectedClass.id}
           onBack={() => setSelectedClass(null)}
         />
