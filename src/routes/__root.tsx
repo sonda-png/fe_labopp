@@ -1,4 +1,4 @@
-import { ForbiddenPage, NotFoundPage } from '@/pages'
+import { NotFoundPage } from '@/pages'
 import AppProviders from '@/providers/AppProviders'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { createRootRoute, Outlet, ErrorComponent } from '@tanstack/react-router'
@@ -15,21 +15,7 @@ export const Route = createRootRoute({
   ),
   notFoundComponent: () => <NotFoundPage />,
   errorComponent: ({ error }) => {
-    console.log(error)
-    // Handle error
-    if (
-      error?.message?.includes('403') ||
-      error?.message?.includes('Forbidden')
-    ) {
-      return <ForbiddenPage />
-    }
-    if (
-      error?.message?.includes('404') ||
-      error?.message?.includes('Not Found')
-    ) {
-      return <NotFoundPage />
-    }
-    // Fallback cho các lỗi khác
+    // Fallback other error
     return <ErrorComponent error={error} />
   },
 })

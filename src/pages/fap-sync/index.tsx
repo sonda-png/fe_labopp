@@ -56,7 +56,7 @@ const syncHistory = [
     studentsUpdated: 48,
     duration: 125,
     errors: [],
-    warnings: ['Lớp LAB211-SE1970 có thông tin không đầy đủ'],
+    warnings: ['Class LAB211-SE1970 has incomplete information'],
   },
   {
     id: 2,
@@ -69,7 +69,7 @@ const syncHistory = [
     studentsAdded: 12,
     studentsUpdated: 35,
     duration: 98,
-    errors: ['Không thể kết nối đến FAP API trong 2 lần thử'],
+    errors: ['Unable to connect to FAP API after 2 attempts'],
     warnings: [],
   },
   {
@@ -83,7 +83,7 @@ const syncHistory = [
     studentsAdded: 0,
     studentsUpdated: 0,
     duration: 15,
-    errors: ['FAP API không phản hồi', 'Timeout sau 30 giây'],
+    errors: ['FAP API not responding', 'Timeout after 30 seconds'],
     warnings: [],
   },
 ]
@@ -108,7 +108,7 @@ const mockSyncData = {
       students: 30,
       status: 'updated',
       lastSync: '2024-01-15',
-      changes: ['Thêm 2 sinh viên mới', 'Cập nhật thông tin giảng viên'],
+      changes: ['Added 2 new students', 'Updated instructor information'],
     },
     {
       id: 'LAB211-IA1908',
@@ -134,10 +134,14 @@ const mockSyncData = {
       email: 'hungnthe194829@fpt.edu.vn',
       class: 'LAB211-SE1973',
       status: 'updated',
-      changes: ['Cập nhật email'],
+      changes: ['Updated email'],
     },
   ],
 }
+
+// Type definitions
+type SyncData = typeof mockSyncData
+type SyncHistoryItem = typeof syncHistory[0]
 
 export default function FAPSyncPage() {
   const [isConnecting, setIsConnecting] = useState(false)
@@ -149,12 +153,12 @@ export default function FAPSyncPage() {
   const [autoSync, setAutoSync] = useState(true)
   const [syncInterval, setSyncInterval] = useState('daily')
   const [selectedSemester, setSelectedSemester] = useState('Summer2025')
-  const [previewData, setPreviewData] = useState(null)
+  const [previewData, setPreviewData] = useState<SyncData | null>(null)
   const [showPreview, setShowPreview] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [isLogModalOpen, setIsLogModalOpen] = useState(false)
-  const [selectedLog, setSelectedLog] = useState(null)
+  const [selectedLog, setSelectedLog] = useState<SyncHistoryItem | null>(null)
 
   // Simulate connection test
   const testConnection = async () => {
@@ -172,15 +176,15 @@ export default function FAPSyncPage() {
   const startSync = async () => {
     setIsSyncing(true)
     setSyncProgress(0)
-    setSyncStep('Đang kết nối đến FAP API...')
+    setSyncStep('Connecting to FAP API...')
 
     const steps = [
-      { step: 'Đang kết nối đến FAP API...', progress: 10 },
-      { step: 'Đang lấy danh sách lớp học...', progress: 30 },
-      { step: 'Đang lấy danh sách sinh viên...', progress: 50 },
-      { step: 'Đang ánh xạ dữ liệu...', progress: 70 },
-      { step: 'Đang lưu vào hệ thống...', progress: 90 },
-      { step: 'Hoàn thành đồng bộ!', progress: 100 },
+      { step: 'Connecting to FAP API...', progress: 10 },
+      { step: 'Fetching class list...', progress: 30 },
+      { step: 'Fetching student list...', progress: 50 },
+      { step: 'Mapping data...', progress: 70 },
+      { step: 'Saving to system...', progress: 90 },
+      { step: 'Sync completed!', progress: 100 },
     ]
 
     for (const { step, progress } of steps) {
@@ -189,14 +193,14 @@ export default function FAPSyncPage() {
       await new Promise(resolve => setTimeout(resolve, 1000))
     }
 
-    setLastSyncTime(new Date().toLocaleString('vi-VN'))
+    setLastSyncTime(new Date().toLocaleString('en-US'))
     setIsSyncing(false)
   }
 
   // Preview sync data
   const previewSync = async () => {
     setIsConnecting(true)
-    setSyncStep('Đang lấy dữ liệu preview...')
+    setSyncStep('Fetching preview data...')
 
     setTimeout(() => {
       setPreviewData(mockSyncData)
@@ -227,19 +231,19 @@ export default function FAPSyncPage() {
   const getStatusText = (status: string) => {
     switch (status) {
       case 'success':
-        return 'Thành công'
+        return 'Success'
       case 'partial':
-        return 'Một phần'
+        return 'Partial'
       case 'failed':
-        return 'Thất bại'
+        return 'Failed'
       case 'new':
-        return 'Mới'
+        return 'New'
       case 'updated':
-        return 'Đã cập nhật'
+        return 'Updated'
       case 'unchanged':
-        return 'Không thay đổi'
+        return 'Unchanged'
       default:
-        return 'Không xác định'
+        return 'Unknown'
     }
   }
 
@@ -277,9 +281,9 @@ export default function FAPSyncPage() {
 
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
-            Đồng bộ lớp học từ FAP
+            Sync Classes from FAP
           </h1>
-          <p className="text-gray-600">Hệ thống đồng bộ dữ liệu tự động</p>
+          <p className="text-gray-600">Automatic data synchronization system</p>
         </div>
       </div>
       <div className="max-w-7xl mx-auto py-8">
@@ -290,7 +294,7 @@ export default function FAPSyncPage() {
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <Database className="h-5 w-5" />
-                <span>Trạng thái kết nối</span>
+                <span>Connection Status</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -308,16 +312,16 @@ export default function FAPSyncPage() {
                   />
                   <span className="text-sm font-medium">
                     {connectionStatus === 'connected'
-                      ? 'Đã kết nối'
+                      ? 'Connected'
                       : connectionStatus === 'error'
-                        ? 'Lỗi kết nối'
-                        : 'Chưa kết nối'}
+                        ? 'Connection Error'
+                        : 'Not Connected'}
                   </span>
                 </div>
               </div>
 
               <div className="text-xs text-gray-500">
-                Lần đồng bộ cuối: {lastSyncTime}
+                Last sync: {lastSyncTime}
               </div>
 
               <Button
@@ -333,7 +337,7 @@ export default function FAPSyncPage() {
                 ) : (
                   <Zap className="mr-2 h-4 w-4" />
                 )}
-                {isConnecting ? 'Đang kiểm tra...' : 'Kiểm tra kết nối'}
+                {isConnecting ? 'Testing...' : 'Test Connection'}
               </Button>
             </CardContent>
           </Card>
@@ -343,12 +347,12 @@ export default function FAPSyncPage() {
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <RefreshCw className="h-5 w-5" />
-                <span>Điều khiển đồng bộ</span>
+                <span>Sync Controls</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="semester">Học kỳ</Label>
+                <Label htmlFor="semester">Semester</Label>
                 <Select
                   value={selectedSemester}
                   onValueChange={setSelectedSemester}
@@ -388,7 +392,7 @@ export default function FAPSyncPage() {
                   ) : (
                     <Play className="mr-2 h-4 w-4" />
                   )}
-                  Đồng bộ
+                  Sync
                 </Button>
               </div>
             </CardContent>
@@ -399,12 +403,12 @@ export default function FAPSyncPage() {
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <Clock className="h-5 w-5" />
-                <span>Tự động đồng bộ</span>
+                <span>Auto Sync</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
-                <Label htmlFor="autoSync">Bật tự động đồng bộ</Label>
+                <Label htmlFor="autoSync">Enable auto sync</Label>
                 <Switch
                   id="autoSync"
                   checked={autoSync}
@@ -414,15 +418,15 @@ export default function FAPSyncPage() {
 
               {autoSync && (
                 <div className="space-y-2">
-                  <Label htmlFor="interval">Tần suất</Label>
+                  <Label htmlFor="interval">Frequency</Label>
                   <Select value={syncInterval} onValueChange={setSyncInterval}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="hourly">Mỗi giờ</SelectItem>
-                      <SelectItem value="daily">Hàng ngày</SelectItem>
-                      <SelectItem value="weekly">Hàng tuần</SelectItem>
+                      <SelectItem value="hourly">Every hour</SelectItem>
+                      <SelectItem value="daily">Daily</SelectItem>
+                      <SelectItem value="weekly">Weekly</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -430,8 +434,8 @@ export default function FAPSyncPage() {
 
               <div className="text-xs text-gray-500">
                 {autoSync
-                  ? `Đồng bộ tự động ${syncInterval === 'hourly' ? 'mỗi giờ' : syncInterval === 'daily' ? 'hàng ngày lúc 6:00' : 'chủ nhật hàng tuần'}`
-                  : 'Tự động đồng bộ đã tắt'}
+                  ? `Auto sync ${syncInterval === 'hourly' ? 'every hour' : syncInterval === 'daily' ? 'daily at 6:00 AM' : 'every Sunday'}`
+                  : 'Auto sync is disabled'}
               </div>
             </CardContent>
           </Card>
@@ -444,7 +448,7 @@ export default function FAPSyncPage() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg font-semibold text-gray-900">
-                    Đang đồng bộ dữ liệu
+                    Syncing Data
                   </h3>
                   <Button
                     variant="outline"
@@ -452,7 +456,7 @@ export default function FAPSyncPage() {
                     onClick={() => setIsSyncing(false)}
                   >
                     <Pause className="mr-2 h-4 w-4" />
-                    Dừng
+                    Stop
                   </Button>
                 </div>
                 <div className="space-y-2">
@@ -474,20 +478,20 @@ export default function FAPSyncPage() {
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center space-x-2">
                   <Eye className="h-5 w-5" />
-                  <span>Preview dữ liệu đồng bộ</span>
+                  <span>Sync Data Preview</span>
                 </CardTitle>
                 <div className="flex space-x-2">
                   <Button
                     variant="outline"
                     onClick={() => setShowPreview(false)}
                   >
-                    Đóng
+                    Close
                   </Button>
                   <Button
                     className="bg-orange-500 hover:bg-orange-600"
                     onClick={startSync}
                   >
-                    Xác nhận đồng bộ
+                    Confirm Sync
                   </Button>
                 </div>
               </div>
@@ -498,7 +502,7 @@ export default function FAPSyncPage() {
                 <div>
                   <h4 className="font-medium text-gray-900 mb-3 flex items-center space-x-2">
                     <BookOpen className="h-4 w-4" />
-                    <span>Lớp học ({previewData.classes.length})</span>
+                    <span>Classes ({previewData.classes.length})</span>
                   </h4>
                   <div className="space-y-2 max-h-64 overflow-y-auto">
                     {previewData.classes.map(cls => (
@@ -509,7 +513,7 @@ export default function FAPSyncPage() {
                         <div>
                           <div className="font-medium text-sm">{cls.name}</div>
                           <div className="text-xs text-gray-500">
-                            {cls.instructor} • {cls.students} sinh viên
+                            {cls.instructor} • {cls.students} students
                           </div>
                           {cls.changes && (
                             <div className="text-xs text-orange-600 mt-1">
@@ -532,7 +536,7 @@ export default function FAPSyncPage() {
                 <div>
                   <h4 className="font-medium text-gray-900 mb-3 flex items-center space-x-2">
                     <Users className="h-4 w-4" />
-                    <span>Sinh viên ({previewData.students.length})</span>
+                    <span>Students ({previewData.students.length})</span>
                   </h4>
                   <div className="space-y-2 max-h-64 overflow-y-auto">
                     {previewData.students.map(student => (
@@ -574,13 +578,13 @@ export default function FAPSyncPage() {
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center space-x-2">
                 <FileText className="h-5 w-5" />
-                <span>Lịch sử đồng bộ</span>
+                <span>Sync History</span>
               </CardTitle>
               <div className="flex items-center space-x-3">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                   <Input
-                    placeholder="Tìm kiếm..."
+                    placeholder="Search..."
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
                     className="pl-10 w-64"
@@ -588,13 +592,13 @@ export default function FAPSyncPage() {
                 </div>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger className="w-40">
-                    <SelectValue placeholder="Trạng thái" />
+                    <SelectValue placeholder="Status" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Tất cả</SelectItem>
-                    <SelectItem value="success">Thành công</SelectItem>
-                    <SelectItem value="partial">Một phần</SelectItem>
-                    <SelectItem value="failed">Thất bại</SelectItem>
+                    <SelectItem value="all">All</SelectItem>
+                    <SelectItem value="success">Success</SelectItem>
+                    <SelectItem value="partial">Partial</SelectItem>
+                    <SelectItem value="failed">Failed</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -630,17 +634,17 @@ export default function FAPSyncPage() {
 
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600 mb-2">
                           <div>
-                            <span className="font-medium">Lớp học:</span>
+                            <span className="font-medium">Classes:</span>
                             <div className="text-gray-900">
-                              {log.classesFound} tìm thấy • {log.classesAdded}{' '}
-                              thêm • {log.classesUpdated} cập nhật
+                              {log.classesFound} found • {log.classesAdded}{' '}
+                              added • {log.classesUpdated} updated
                             </div>
                           </div>
                           <div>
-                            <span className="font-medium">Sinh viên:</span>
+                            <span className="font-medium">Students:</span>
                             <div className="text-gray-900">
-                              {log.studentsFound} tìm thấy • {log.studentsAdded}{' '}
-                              thêm • {log.studentsUpdated} cập nhật
+                              {log.studentsFound} found • {log.studentsAdded}{' '}
+                              added • {log.studentsUpdated} updated
                             </div>
                           </div>
                         </div>
@@ -648,14 +652,14 @@ export default function FAPSyncPage() {
                         {log.errors.length > 0 && (
                           <div className="flex items-center space-x-2 text-sm text-red-600 mb-1">
                             <XCircle className="h-4 w-4" />
-                            <span>{log.errors.length} lỗi</span>
+                            <span>{log.errors.length} errors</span>
                           </div>
                         )}
 
                         {log.warnings.length > 0 && (
                           <div className="flex items-center space-x-2 text-sm text-orange-600">
                             <AlertTriangle className="h-4 w-4" />
-                            <span>{log.warnings.length} cảnh báo</span>
+                            <span>{log.warnings.length} warnings</span>
                           </div>
                         )}
                       </div>
@@ -670,7 +674,7 @@ export default function FAPSyncPage() {
                       }}
                     >
                       <Eye className="mr-2 h-4 w-4" />
-                      Chi tiết
+                      Details
                     </Button>
                   </div>
                 </div>
@@ -684,7 +688,7 @@ export default function FAPSyncPage() {
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="flex items-center space-x-3">
-                <span>Chi tiết đồng bộ</span>
+                <span>Sync Details</span>
                 {selectedLog && (
                   <Badge className={getStatusColor(selectedLog.status)}>
                     {getStatusIcon(selectedLog.status)}
@@ -696,7 +700,7 @@ export default function FAPSyncPage() {
               </DialogTitle>
               <DialogDescription>
                 {selectedLog &&
-                  `Thời gian: ${selectedLog.timestamp} • Thời lượng: ${selectedLog.duration}s`}
+                  `Time: ${selectedLog.timestamp} • Duration: ${selectedLog.duration}s`}
               </DialogDescription>
             </DialogHeader>
             {selectedLog && (
@@ -704,22 +708,22 @@ export default function FAPSyncPage() {
                 {/* Summary */}
                 <div className="grid grid-cols-2 gap-6">
                   <div>
-                    <h4 className="font-medium text-gray-900 mb-3">Lớp học</h4>
+                    <h4 className="font-medium text-gray-900 mb-3">Classes</h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Tìm thấy:</span>
+                        <span className="text-gray-600">Found:</span>
                         <span className="font-medium">
                           {selectedLog.classesFound}
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Thêm mới:</span>
+                        <span className="text-gray-600">Added:</span>
                         <span className="font-medium text-green-600">
                           {selectedLog.classesAdded}
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Cập nhật:</span>
+                        <span className="text-gray-600">Updated:</span>
                         <span className="font-medium text-orange-600">
                           {selectedLog.classesUpdated}
                         </span>
@@ -728,23 +732,23 @@ export default function FAPSyncPage() {
                   </div>
                   <div>
                     <h4 className="font-medium text-gray-900 mb-3">
-                      Sinh viên
+                      Students
                     </h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Tìm thấy:</span>
+                        <span className="text-gray-600">Found:</span>
                         <span className="font-medium">
                           {selectedLog.studentsFound}
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Thêm mới:</span>
+                        <span className="text-gray-600">Added:</span>
                         <span className="font-medium text-green-600">
                           {selectedLog.studentsAdded}
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Cập nhật:</span>
+                        <span className="text-gray-600">Updated:</span>
                         <span className="font-medium text-orange-600">
                           {selectedLog.studentsUpdated}
                         </span>
@@ -758,7 +762,7 @@ export default function FAPSyncPage() {
                   <div>
                     <h4 className="font-medium text-gray-900 mb-3 flex items-center space-x-2">
                       <XCircle className="h-4 w-4 text-red-500" />
-                      <span>Lỗi ({selectedLog.errors.length})</span>
+                      <span>Errors ({selectedLog.errors.length})</span>
                     </h4>
                     <div className="space-y-2">
                       {selectedLog.errors.map((error, index) => (
@@ -778,7 +782,7 @@ export default function FAPSyncPage() {
                   <div>
                     <h4 className="font-medium text-gray-900 mb-3 flex items-center space-x-2">
                       <AlertTriangle className="h-4 w-4 text-orange-500" />
-                      <span>Cảnh báo ({selectedLog.warnings.length})</span>
+                      <span>Warnings ({selectedLog.warnings.length})</span>
                     </h4>
                     <div className="space-y-2">
                       {selectedLog.warnings.map((warning, index) => (
@@ -799,11 +803,11 @@ export default function FAPSyncPage() {
                 variant="outline"
                 onClick={() => setIsLogModalOpen(false)}
               >
-                Đóng
+                Close
               </Button>
               <Button variant="outline">
                 <Download className="mr-2 h-4 w-4" />
-                Tải log
+                Download Log
               </Button>
             </div>
           </DialogContent>

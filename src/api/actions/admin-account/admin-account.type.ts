@@ -25,10 +25,17 @@ export type AuditAccountArgs = {
     phone?: string;
     roleId: string;
     department?: string;
+    userName?: string;
+    password?: string;
 }
 
 export type UpdateAccountArgs = AuditAccountArgs & { id: string }
 
 export type ChangeStatusAccountArgs = {
     id: string, isActive: boolean, reason: string
+}
+
+export type ChangePassArgs = {
+    userId: string,
+    newPassword: string
 }
