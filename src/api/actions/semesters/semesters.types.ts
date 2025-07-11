@@ -42,3 +42,8 @@ export type SemesterResponse = {
     isActive: boolean
     createdAt: string
 }
+
+export type SemesterByClassRequest = {
+    semester?: number
+    academicYear?: string
+}
