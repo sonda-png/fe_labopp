@@ -1,6 +1,9 @@
 import { type AxiosError, AxiosResponse } from 'axios'
 import { getStandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError'
 import { ApiResponse } from '../../apiClientContext/ApiClientContext.types'
+import { authStore } from '@/stores/authStore'
+import { getLoginUrlWithRedirect } from '@/utils/helpers/redirectAfterLogin'
+import { toast } from 'react-toastify'
 
 export function responseSuccessInterceptor<T>(
   response: AxiosResponse<ApiResponse<T>>
@@ -11,12 +14,13 @@ export function responseSuccessInterceptor<T>(
 export const useResponseFailureInterceptor = async (
   error: AxiosError<unknown>
 ) => {
-  // const { setAuthData, clearTokens, accessToken, refreshToken } = authStore.getState();
+  const { clearTokens } = authStore.getState();
+  const loginUrl = getLoginUrlWithRedirect()
   const standarizedError = getStandardizedApiError(error)
   if (standarizedError.statusCode === 401) {
-    // clearTokens();
-    window.location.replace('/login')
-
+    clearTokens();
+    window.location.replace(loginUrl)
+    toast.error('Session expired, please login again')
     return Promise.reject(standarizedError)
   }
   if (standarizedError.statusCode === 403) {
