@@ -97,10 +97,12 @@ export const SidebarComponent = () => {
       label: 'Teacher submission -TC',
       icon: BarChart3,
       path: '/teacher-submission',
+    },
+    {
       id: 'assignment-statistic',
       label: 'Assignment statistics-HS',
       icon: BarChart3,
-      path: '/assignment-statistic',
+      path: '/assignment-statistic', 
     },
   ]
 
