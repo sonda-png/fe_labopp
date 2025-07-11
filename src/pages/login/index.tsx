@@ -1,6 +1,4 @@
-import { FC } from 'react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import {
   Card,
   CardContent,
@@ -10,73 +8,94 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { Link, useMatch, useNavigate } from '@tanstack/react-router'
+import { Link, useNavigate, useSearch } from '@tanstack/react-router'
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google'
-import { useMutation } from '@/hooks'
 import { LoginMutationResponse } from '@/api/actions/auth/auth.types'
-import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
-import { toast } from 'react-toastify'
 import { authStore } from '@/stores/authStore'
+import { getNavigateByRole } from '@/utils/helpers/getNavigateByRole'
+import { useMutation } from '@/hooks'
+import { toast } from 'react-toastify'
+import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
+import { Input } from '@/components/ui/input'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { loginSchema, LoginFormData } from '@/schema/loginSchema'
 
-export const LoginPage: FC = () => {
+export const LoginPage = () => {
   const { setAuthData } = authStore()
-  // const path = useMatch({ from: '/login' })
+  const search = useSearch({ strict: false })
   const navigate = useNavigate()
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault()
-    // Handle login logic here
-    navigate({ to: '/class-manage' })
-  }
+
+  // Setup form with Zod validation
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    mode: 'onChange',
+  })
 
   const handleLoginNavigate = (role: string) => {
-    switch (role) {
-      case 'Admin':
-        navigate({ to: '/dashboard/admin' })
-        break
-      case 'Teacher':
-        navigate({ to: '/dashboard/teacher' })
-        break
-      case 'Student':
-        navigate({ to: '/dashboard/student' })
-        break
-      case 'Head Subject':
-        navigate({ to: '/dashboard/head-subject' })
-        break
-      default:
-        toast.error('Có lỗi xảy ra, vui lòng liên hệ admin để đăng nhập')
+    if (search.redirectTo) {
+      navigate({ to: '/' + search.redirectTo, replace: true })
+      return
+    }
+    const path = getNavigateByRole(role)
+    if (path) {
+      navigate({ to: path, replace: true })
     }
   }
 
-  const { mutateAsync: loginMutation } = useMutation('loginMutation', {
-    onSuccess: (res: LoginMutationResponse) => {
-      setAuthData({
-        isAuthenticated: true,
-        userId: res.userId,
-        email: res.email,
-        role: res.role,
-        token: res.token,
-      })
-      // tìm tanstack để lấy được path params
-      handleLoginNavigate(res.role)
-      toast.success('Đăng nhập thành công')
-    },
-    onError: (error: StandardizedApiError) => {
-      toast.error(error.message)
-    },
-  })
+  const handleLoginSuccess = (res: LoginMutationResponse) => {
+    setAuthData({
+      isAuthenticated: true,
+      userId: res.userId,
+      email: res.email,
+      role: res.role,
+      token: res.token,
+    })
+
+    toast.success('Login success')
+    // handle login navigate
+    handleLoginNavigate(res.role)
+  }
+
+  const { mutateAsync: googleLoginMutation } = useMutation(
+    'loginGoogleMutation',
+    {
+      onSuccess: (res: LoginMutationResponse) => {
+        handleLoginSuccess(res)
+      },
+      onError: (error: StandardizedApiError) => {
+        toast.error(error.message)
+      },
+    }
+  )
+
+  const { mutateAsync: credentialLoginMutation } = useMutation(
+    'credentialLogin',
+    {
+      onSuccess: (res: LoginMutationResponse) => {
+        handleLoginSuccess(res)
+      },
+      onError: (error: StandardizedApiError) => {
+        toast.error(error.message)
+      },
+    }
+  )
+
+  const handleLogin = async (data: LoginFormData) => {
+    await credentialLoginMutation({
+      userName: data.username,
+      password: data.password,
+    })
+  }
 
   const handleGoogleLogin = async (credentialResponse: CredentialResponse) => {
-    await loginMutation({
+    await googleLoginMutation({
       idToken: credentialResponse.credential ?? '',
     })
-    console.log(credentialResponse)
   }
 
   return (
@@ -84,52 +103,52 @@ export const LoginPage: FC = () => {
       {/* Left side - Login form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-50 p-4 sm:p-8">
         <Card className="w-full max-w-[400px]">
-          <CardHeader>
-            <CardTitle className="text-2xl text-center">Đăng nhập</CardTitle>
-            <CardDescription className="text-center">
-              Chào mừng trở lại! Vui lòng nhập thông tin của bạn
+          <CardHeader className="text-center pb-6">
+            <CardTitle className="text-3xl font-bold">Welcome Back</CardTitle>
+            <CardDescription className="text-lg">
+              Sign in to access your account
             </CardDescription>
           </CardHeader>
-          <form onSubmit={handleLogin}>
+          <form onSubmit={handleSubmit(handleLogin)}>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="facility">Cơ sở</Label>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Lựa chọn cơ sở" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="facility1">Hòa Lạc</SelectItem>
-                    <SelectItem value="facility2">Hồ Chí Minh</SelectItem>
-                    <SelectItem value="facility3">Đà Nẵng</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="username">Username</Label>
                 <Input
-                  id="email"
-                  type="email"
-                  placeholder="Nhập email"
-                  required
+                  id="username"
+                  type="text"
+                  placeholder="Enter username"
+                  {...register('username')}
+                  className={errors.username ? 'border-red-500' : ''}
                 />
+                {errors.username && (
+                  <p className="text-sm text-red-600 mt-1">
+                    {errors.username.message}
+                  </p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <Input
                   id="password"
                   type="password"
-                  placeholder="Nhập password"
-                  required
+                  placeholder="Enter password"
+                  {...register('password')}
+                  className={errors.password ? 'border-red-500' : ''}
                 />
+                {errors.password && (
+                  <p className="text-sm text-red-600 mt-1">
+                    {errors.password.message}
+                  </p>
+                )}
               </div>
             </CardContent>
             <CardFooter className="flex flex-col space-y-4">
               <Button
                 type="submit"
                 className="w-full bg-orange-500 hover:bg-orange-600 text-white"
+                disabled={isSubmitting}
               >
-                Đăng nhập
+                {isSubmitting ? 'Logging in...' : 'Login'}
               </Button>
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
@@ -137,27 +156,19 @@ export const LoginPage: FC = () => {
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
                   <span className="bg-gray-50 px-2 text-gray-500">
-                    Hoặc tiếp tục với
+                    Or continue with
                   </span>
                 </div>
               </div>
               <div className="w-full flex justify-center">
-                <GoogleLogin
-                  width={'100%'}
-                  onSuccess={async (credentialResponse: CredentialResponse) => {
-                    await handleGoogleLogin(credentialResponse)
-                  }}
-                  onError={() => {
-                    console.log('Login Failed')
-                  }}
-                />
+                <GoogleLogin width={'100%'} onSuccess={handleGoogleLogin} />
               </div>
               <div className="text-sm text-center">
                 <Link
                   to="/forgot-pass"
                   className="text-orange-500 hover:underline"
                 >
-                  Quên mật khẩu?
+                  Forgot password?
                 </Link>
               </div>
             </CardFooter>
