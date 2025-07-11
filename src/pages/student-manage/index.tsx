@@ -32,7 +32,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 
-// Dữ liệu cứng cho lớp học
+// Hard-coded data for class
 const classInfo = {
   name: 'Summer2025 - LAB211 - SE1973',
   subject: 'LAB 02- Java OOP',
@@ -42,7 +42,7 @@ const classInfo = {
   totalAssignments: 127,
 }
 
-// Dữ liệu cứng cho sinh viên
+// Hard-coded data for students
 const studentsData = [
   {
     id: 1,
@@ -53,7 +53,7 @@ const studentsData = [
     completedAssignments: 25,
     totalAssignments: 30,
     averageScore: 8.5,
-    lastActivity: '2 giờ trước',
+    lastActivity: '2 hours ago',
     status: 'Active',
     progress: 83,
   },
@@ -66,7 +66,7 @@ const studentsData = [
     completedAssignments: 28,
     totalAssignments: 30,
     averageScore: 9.2,
-    lastActivity: '1 ngày trước',
+    lastActivity: '1 day ago',
     status: 'Active',
     progress: 93,
   },
@@ -79,7 +79,7 @@ const studentsData = [
     completedAssignments: 20,
     totalAssignments: 30,
     averageScore: 7.8,
-    lastActivity: '3 ngày trước',
+    lastActivity: '3 days ago',
     status: 'Warning',
     progress: 67,
   },
@@ -92,7 +92,7 @@ const studentsData = [
     completedAssignments: 30,
     totalAssignments: 30,
     averageScore: 9.8,
-    lastActivity: '30 phút trước',
+    lastActivity: '30 minutes ago',
     status: 'Active',
     progress: 100,
   },
@@ -105,7 +105,7 @@ const studentsData = [
     completedAssignments: 15,
     totalAssignments: 30,
     averageScore: 6.5,
-    lastActivity: '1 tuần trước',
+    lastActivity: '1 week ago',
     status: 'Inactive',
     progress: 50,
   },
@@ -118,7 +118,7 @@ const studentsData = [
     completedAssignments: 27,
     totalAssignments: 30,
     averageScore: 8.9,
-    lastActivity: '4 giờ trước',
+    lastActivity: '4 hours ago',
     status: 'Active',
     progress: 90,
   },
@@ -129,7 +129,7 @@ export default function StudentManagement() {
   const [statusFilter, setStatusFilter] = useState('all')
   const [filteredStudents, setFilteredStudents] = useState(studentsData)
 
-  // Lọc sinh viên theo tìm kiếm và trạng thái
+  // Filter students by search and status
   const handleSearch = (value: string) => {
     setSearchTerm(value)
     filterStudents(value, statusFilter)
@@ -163,7 +163,7 @@ export default function StudentManagement() {
 
   const handleViewStudent = (studentId: number) => {
     console.log(`Viewing student details for ID: ${studentId}`)
-    // Xử lý xem chi tiết sinh viên
+    // Handle viewing student details
   }
 
   const getStatusBadge = (status: string) => {
@@ -171,19 +171,19 @@ export default function StudentManagement() {
       case 'Active':
         return (
           <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-            Hoạt động
+            Active
           </Badge>
         )
       case 'Warning':
         return (
           <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
-            Cảnh báo
+            Warning
           </Badge>
         )
       case 'Inactive':
         return (
           <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
-            Không hoạt động
+            Inactive
           </Badge>
         )
       default:
@@ -191,15 +191,10 @@ export default function StudentManagement() {
     }
   }
 
-  const getProgressColor = (progress: number) => {
-    if (progress >= 80) return 'bg-green-500'
-    if (progress >= 60) return 'bg-yellow-500'
-    return 'bg-red-500'
-  }
 
   return (
     <div className="p-6 space-y-6 w-full">
-      {/* Header với thông tin lớp */}
+      {/* Header with class information */}
       <div className="space-y-4 w-full">
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="sm" className="p-2">
@@ -213,12 +208,12 @@ export default function StudentManagement() {
           </div>
           <Badge className="ml-auto bg-green-100 text-green-800 hover:bg-green-100">
             {classInfo.status === 'Active'
-              ? 'Đang hoạt động'
-              : 'Không hoạt động'}
+              ? 'Active'
+              : 'Inactive'}
           </Badge>
         </div>
 
-        {/* Thống kê tổng quan */}
+        {/* Overview statistics */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card>
             <CardContent className="p-4">
@@ -227,7 +222,7 @@ export default function StudentManagement() {
                   <Users className="h-5 w-5 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Tổng sinh viên</p>
+                  <p className="text-sm text-gray-600">Total Students</p>
                   <p className="text-2xl font-bold text-gray-900">
                     {classInfo.totalStudents}
                   </p>
@@ -243,7 +238,7 @@ export default function StudentManagement() {
                   <TrendingUp className="h-5 w-5 text-green-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Hoạt động</p>
+                  <p className="text-sm text-gray-600">Active</p>
                   <p className="text-2xl font-bold text-green-600">
                     {filteredStudents.filter(s => s.status === 'Active').length}
                   </p>
@@ -259,7 +254,7 @@ export default function StudentManagement() {
                   <Clock className="h-5 w-5 text-yellow-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Cảnh báo</p>
+                  <p className="text-sm text-gray-600">Warning</p>
                   <p className="text-2xl font-bold text-yellow-600">
                     {
                       filteredStudents.filter(s => s.status === 'Warning')
@@ -278,7 +273,7 @@ export default function StudentManagement() {
                   <BookOpen className="h-5 w-5 text-orange-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Bài tập</p>
+                  <p className="text-sm text-gray-600">Assignments</p>
                   <p className="text-2xl font-bold text-gray-900">
                     {classInfo.totalAssignments}
                   </p>
@@ -289,15 +284,15 @@ export default function StudentManagement() {
         </div>
       </div>
 
-      {/* Thanh tìm kiếm và lọc */}
+      {/* Search and filter bar */}
       <Card className="w-full">
         <CardHeader className="px-6">
           <CardTitle className="flex items-center justify-between">
-            <span>Danh sách sinh viên</span>
+            <span>Student List</span>
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm">
                 <Download className="h-4 w-4 mr-2" />
-                Xuất Excel
+                Export Excel
               </Button>
             </div>
           </CardTitle>
@@ -307,7 +302,7 @@ export default function StudentManagement() {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
-                placeholder="Tìm kiếm theo tên, mã sinh viên hoặc email..."
+                placeholder="Search by name, student code or email..."
                 value={searchTerm}
                 onChange={e => handleSearch(e.target.value)}
                 className="pl-10"
@@ -316,29 +311,29 @@ export default function StudentManagement() {
             <Select value={statusFilter} onValueChange={handleStatusFilter}>
               <SelectTrigger className="w-full sm:w-48">
                 <Filter className="h-4 w-4 mr-2" />
-                <SelectValue placeholder="Lọc theo trạng thái" />
+                <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tất cả trạng thái</SelectItem>
-                <SelectItem value="active">Hoạt động</SelectItem>
-                <SelectItem value="warning">Cảnh báo</SelectItem>
-                <SelectItem value="inactive">Không hoạt động</SelectItem>
+                <SelectItem value="all">All statuses</SelectItem>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="warning">Warning</SelectItem>
+                <SelectItem value="inactive">Inactive</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          {/* Bảng danh sách sinh viên */}
+          {/* Student list table */}
           <div className="rounded-md border">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Sinh viên</TableHead>
-                  <TableHead>Mã sinh viên</TableHead>
-                  <TableHead>Tiến độ</TableHead>
-                  <TableHead>Điểm TB</TableHead>
-                  <TableHead>Hoạt động cuối</TableHead>
-                  <TableHead>Trạng thái</TableHead>
-                  <TableHead className="text-right">Thao tác</TableHead>
+                  <TableHead>Student</TableHead>
+                  <TableHead>Student Code</TableHead>
+                  <TableHead>Progress</TableHead>
+                  <TableHead>Average Score</TableHead>
+                  <TableHead>Last Activity</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -425,10 +420,10 @@ export default function StudentManagement() {
             <div className="text-center py-8">
               <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Không tìm thấy sinh viên
+                No students found
               </h3>
               <p className="text-gray-600">
-                Thử thay đổi từ khóa tìm kiếm hoặc bộ lọc.
+                Try changing your search keywords or filters.
               </p>
             </div>
           )}

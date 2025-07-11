@@ -2,6 +2,11 @@ export type LoginMutationArguments = {
   idToken: string
 }
 
+export type CredentialLoginMutationArguments = {
+  userName: string
+  password: string
+}
+
 export type LoginMutationResponse = {
   userId: string
   email: string
