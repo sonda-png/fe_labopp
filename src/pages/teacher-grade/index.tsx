@@ -29,14 +29,26 @@ import { useSearch } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { useApiClient } from '@/hooks/useApiClient/useApiClient'
 import { teacherSubmissionQueries } from '@/api/actions/teacher-submit/teacher-submit.queries'
-import { TeacherSubmissionData } from '@/api/actions/teacher-submit/teacher-submit.type'
+import {
+  TeacherSubmissionData,
+  SubmissionStatus,
+} from '@/api/actions/teacher-submit/teacher-submit.type'
+import TeacherGradeDetail from '@/components/features/teacher-grade/teacher-grade-grading'
+import TeacherSubmissionDetail from '@/components/features/teacher-grade/teacher-grade-detail'
 
 export default function TeacherGradingSystem() {
   const { classId = '' } = useSearch({ from: '/_auth/teacher-grade/' })
   const { client } = useApiClient()
 
-  const queryOptions = teacherSubmissionQueries.getWaiting(classId)
-  const { data, isLoading } = useQuery({
+  const [statusFilter, setStatusFilter] = useState<SubmissionStatus | 'all'>(
+    'all'
+  )
+
+  const queryOptions = teacherSubmissionQueries.getWaiting(
+    classId,
+    statusFilter !== 'all' ? statusFilter : undefined
+  )
+  const { data, isLoading, refetch } = useQuery({
     ...queryOptions,
     queryFn: queryOptions.queryFn(client),
     enabled: !!classId,
@@ -46,7 +58,6 @@ export default function TeacherGradingSystem() {
   const submissions: TeacherSubmissionData[] = Array.isArray(data) ? data : []
 
   const [searchTerm, setSearchTerm] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all')
 
   const filteredSubmissions = submissions.filter(
     (submission: TeacherSubmissionData) => {
@@ -57,9 +68,7 @@ export default function TeacherGradingSystem() {
         submission.assignmentCode
           .toLowerCase()
           .includes(searchTerm.toLowerCase())
-      const matchesStatus =
-        statusFilter === 'all' || submission.status === 'Draft'
-      return matchesSearch && matchesStatus
+      return matchesSearch
     }
   )
 
@@ -67,19 +76,6 @@ export default function TeacherGradingSystem() {
     return <div>Loading...</div>
   }
 
-  if (!submissions.length) {
-    return (
-      <div className="text-center py-12">
-        <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-        <h3 className="text-lg font-medium text-gray-900 mb-2">
-          Không tìm thấy bài nộp nào
-        </h3>
-        <p className="text-gray-600">
-          Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm.
-        </p>
-      </div>
-    )
-  }
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -96,7 +92,7 @@ export default function TeacherGradingSystem() {
           </div>
         </div>
 
-        {/* Filters */}
+        {/* Filters luôn hiển thị */}
         <Card className="bg-white">
           <CardContent className="p-6">
             <div className="flex flex-col md:flex-row gap-4">
@@ -111,117 +107,143 @@ export default function TeacherGradingSystem() {
                   />
                 </div>
               </div>
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <Select
+                value={statusFilter}
+                onValueChange={val =>
+                  setStatusFilter(val as SubmissionStatus | 'all')
+                }
+              >
                 <SelectTrigger className="w-48">
                   <SelectValue placeholder="Lọc theo trạng thái" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Tất cả trạng thái</SelectItem>
-                  <SelectItem value="Draft">Nháp</SelectItem>
-                  <SelectItem value="Submitted">Đã nộp</SelectItem>
-                  <SelectItem value="Graded">Đã chấm</SelectItem>
-                  <SelectItem value="Reviewed">Đã review</SelectItem>
+                  <SelectItem value="Drafted">Chờ chấm</SelectItem>
+                  <SelectItem value="Passed">Đạt</SelectItem>
+                  <SelectItem value="Rejected">Không đạt</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </CardContent>
         </Card>
 
-        {/* Submissions Table */}
+        {/* Submissions Table hoặc Empty State */}
         <Card className="bg-white">
           <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
-                  <tr>
-                    <th className="text-left py-4 px-6 font-medium text-gray-900">
-                      Sinh viên
-                    </th>
-                    <th className="text-left py-4 px-6 font-medium text-gray-900">
-                      Bài tập
-                    </th>
-                    <th className="text-left py-4 px-6 font-medium text-gray-900">
-                      Thời gian nộp
-                    </th>
-                    <th className="text-left py-4 px-6 font-medium text-gray-900">
-                      LOC
-                    </th>
-                    <th className="text-left py-4 px-6 font-medium text-gray-900">
-                      Trạng thái
-                    </th>
-                    <th className="text-left py-4 px-6 font-medium text-gray-900">
-                      Ghi chú
-                    </th>
-                    <th className="text-left py-4 px-6 font-medium text-gray-900">
-                      Chấm bài
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {filteredSubmissions.map(
-                    (submission: TeacherSubmissionData) => (
-                      <tr key={submission.id} className="hover:bg-gray-50">
-                        <td className="py-4 px-6">
-                          <div className="flex items-center gap-2">
-                            <User className="h-4 w-4 text-gray-500" />
-                            <span className="font-medium text-gray-900">
-                              {submission.studentName}
+            {filteredSubmissions.length === 0 ? (
+              <div className="text-center py-12">
+                <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  Không tìm thấy bài nộp nào
+                </h3>
+                <p className="text-gray-600">
+                  Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm.
+                </p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50 border-b border-gray-200">
+                    <tr>
+                      <th className="text-left py-4 px-6 font-medium text-gray-900">
+                        Sinh viên
+                      </th>
+                      <th className="text-left py-4 px-6 font-medium text-gray-900">
+                        Bài tập
+                      </th>
+                      <th className="text-left py-4 px-6 font-medium text-gray-900">
+                        Thời gian nộp
+                      </th>
+                      <th className="text-left py-4 px-6 font-medium text-gray-900">
+                        LOC
+                      </th>
+                      <th className="text-left py-4 px-6 font-medium text-gray-900">
+                        Trạng thái
+                      </th>
+                      <th className="text-left py-4 px-6 font-medium text-gray-900">
+                        Ghi chú
+                      </th>
+                      <th className="text-left py-4 px-6 font-medium text-gray-900">
+                        Chấm bài
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {filteredSubmissions.map(
+                      (submission: TeacherSubmissionData) => (
+                        <tr key={submission.id} className="hover:bg-gray-50">
+                          <td className="py-4 px-6">
+                            <div className="flex items-center gap-2">
+                              <User className="h-4 w-4 text-gray-500" />
+                              <span className="font-medium text-gray-900">
+                                {submission.studentName}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="py-4 px-6">
+                            <div className="flex items-center gap-2">
+                              <Code className="h-4 w-4 text-gray-500" />
+                              <span className="text-gray-600">
+                                {submission.assignmentCode}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="py-4 px-6">
+                            <div className="flex items-center gap-2">
+                              <Calendar className="h-4 w-4 text-gray-500" />
+                              <span className="text-gray-600 text-sm">
+                                {new Date(
+                                  submission.submittedAt
+                                ).toLocaleString('vi-VN')}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="py-4 px-6">
+                            <Badge
+                              variant="outline"
+                              className="text-orange-600 border-orange-200"
+                            >
+                              {submission.loc}
+                            </Badge>
+                          </td>
+                          <td className="py-4 px-6">
+                            <Badge
+                              variant="outline"
+                              className="text-blue-600 border-blue-200"
+                            >
+                              {submission.status}
+                            </Badge>
+                          </td>
+                          <td className="py-4 px-6">
+                            <span
+                              className="text-sm text-gray-600 max-w-32 truncate"
+                              title={submission.comment}
+                            >
+                              {submission.comment || 'Không có ghi chú'}
                             </span>
-                          </div>
-                        </td>
-                        <td className="py-4 px-6">
-                          <div className="flex items-center gap-2">
-                            <Code className="h-4 w-4 text-gray-500" />
-                            <span className="text-gray-600">
-                              {submission.assignmentCode}
-                            </span>
-                          </div>
-                        </td>
-                        <td className="py-4 px-6">
-                          <div className="flex items-center gap-2">
-                            <Calendar className="h-4 w-4 text-gray-500" />
-                            <span className="text-gray-600 text-sm">
-                              {new Date(submission.submittedAt).toLocaleString(
-                                'vi-VN'
-                              )}
-                            </span>
-                          </div>
-                        </td>
-                        <td className="py-4 px-6">
-                          <Badge
-                            variant="outline"
-                            className="text-orange-600 border-orange-200"
-                          >
-                            {submission.loc}
-                          </Badge>
-                        </td>
-                        <td className="py-4 px-6">
-                          <Badge
-                            variant="outline"
-                            className="text-blue-600 border-blue-200"
-                          >
-                            {submission.status}
-                          </Badge>
-                        </td>
-                        <td className="py-4 px-6">
-                          <span
-                            className="text-sm text-gray-600 max-w-32 truncate"
-                            title={submission.comment}
-                          >
-                            {submission.comment || 'Không có ghi chú'}
-                          </span>
-                        </td>
-                        <td className="py-4 px-6">
-                          <Button variant="outline" size="sm">
-                            Chấm bài
-                          </Button>
-                        </td>
-                      </tr>
-                    )
-                  )}
-                </tbody>
-              </table>
-            </div>
+                          </td>
+                          <td className="py-4 px-6 flex gap-2">
+                            <TeacherGradeDetail
+                              submissionId={submission.id}
+                              trigger={
+                                <Button variant="secondary">Chấm bài</Button>
+                              }
+                              onSuccess={refetch}
+                            />
+                            <TeacherSubmissionDetail
+                              submissionId={submission.id}
+                              trigger={
+                                <Button variant="outline">Chi tiết</Button>
+                              }
+                            />
+                          </td>
+                        </tr>
+                      )
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
