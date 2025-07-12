@@ -35,29 +35,29 @@ const recentActivities = [
   {
     id: 1,
     type: 'user_created',
-    message: 'Tạo tài khoản mới cho giảng viên Nguyễn Văn A',
-    time: '2 phút trước',
+    message: 'Created new account for teacher Nguyen Van A',
+    time: '2 minutes ago',
     severity: 'info',
   },
   {
     id: 2,
     type: 'system_alert',
-    message: 'Cảnh báo: Dung lượng lưu trữ đạt 78%',
-    time: '15 phút trước',
+    message: 'Warning: Storage usage at 78%',
+    time: '15 minutes ago',
     severity: 'warning',
   },
   {
     id: 3,
     type: 'backup_complete',
-    message: 'Sao lưu dữ liệu hoàn tất thành công',
-    time: '1 giờ trước',
+    message: 'Data backup completed successfully',
+    time: '1 hour ago',
     severity: 'success',
   },
   {
     id: 4,
     type: 'login_failed',
-    message: 'Phát hiện 5 lần đăng nhập thất bại từ IP 192.168.1.100',
-    time: '2 giờ trước',
+    message: 'Detected 5 failed login attempts from IP 192.168.1.100',
+    time: '2 hours ago',
     severity: 'error',
   },
 ]
@@ -65,23 +65,23 @@ const recentActivities = [
 const quickActions = [
   {
     icon: UserPlus,
-    label: 'Tạo tài khoản',
+    label: 'Create Account',
     action: 'create-user',
     color: 'bg-orange-500',
   },
   {
     icon: Settings,
-    label: 'Cấu hình hệ thống',
+    label: 'System Config',
     action: 'system-config',
     color: 'bg-blue-500',
   },
   {
     icon: Database,
-    label: 'Sao lưu dữ liệu',
+    label: 'Backup Data',
     action: 'backup',
     color: 'bg-green-500',
   },
-  { icon: Shield, label: 'Bảo mật', action: 'security', color: 'bg-red-500' },
+  { icon: Shield, label: 'Security', action: 'security', color: 'bg-red-500' },
 ]
 
 export const AdminDashboard = () => {
@@ -100,7 +100,7 @@ export const AdminDashboard = () => {
               Admin Dashboard
             </h1>
             <p className="text-gray-600">
-              Quản trị hệ thống và giám sát hoạt động
+              System Administration and Monitoring
             </p>
           </div>
         </div>
@@ -118,10 +118,10 @@ export const AdminDashboard = () => {
               }
             >
               {period === 'day'
-                ? 'Hôm nay'
+                ? 'Today'
                 : period === 'week'
-                  ? 'Tuần'
-                  : 'Tháng'}
+                  ? 'Week'
+                  : 'Month'}
             </Button>
           ))}
         </div>
@@ -134,7 +134,7 @@ export const AdminDashboard = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">
-                  Tổng người dùng
+                  Total Users
                 </p>
                 <p className="text-3xl font-bold text-gray-900">
                   {systemStats.totalUsers.toLocaleString()}
@@ -142,7 +142,7 @@ export const AdminDashboard = () => {
                 <div className="flex items-center mt-1">
                   <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
                   <span className="text-sm text-green-600">
-                    +12% so với tháng trước
+                    +12% vs last month
                   </span>
                 </div>
               </div>
@@ -157,14 +157,14 @@ export const AdminDashboard = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Sinh viên</p>
+                <p className="text-sm font-medium text-gray-600">Students</p>
                 <p className="text-3xl font-bold text-gray-900">
                   {systemStats.totalStudents.toLocaleString()}
                 </p>
                 <div className="flex items-center mt-1">
                   <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
                   <span className="text-sm text-green-600">
-                    +8% so với tháng trước
+                    +8% vs last month
                   </span>
                 </div>
               </div>
@@ -179,13 +179,13 @@ export const AdminDashboard = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Giảng viên</p>
+                <p className="text-sm font-medium text-gray-600">Teachers</p>
                 <p className="text-3xl font-bold text-gray-900">
                   {systemStats.totalTeachers}
                 </p>
                 <div className="flex items-center mt-1">
                   <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
-                  <span className="text-sm text-green-600">+3 trong tháng</span>
+                  <span className="text-sm text-green-600">+3 this month</span>
                 </div>
               </div>
               <div className="p-3 bg-green-100 rounded-lg">
@@ -199,13 +199,13 @@ export const AdminDashboard = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Lớp học</p>
+                <p className="text-sm font-medium text-gray-600">Classes</p>
                 <p className="text-3xl font-bold text-gray-900">
                   {systemStats.totalClasses}
                 </p>
                 <div className="flex items-center mt-1">
                   <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
-                  <span className="text-sm text-green-600">+5 lớp mới</span>
+                  <span className="text-sm text-green-600">+5 new classes</span>
                 </div>
               </div>
               <div className="p-3 bg-purple-100 rounded-lg">
@@ -223,7 +223,7 @@ export const AdminDashboard = () => {
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <Server className="h-5 w-5 text-orange-500" />
-              <span>Tình trạng hệ thống</span>
+              <span>System Health</span>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -231,7 +231,7 @@ export const AdminDashboard = () => {
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm font-medium text-gray-600">
-                    Uptime hệ thống
+                    System Uptime
                   </span>
                   <span className="text-sm font-bold text-green-600">
                     {systemStats.systemUptime}%
@@ -251,7 +251,7 @@ export const AdminDashboard = () => {
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm font-medium text-gray-600">
-                    Tải server
+                    Server Load
                   </span>
                   <span className="text-sm font-bold text-orange-600">
                     {systemStats.serverLoad}%
@@ -271,7 +271,7 @@ export const AdminDashboard = () => {
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm font-medium text-gray-600">
-                    Dung lượng lưu trữ
+                    Storage Usage
                   </span>
                   <span className="text-sm font-bold text-red-600">
                     {systemStats.storageUsed}%
@@ -295,17 +295,17 @@ export const AdminDashboard = () => {
                 <p className="text-2xl font-bold text-gray-900">
                   {systemStats.activeUsers}
                 </p>
-                <p className="text-sm text-gray-600">Người dùng online</p>
+                <p className="text-sm text-gray-600">Users Online</p>
               </div>
               <div className="text-center">
                 <BarChart3 className="h-8 w-8 text-blue-500 mx-auto mb-2" />
                 <p className="text-2xl font-bold text-gray-900">89%</p>
-                <p className="text-sm text-gray-600">Hiệu suất</p>
+                <p className="text-sm text-gray-600">Performance</p>
               </div>
               <div className="text-center">
                 <Shield className="h-8 w-8 text-green-500 mx-auto mb-2" />
-                <p className="text-2xl font-bold text-gray-900">Tốt</p>
-                <p className="text-sm text-gray-600">Bảo mật</p>
+                <p className="text-2xl font-bold text-gray-900">Good</p>
+                <p className="text-sm text-gray-600">Security</p>
               </div>
             </div>
           </CardContent>
@@ -316,7 +316,7 @@ export const AdminDashboard = () => {
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <Settings className="h-5 w-5 text-orange-500" />
-              <span>Thao tác nhanh</span>
+              <span>Quick Actions</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -343,7 +343,7 @@ export const AdminDashboard = () => {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Activity className="h-5 w-5 text-orange-500" />
-            <span>Hoạt động gần đây</span>
+            <span>Recent Activities</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -387,12 +387,12 @@ export const AdminDashboard = () => {
                   }
                 >
                   {activity.severity === 'error'
-                    ? 'Lỗi'
+                    ? 'Error'
                     : activity.severity === 'warning'
-                      ? 'Cảnh báo'
+                      ? 'Warning'
                       : activity.severity === 'success'
-                        ? 'Thành công'
-                        : 'Thông tin'}
+                        ? 'Success'
+                        : 'Info'}
                 </Badge>
               </div>
             ))}

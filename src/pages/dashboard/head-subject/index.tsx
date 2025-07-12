@@ -21,9 +21,9 @@ import {
 } from 'lucide-react'
 
 const headData = {
-  name: 'PGS.TS. Trần Văn Minh',
-  position: 'Trưởng bộ môn Công nghệ phần mềm',
-  department: 'Khoa Công nghệ thông tin',
+  name: 'Assoc.Prof.Dr. Tran Van Minh',
+  position: 'Head of Software Engineering Department',
+  department: 'Faculty of Information Technology',
   totalTeachers: 12,
   totalClasses: 28,
   totalStudents: 856,
@@ -76,7 +76,7 @@ const subjects = [
 const teacherPerformance = [
   {
     id: 1,
-    name: 'TS. Nguyễn Thị Lan',
+    name: 'Dr. Nguyen Thi Lan',
     subjects: ['PRF192', 'PRO192'],
     classes: 4,
     students: 156,
@@ -85,7 +85,7 @@ const teacherPerformance = [
   },
   {
     id: 2,
-    name: 'ThS. Lê Văn Nam',
+    name: 'MSc. Le Van Nam',
     subjects: ['LAB211', 'DBI202'],
     classes: 3,
     students: 118,
@@ -94,7 +94,7 @@ const teacherPerformance = [
   },
   {
     id: 3,
-    name: 'TS. Phạm Thị Hoa',
+    name: 'Dr. Pham Thi Hoa',
     subjects: ['PRF192', 'LAB211'],
     classes: 3,
     students: 125,
@@ -107,23 +107,23 @@ const alerts = [
   {
     id: 1,
     type: 'performance',
-    message: 'Tỷ lệ đậu LAB211 giảm 5% so với kỳ trước',
+    message: 'LAB211 pass rate decreased by 5% compared to last term',
     severity: 'warning',
-    time: '2 giờ trước',
+    time: '2 hours ago',
   },
   {
     id: 2,
     type: 'deadline',
-    message: 'Báo cáo cuối kỳ cần nộp trong 3 ngày',
+    message: 'End-of-term report due in 3 days',
     severity: 'info',
-    time: '1 ngày trước',
+    time: '1 day ago',
   },
   {
     id: 3,
     type: 'resource',
-    message: 'Cần phân bổ thêm giảng viên cho PRF192',
+    message: 'Additional teachers needed for PRF192',
     severity: 'warning',
-    time: '2 ngày trước',
+    time: '2 days ago',
   },
 ]
 
@@ -140,7 +140,7 @@ export const HeadSubjectDashboard = () => {
           </div>
           <div>
             <h1 className="text-3xl font-bold text-gray-900">
-              Xin chào, {headData.name}!
+              Welcome, {headData.name}!
             </h1>
             <p className="text-gray-600">{headData.position}</p>
           </div>
@@ -159,10 +159,10 @@ export const HeadSubjectDashboard = () => {
               }
             >
               {period === 'semester'
-                ? 'Học kỳ'
+                ? 'Semester'
                 : period === 'month'
-                  ? 'Tháng'
-                  : 'Tuần'}
+                  ? 'Month'
+                  : 'Week'}
             </Button>
           ))}
         </div>
@@ -174,13 +174,13 @@ export const HeadSubjectDashboard = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Giảng viên</p>
+                <p className="text-sm font-medium text-gray-600">Teachers</p>
                 <p className="text-3xl font-bold text-gray-900">
                   {headData.totalTeachers}
                 </p>
                 <div className="flex items-center mt-1">
                   <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
-                  <span className="text-sm text-green-600">+2 năm này</span>
+                  <span className="text-sm text-green-600">+2 this year</span>
                 </div>
               </div>
               <div className="p-3 bg-orange-100 rounded-lg">
@@ -194,13 +194,13 @@ export const HeadSubjectDashboard = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Lớp học</p>
+                <p className="text-sm font-medium text-gray-600">Classes</p>
                 <p className="text-3xl font-bold text-gray-900">
                   {headData.totalClasses}
                 </p>
                 <div className="flex items-center mt-1">
                   <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
-                  <span className="text-sm text-green-600">+5 lớp mới</span>
+                  <span className="text-sm text-green-600">+5 new classes</span>
                 </div>
               </div>
               <div className="p-3 bg-blue-100 rounded-lg">
@@ -214,13 +214,13 @@ export const HeadSubjectDashboard = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Sinh viên</p>
+                <p className="text-sm font-medium text-gray-600">Students</p>
                 <p className="text-3xl font-bold text-gray-900">
                   {headData.totalStudents}
                 </p>
                 <div className="flex items-center mt-1">
                   <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
-                  <span className="text-sm text-green-600">+12% kỳ này</span>
+                  <span className="text-sm text-green-600">+12% this term</span>
                 </div>
               </div>
               <div className="p-3 bg-green-100 rounded-lg">
@@ -234,13 +234,13 @@ export const HeadSubjectDashboard = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Môn học</p>
+                <p className="text-sm font-medium text-gray-600">Subjects</p>
                 <p className="text-3xl font-bold text-gray-900">
                   {headData.totalSubjects}
                 </p>
                 <div className="flex items-center mt-1">
                   <CheckCircle className="h-4 w-4 text-green-500 mr-1" />
-                  <span className="text-sm text-green-600">Đang hoạt động</span>
+                  <span className="text-sm text-green-600">Active</span>
                 </div>
               </div>
               <div className="p-3 bg-purple-100 rounded-lg">
@@ -258,7 +258,7 @@ export const HeadSubjectDashboard = () => {
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <BookOpen className="h-5 w-5 text-orange-500" />
-              <span>Hiệu quả các môn học</span>
+              <span>Subject Performance</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -275,8 +275,8 @@ export const HeadSubjectDashboard = () => {
                       </h4>
                       <div className="flex items-center space-x-4 mt-1">
                         <span className="text-sm text-gray-600">
-                          {subject.teachers} GV • {subject.classes} lớp •{' '}
-                          {subject.students} SV
+                          {subject.teachers} Teachers • {subject.classes} Classes •{' '}
+                          {subject.students} Students
                         </span>
                         <Badge
                           variant={
@@ -289,8 +289,8 @@ export const HeadSubjectDashboard = () => {
                           }
                         >
                           {subject.status === 'needs_attention'
-                            ? 'Cần chú ý'
-                            : 'Bình thường'}
+                            ? 'Needs Attention'
+                            : 'Normal'}
                         </Badge>
                       </div>
                     </div>
@@ -305,7 +305,7 @@ export const HeadSubjectDashboard = () => {
                           <TrendingDown className="h-5 w-5 text-red-500" />
                         )}
                       </div>
-                      <p className="text-sm text-gray-600">Tỷ lệ đậu</p>
+                      <p className="text-sm text-gray-600">Pass Rate</p>
                     </div>
                   </div>
 
@@ -339,7 +339,7 @@ export const HeadSubjectDashboard = () => {
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <AlertTriangle className="h-5 w-5 text-orange-500" />
-                <span>Thông báo quan trọng</span>
+                <span>Important Alerts</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -369,10 +369,10 @@ export const HeadSubjectDashboard = () => {
                         }
                       >
                         {alert.severity === 'warning'
-                          ? 'Cảnh báo'
+                          ? 'Warning'
                           : alert.severity === 'info'
-                            ? 'Thông tin'
-                            : 'Khẩn cấp'}
+                            ? 'Info'
+                            : 'Urgent'}
                       </Badge>
                     </div>
                   </div>
@@ -386,7 +386,7 @@ export const HeadSubjectDashboard = () => {
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <Award className="h-5 w-5 text-orange-500" />
-                <span>Hiệu quả giảng viên</span>
+                <span>Teacher Performance</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -402,7 +402,7 @@ export const HeadSubjectDashboard = () => {
                           {teacher.name}
                         </h5>
                         <p className="text-sm text-gray-600">
-                          {teacher.subjects.join(', ')} • {teacher.students} SV
+                          {teacher.subjects.join(', ')} • {teacher.students} Students
                         </p>
                       </div>
                       <div className="text-right">
@@ -426,10 +426,10 @@ export const HeadSubjectDashboard = () => {
                           }
                         >
                           {teacher.rating === 'excellent'
-                            ? 'Xuất sắc'
+                            ? 'Excellent'
                             : teacher.rating === 'good'
-                              ? 'Tốt'
-                              : 'Trung bình'}
+                              ? 'Good'
+                              : 'Average'}
                         </Badge>
                       </div>
                     </div>
@@ -446,35 +446,35 @@ export const HeadSubjectDashboard = () => {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Target className="h-5 w-5 text-orange-500" />
-            <span>Thao tác quản lý</span>
+            <span>Management Actions</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Button className="bg-orange-500 hover:bg-orange-600 h-auto p-4 flex-col space-y-2">
               <FileText className="h-6 w-6" />
-              <span>Báo cáo tổng hợp</span>
+              <span>Summary Report</span>
             </Button>
             <Button
               variant="outline"
               className="border-orange-200 text-orange-600 hover:bg-orange-50 h-auto p-4 flex-col space-y-2"
             >
               <Users className="h-6 w-6" />
-              <span>Quản lý GV</span>
+              <span>Manage Teachers</span>
             </Button>
             <Button
               variant="outline"
               className="border-orange-200 text-orange-600 hover:bg-orange-50 h-auto p-4 flex-col space-y-2"
             >
               <BarChart3 className="h-6 w-6" />
-              <span>Phân tích dữ liệu</span>
+              <span>Data Analysis</span>
             </Button>
             <Button
               variant="outline"
               className="border-orange-200 text-orange-600 hover:bg-orange-50 h-auto p-4 flex-col space-y-2"
             >
               <Calendar className="h-6 w-6" />
-              <span>Lập kế hoạch</span>
+              <span>Planning</span>
             </Button>
           </div>
         </CardContent>
