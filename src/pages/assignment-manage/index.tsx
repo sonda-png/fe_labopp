@@ -223,7 +223,6 @@ export default function AssignmentManagement() {
     },
   ]
 
-
   // Log dialog open state for debugging
   if (isEditDialogOpen) {
     console.log('DialogContent rendered, isEditDialogOpen:', isEditDialogOpen)

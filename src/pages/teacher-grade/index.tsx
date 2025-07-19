@@ -10,13 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import {
-  Search,
-  User,
-  Code,
-  Calendar,
-  FileText,
-} from 'lucide-react'
+import { Search, User, Code, Calendar, FileText } from 'lucide-react'
 import { useSearch } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { useApiClient } from '@/hooks/useApiClient/useApiClient'
