@@ -205,18 +205,6 @@ export const ManageAccountDetail = ({
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="flex items-center space-x-3">
-                    <Calendar className="h-4 w-4 text-gray-400" />
-                    <div>
-                      <p className="text-sm text-gray-500">Ngày tạo</p>
-                      <p className="font-medium">
-                        {userDetail.createdAt
-                          ? convertLocalTime(userDetail.createdAt)
-                          : 'Không có thông tin'}
-                      </p>
-                    </div>
-                  </div>
-
                   <Separator />
 
                   <div className="flex items-center space-x-3">
@@ -230,18 +218,6 @@ export const ManageAccountDetail = ({
                   </div>
 
                   <Separator />
-
-                  <div className="flex items-center space-x-3">
-                    <Calendar className="h-4 w-4 text-gray-400" />
-                    <div>
-                      <p className="text-sm text-gray-500">Cập nhật cuối</p>
-                      <p className="font-medium">
-                        {userDetail.updatedAt
-                          ? convertLocalTime(userDetail.updatedAt)
-                          : 'Không có thông tin'}
-                      </p>
-                    </div>
-                  </div>
                 </CardContent>
               </Card>
             </div>
