@@ -23,7 +23,6 @@ import {
   Building,
   Shield,
   Activity,
-  MapPin,
   X,
 } from 'lucide-react'
 

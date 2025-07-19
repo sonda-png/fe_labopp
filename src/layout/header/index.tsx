@@ -20,7 +20,6 @@ import {
 } from 'lucide-react'
 import { authStore } from '@/stores/authStore'
 import { useNavigate } from '@tanstack/react-router'
-import { getLoginUrlWithRedirect } from '@/utils/helpers/redirectAfterLogin'
 
 export const HeaderComponent = () => {
   const { authValues, clearTokens } = authStore()

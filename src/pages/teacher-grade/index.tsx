@@ -1,5 +1,3 @@
-'use client'
-
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -14,16 +12,10 @@ import {
 } from '@/components/ui/select'
 import {
   Search,
-  Download,
-  Eye,
-  MessageSquare,
-  Clock,
   User,
   Code,
   Calendar,
   FileText,
-  CheckCircle,
-  Star,
 } from 'lucide-react'
 import { useSearch } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
