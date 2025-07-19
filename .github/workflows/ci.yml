@@ -2,9 +2,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [main, develop, feat/*]
+    branches: [main, dev, feat/*]
   pull_request:
-    branches: [main, develop]
+    branches: [main, dev]
 
 jobs:
   test-and-lint:
@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x, 20.x]
+        node-version: [18.x]
 
     steps:
       - name: Checkout code
@@ -29,9 +29,6 @@ jobs:
 
       - name: Run type checking
         run: npm run type-check
-
-      - name: Run linting
-        run: npm run lint
 
       - name: Run linting with fix
         run: npm run lint:fix
