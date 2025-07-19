@@ -28,8 +28,5 @@ const handleGoogleLogin =
 
 const handleCredentialLogin =
   (client: AxiosInstance) => async (body: CredentialLoginMutationArguments) => {
-    return (
-      await client.post<LoginMutationResponse>('/auth/login', body)
-    ).data
+    return (await client.post<LoginMutationResponse>('/auth/login', body)).data
   }
-

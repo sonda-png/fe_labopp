@@ -1,4 +1,4 @@
 export type TestMutationReponse = {
-    fact: string,
-    length: number
+  fact: string
+  length: number
 }

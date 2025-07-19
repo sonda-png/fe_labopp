@@ -1061,7 +1061,9 @@ export default function AcademicOutcomeReport() {
                     <div className="text-2xl font-bold text-orange-600 mb-2">
                       85.9%
                     </div>
-                    <div className="text-sm text-gray-600">Easiest Assignment</div>
+                    <div className="text-sm text-gray-600">
+                      Easiest Assignment
+                    </div>
                     <div className="text-xs text-gray-500 mt-1">
                       Calculator App
                     </div>
@@ -1070,7 +1072,9 @@ export default function AcademicOutcomeReport() {
                     <div className="text-2xl font-bold text-red-600 mb-2">
                       66.7%
                     </div>
-                    <div className="text-sm text-gray-600">Hardest Assignment</div>
+                    <div className="text-sm text-gray-600">
+                      Hardest Assignment
+                    </div>
                     <div className="text-xs text-gray-500 mt-1">
                       File Processing
                     </div>
@@ -1088,7 +1092,9 @@ export default function AcademicOutcomeReport() {
                     <div className="text-2xl font-bold text-orange-600 mb-2">
                       64.5%
                     </div>
-                    <div className="text-sm text-gray-600">Class Needs Improvement</div>
+                    <div className="text-sm text-gray-600">
+                      Class Needs Improvement
+                    </div>
                     <div className="text-xs text-gray-500 mt-1">
                       LAB211-SE1967
                     </div>
