@@ -18,7 +18,6 @@ import {
   User,
   Mail,
   Phone,
-  Calendar,
   Clock,
   Building,
   Shield,
