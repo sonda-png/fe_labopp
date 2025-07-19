@@ -1,5 +1,3 @@
-'use client'
-
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useApiClient } from '@/hooks/useApiClient/useApiClient'
@@ -28,7 +26,6 @@ import {
   Clock,
 } from 'lucide-react'
 import { authStore } from '@/stores/authStore'
-import { TeacherClass } from '@/api/actions/teacher-dashboard/teacher-dashboard.type'
 import { useNavigate } from '@tanstack/react-router'
 
 export default function TeacherSubmissionClassList() {

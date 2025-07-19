@@ -14,7 +14,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
-import { Badge } from "@/components/ui/badge"
 
 // Mock data based on the Lab_Assignment table
 const labAssignments = [
