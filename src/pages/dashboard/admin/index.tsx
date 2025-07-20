@@ -1,8 +1,6 @@
-import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Progress } from '@/components/ui/progress'
 import {
   Users,
   School,
@@ -14,9 +12,7 @@ import {
   Settings,
   Database,
   Shield,
-  Server,
   Crown,
-  BarChart3,
 } from 'lucide-react'
 
 const systemStats = {
@@ -85,8 +81,6 @@ const quickActions = [
 ]
 
 export const AdminDashboard = () => {
-  const [selectedPeriod, setSelectedPeriod] = useState('week')
-
   return (
     <div className="space-y-6">
       {/* Header */}
