@@ -1,0 +1,123 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, dev, feat/*]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  quality-checks:
+    name: Code Quality & Tests
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run type checking
+        id: type-check
+        run: |
+          echo "Running TypeScript type checking..."
+          npm run type-check
+        continue-on-error: false
+
+      - name: Run linting (allow warnings)
+        id: lint-check
+        run: |
+          echo "Running ESLint checks (warnings allowed)..."
+          npm run lint -- --max-warnings=50
+        continue-on-error: false
+
+      - name: Check code formatting
+        id: format-check
+        run: |
+          echo "Checking code formatting..."
+          npm run format:check
+        continue-on-error: false
+
+      - name: Run tests
+        id: test-check
+        run: |
+          echo "Running test suite..."
+          npm run test
+        continue-on-error: false
+
+      - name: Build project
+        id: build-check
+        run: |
+          echo "Building project..."
+          npm run build
+        continue-on-error: false
+
+  # This job will only run if quality-checks passes
+  merge-guard:
+    name: Merge Protection
+    needs: quality-checks
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && (github.base_ref == 'main' || github.base_ref == 'dev')
+
+    steps:
+      - name: Merge Protection Check
+        run: |
+          echo "✅ All quality checks passed! Ready for merge to ${{ github.base_ref }}"
+          echo "✅ Type checking: PASSED"
+          echo "✅ Linting: PASSED" 
+          echo "✅ Code formatting: PASSED"
+          echo "✅ Tests: PASSED"
+          echo "✅ Build: PASSED"
+
+  # Notification job for failures
+  notify-on-failure:
+    name: Notify on Failure
+    needs: quality-checks
+    runs-on: ubuntu-latest
+    if: failure() && (github.event_name == 'pull_request')
+
+    steps:
+      - name: Comment PR on Failure
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue_number = context.issue.number;
+            const message = `## ❌ CI/CD Pipeline Failed
+
+            The automated quality checks have failed. Please fix the following issues before merging:
+
+            ### Failed Checks:
+            - Check the [workflow run](${context.payload.repository.html_url}/actions/runs/${context.runId}) for detailed error information
+
+            ### Common Issues:
+            - **Type Errors**: Run \`npm run type-check\` locally
+            - **Linting Errors**: Run \`npm run lint\` locally  
+            - **Format Errors**: Run \`npm run format\` locally
+            - **Test Failures**: Run \`npm run test\` locally
+            - **Build Errors**: Run \`npm run build\` locally
+
+            ### To Fix:
+            1. Pull the latest changes from your branch
+            2. Run the failing commands locally
+            3. Fix all errors
+            4. Commit and push your changes
+
+            **⚠️ This PR cannot be merged until all checks pass.**`;
+
+            github.rest.issues.createComment({
+              issue_number: issue_number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: message
+            });

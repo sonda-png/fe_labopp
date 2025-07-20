@@ -25,5 +25,6 @@ dist-ssr
 .env
 .env.production
 build/
-src/routeTree.gen.ts
 .vercel
+src/routeTree.gen.ts
+coverage/

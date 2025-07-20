@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -16,12 +15,11 @@ import {
   Target,
   School,
   UserCheck,
-  AlertTriangle,
   CheckCircle,
 } from 'lucide-react'
 
 const headData = {
-  name: 'Assoc.Prof.Dr. Tran Van Minh',
+  name: 'PGS.TS. Trần Văn Minh',
   position: 'Head of Software Engineering Department',
   department: 'Faculty of Information Technology',
   totalTeachers: 12,
@@ -76,7 +74,7 @@ const subjects = [
 const teacherPerformance = [
   {
     id: 1,
-    name: 'Dr. Nguyen Thi Lan',
+    name: 'Dr. Sarah Wilson',
     subjects: ['PRF192', 'PRO192'],
     classes: 4,
     students: 156,
@@ -85,7 +83,7 @@ const teacherPerformance = [
   },
   {
     id: 2,
-    name: 'MSc. Le Van Nam',
+    name: 'MSc. David Brown',
     subjects: ['LAB211', 'DBI202'],
     classes: 3,
     students: 118,
@@ -94,7 +92,7 @@ const teacherPerformance = [
   },
   {
     id: 3,
-    name: 'Dr. Pham Thi Hoa',
+    name: 'Dr. Emily Davis',
     subjects: ['PRF192', 'LAB211'],
     classes: 3,
     students: 125,
@@ -103,32 +101,7 @@ const teacherPerformance = [
   },
 ]
 
-const alerts = [
-  {
-    id: 1,
-    type: 'performance',
-    message: 'LAB211 pass rate decreased by 5% compared to last term',
-    severity: 'warning',
-    time: '2 hours ago',
-  },
-  {
-    id: 2,
-    type: 'deadline',
-    message: 'End-of-term report due in 3 days',
-    severity: 'info',
-    time: '1 day ago',
-  },
-  {
-    id: 3,
-    type: 'resource',
-    message: 'Additional teachers needed for PRF192',
-    severity: 'warning',
-    time: '2 days ago',
-  },
-]
-
 export const HeadSubjectDashboard = () => {
-  const [selectedPeriod, setSelectedPeriod] = useState('semester')
 
   return (
     <div className="space-y-6">
@@ -140,31 +113,10 @@ export const HeadSubjectDashboard = () => {
           </div>
           <div>
             <h1 className="text-3xl font-bold text-gray-900">
-              Welcome, {headData.name}!
+              Hello, {headData.name}!
             </h1>
             <p className="text-gray-600">{headData.position}</p>
           </div>
-        </div>
-        <div className="flex space-x-2">
-          {['semester', 'month', 'week'].map(period => (
-            <Button
-              key={period}
-              variant={selectedPeriod === period ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setSelectedPeriod(period)}
-              className={
-                selectedPeriod === period
-                  ? 'bg-orange-500 hover:bg-orange-600'
-                  : 'border-orange-200 text-orange-600 hover:bg-orange-50'
-              }
-            >
-              {period === 'semester'
-                ? 'Semester'
-                : period === 'month'
-                  ? 'Month'
-                  : 'Week'}
-            </Button>
-          ))}
         </div>
       </div>
 
@@ -220,7 +172,9 @@ export const HeadSubjectDashboard = () => {
                 </p>
                 <div className="flex items-center mt-1">
                   <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
-                  <span className="text-sm text-green-600">+12% this term</span>
+                  <span className="text-sm text-green-600">
+                    +12% this semester
+                  </span>
                 </div>
               </div>
               <div className="p-3 bg-green-100 rounded-lg">
@@ -275,8 +229,8 @@ export const HeadSubjectDashboard = () => {
                       </h4>
                       <div className="flex items-center space-x-4 mt-1">
                         <span className="text-sm text-gray-600">
-                          {subject.teachers} Teachers • {subject.classes} Classes •{' '}
-                          {subject.students} Students
+                          {subject.teachers} Teachers • {subject.classes}{' '}
+                          Classes • {subject.students} Students
                         </span>
                         <Badge
                           variant={
@@ -334,53 +288,6 @@ export const HeadSubjectDashboard = () => {
 
         {/* Alerts & Teacher Performance */}
         <div className="space-y-6">
-          {/* Alerts */}
-          <Card className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <AlertTriangle className="h-5 w-5 text-orange-500" />
-                <span>Important Alerts</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {alerts.map(alert => (
-                  <div
-                    key={alert.id}
-                    className="p-3 border rounded-lg hover:bg-gray-50"
-                  >
-                    <div className="flex items-start justify-between mb-2">
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-900">
-                          {alert.message}
-                        </p>
-                        <p className="text-xs text-gray-500">{alert.time}</p>
-                      </div>
-                      <Badge
-                        variant={
-                          alert.severity === 'warning'
-                            ? 'secondary'
-                            : alert.severity === 'info'
-                              ? 'outline'
-                              : 'destructive'
-                        }
-                        className={
-                          alert.severity === 'warning' ? 'bg-orange-500' : ''
-                        }
-                      >
-                        {alert.severity === 'warning'
-                          ? 'Warning'
-                          : alert.severity === 'info'
-                            ? 'Info'
-                            : 'Urgent'}
-                      </Badge>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
           {/* Top Teachers */}
           <Card className="shadow-lg">
             <CardHeader>
@@ -402,7 +309,8 @@ export const HeadSubjectDashboard = () => {
                           {teacher.name}
                         </h5>
                         <p className="text-sm text-gray-600">
-                          {teacher.subjects.join(', ')} • {teacher.students} Students
+                          {teacher.subjects.join(', ')} • {teacher.students}{' '}
+                          Students
                         </p>
                       </div>
                       <div className="text-right">
@@ -467,7 +375,7 @@ export const HeadSubjectDashboard = () => {
               className="border-orange-200 text-orange-600 hover:bg-orange-50 h-auto p-4 flex-col space-y-2"
             >
               <BarChart3 className="h-6 w-6" />
-              <span>Data Analysis</span>
+              <span>Data Analytics</span>
             </Button>
             <Button
               variant="outline"

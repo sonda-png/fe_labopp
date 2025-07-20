@@ -6,13 +6,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import {
   Bell,
   ChevronDown,
   LogOut,
-  Search,
   Settings,
   Trophy,
   User,
@@ -20,7 +18,6 @@ import {
 } from 'lucide-react'
 import { authStore } from '@/stores/authStore'
 import { useNavigate } from '@tanstack/react-router'
-import { getLoginUrlWithRedirect } from '@/utils/helpers/redirectAfterLogin'
 
 export const HeaderComponent = () => {
   const { authValues, clearTokens } = authStore()
@@ -52,14 +49,14 @@ export const HeaderComponent = () => {
         <div className="flex items-center gap-4">
           {authValues.isAuthenticated ? (
             <>
-              {/* Search */}
+              {/* Search
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-5" />
                 <Input
                   placeholder="Tìm kiếm sinh viên, bài tập..."
                   className="pl-10 w-80 border-gray-300 focus:border-orange-500 focus:ring-orange-500 rounded-full"
                 />
-              </div>
+              </div> */}
               {/* Bell */}
               <Button
                 variant="ghost"

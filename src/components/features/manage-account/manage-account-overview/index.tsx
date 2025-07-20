@@ -56,19 +56,19 @@ export const ManageAccountOverview = () => {
   return (
     <div className="grid grid-cols-1 gap-6 mb-8 sm:grid-cols-2 md:grid-cols-3">
       <StatsCard
-        title="Tổng users"
+        title="Total Users"
         value={stats.total}
         icon={Users}
         color={{ bg: 'bg-blue-100', icon: 'text-blue-600' }}
       />
       <StatsCard
-        title="Hoạt động"
+        title="Active"
         value={stats.active}
         icon={UserCheck}
         color={{ bg: 'bg-green-100', icon: 'text-green-600' }}
       />
       <StatsCard
-        title="Tạm khóa"
+        title="Suspended"
         value={stats.suspended}
         icon={UserX}
         color={{ bg: 'bg-red-100', icon: 'text-red-600' }}

@@ -10,4 +10,3 @@ export * from './dashboard'
 export * from './login'
 export * from './fap-sync'
 export * from './lab_assignment_list'
-

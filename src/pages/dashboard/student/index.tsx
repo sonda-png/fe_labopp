@@ -7,7 +7,6 @@ import {
   FileText,
   Trophy,
   Target,
-  Clock,
   TrendingUp,
   Calendar,
   BookOpen,
@@ -20,7 +19,7 @@ import {
 } from 'lucide-react'
 
 const studentData = {
-  name: 'Nguyen Van An',
+  name: 'John Smith',
   studentId: 'HE173456',
   semester: 'Fall 2024',
   totalLOC: 12450,
@@ -76,33 +75,6 @@ const subjects = [
   },
 ]
 
-const recentActivities = [
-  {
-    id: 1,
-    type: 'assignment_submitted',
-    message: 'Submitted Assignment 3 - PRF192',
-    time: '2 hours ago',
-    icon: FileText,
-    color: 'text-green-600',
-  },
-  {
-    id: 2,
-    type: 'grade_received',
-    message: 'Received grade for Assignment 2 - LAB211: A',
-    time: '1 day ago',
-    icon: Trophy,
-    color: 'text-orange-600',
-  },
-  {
-    id: 3,
-    type: 'deadline_reminder',
-    message: 'Assignment 4 - PRO192 due soon',
-    time: '2 days ago',
-    icon: Clock,
-    color: 'text-red-600',
-  },
-]
-
 const achievements = [
   {
     icon: Trophy,
@@ -113,7 +85,7 @@ const achievements = [
   {
     icon: Code,
     title: '10k LOC',
-    description: 'Reached 10,000 lines of code',
+    description: 'Achieved 10,000 lines of code',
     earned: true,
   },
   {
@@ -125,7 +97,7 @@ const achievements = [
   {
     icon: Target,
     title: 'Goal Achiever',
-    description: 'Completed all targets',
+    description: 'Completed target goals',
     earned: false,
   },
 ]
@@ -146,7 +118,7 @@ export const StudentDashboard = () => {
           </div>
           <div>
             <h1 className="text-3xl font-bold text-gray-900">
-              Welcome, {studentData.name}!
+              Hello, {studentData.name}!
             </h1>
             <p className="text-gray-600">
               {studentData.studentId} • {studentData.semester}
@@ -243,7 +215,9 @@ export const StudentDashboard = () => {
             </div>
             <div className="mt-4 flex items-center">
               <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
-              <span className="text-sm text-green-600">+3 positions this week</span>
+              <span className="text-sm text-green-600">
+                +3 positions this week
+              </span>
             </div>
           </CardContent>
         </Card>
@@ -256,7 +230,7 @@ export const StudentDashboard = () => {
                 <p className="text-3xl font-bold text-gray-900">
                   {subjects.length}
                 </p>
-                <p className="text-sm text-gray-500">current subjects</p>
+                <p className="text-sm text-gray-500">subjects enrolled</p>
               </div>
               <div className="p-3 bg-purple-100 rounded-lg">
                 <BookOpen className="h-8 w-8 text-purple-600" />
@@ -264,7 +238,9 @@ export const StudentDashboard = () => {
             </div>
             <div className="mt-4 flex items-center">
               <CheckCircle className="h-4 w-4 text-green-500 mr-1" />
-              <span className="text-sm text-green-600">1 subject completed</span>
+              <span className="text-sm text-green-600">
+                1 subject completed
+              </span>
             </div>
           </CardContent>
         </Card>
@@ -347,7 +323,7 @@ export const StudentDashboard = () => {
         </Card>
 
         {/* Side Panel */}
-        <div className="space-y-6">
+        <div>
           {/* Achievements */}
           <Card className="shadow-lg">
             <CardHeader>
@@ -382,38 +358,6 @@ export const StudentDashboard = () => {
                     <p className="text-xs text-gray-500">
                       {achievement.description}
                     </p>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Recent Activities */}
-          <Card className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Clock className="h-5 w-5 text-orange-500" />
-                <span>Recent Activities</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {recentActivities.map(activity => (
-                  <div
-                    key={activity.id}
-                    className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50"
-                  >
-                    <div
-                      className={`p-2 rounded-full bg-gray-100 ${activity.color}`}
-                    >
-                      <activity.icon className="h-4 w-4" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900">
-                        {activity.message}
-                      </p>
-                      <p className="text-xs text-gray-500">{activity.time}</p>
-                    </div>
                   </div>
                 ))}
               </div>
@@ -455,7 +399,7 @@ export const StudentDashboard = () => {
               className="border-orange-200 text-orange-600 hover:bg-orange-50 h-auto p-4 flex-col space-y-2"
             >
               <Users className="h-6 w-6" />
-              <span>Rankings</span>
+              <span>Leaderboard</span>
             </Button>
           </div>
         </CardContent>
