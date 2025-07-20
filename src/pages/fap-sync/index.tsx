@@ -141,7 +141,7 @@ const mockSyncData = {
 
 // Type definitions
 type SyncData = typeof mockSyncData
-type SyncHistoryItem = typeof syncHistory[0]
+type SyncHistoryItem = (typeof syncHistory)[0]
 
 export default function FAPSyncPage() {
   const [isConnecting, setIsConnecting] = useState(false)
@@ -731,9 +731,7 @@ export default function FAPSyncPage() {
                     </div>
                   </div>
                   <div>
-                    <h4 className="font-medium text-gray-900 mb-3">
-                      Students
-                    </h4>
+                    <h4 className="font-medium text-gray-900 mb-3">Students</h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-gray-600">Found:</span>

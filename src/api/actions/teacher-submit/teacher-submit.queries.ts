@@ -1,29 +1,34 @@
-import { queryFactoryOptions } from "@/api/utils/queryFactoryOptions";
-import { AxiosInstance } from "axios";
+import { queryFactoryOptions } from '@/api/utils/queryFactoryOptions'
+import { AxiosInstance } from 'axios'
 import {
   TeacherSubmissionApiResponse,
   SubmissionStatus,
-  TeacherSubmissionDetailData
-} from "./teacher-submit.type";
+  TeacherSubmissionDetailData,
+} from './teacher-submit.type'
 
 // Lấy danh sách submission chờ chấm theo classId và status
-const getWaitingSubmissions = (classId: string, status?: SubmissionStatus) =>
+const getWaitingSubmissions =
+  (classId: string, status?: SubmissionStatus) =>
   (client: AxiosInstance) =>
-    async () => {
-      const params = status ? { params: { status } } : undefined
-      return (
-        await client.get<TeacherSubmissionApiResponse>(`/teacher/submissions/waiting/${classId}`, params)
-      ).data;
-    };
+  async () => {
+    const params = status ? { params: { status } } : undefined
+    return (
+      await client.get<TeacherSubmissionApiResponse>(
+        `/teacher/submissions/waiting/${classId}`,
+        params
+      )
+    ).data
+  }
 
 // Lấy chi tiết submission theo submissionId
-const getSubmissionDetail = (submissionId: string) =>
-  (client: AxiosInstance) =>
-    async () => {
-      return (
-        await client.get<TeacherSubmissionDetailData>(`/teacher/submissions/${submissionId}`)
-      ).data;
-    };
+const getSubmissionDetail =
+  (submissionId: string) => (client: AxiosInstance) => async () => {
+    return (
+      await client.get<TeacherSubmissionDetailData>(
+        `/teacher/submissions/${submissionId}`
+      )
+    ).data
+  }
 
 export const teacherSubmissionQueries = {
   all: () => ['teacher-submission'],
@@ -39,4 +44,4 @@ export const teacherSubmissionQueries = {
       queryFn: getSubmissionDetail(submissionId),
       enabled: !!submissionId,
     }),
-};
+}

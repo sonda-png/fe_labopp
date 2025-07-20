@@ -10,7 +10,7 @@ export interface AssignmentListResponse {
   success: boolean
   message: string
   data: Assignment[]
-  errors: any // hoặc: errors?: string | null
+  errors: unknown // hoặc: errors?: string | null
 }
 
 export interface AssignmentRequest {

@@ -13,9 +13,7 @@ export const getStandardizedApiError = (
     (error.response?.data as Partial<StandardizedApiError>) ?? {}
   return {
     success: false,
-    message:
-      responseData.message ??
-      'Đã xảy ra lỗi không xác định',
+    message: responseData.message ?? 'Đã xảy ra lỗi không xác định',
     data: responseData.data ?? null,
     errors: responseData.errors ?? [error.message],
     statusCode: error.response?.status,

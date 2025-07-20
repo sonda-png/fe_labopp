@@ -63,10 +63,22 @@ export function TeacherSubmissionDetail({
           </div>
         ) : detail ? (
           <div className="space-y-5 pt-4 text-sm">
-            <InfoItem label="Sinh viên" value={`${detail.studentName} (${detail.studentId})`} />
-            <InfoItem label="Bài tập" value={`${detail.assignmentTitle} (${detail.assignmentId})`} />
-            <InfoItem label="LOC / Mục tiêu" value={`${detail.loc} / ${detail.locTarget}`} />
-            <InfoItem label="Thời gian nộp" value={new Date(detail.submittedAt).toLocaleString('vi-VN')} />
+            <InfoItem
+              label="Sinh viên"
+              value={`${detail.studentName} (${detail.studentId})`}
+            />
+            <InfoItem
+              label="Bài tập"
+              value={`${detail.assignmentTitle} (${detail.assignmentId})`}
+            />
+            <InfoItem
+              label="LOC / Mục tiêu"
+              value={`${detail.loc} / ${detail.locTarget}`}
+            />
+            <InfoItem
+              label="Thời gian nộp"
+              value={new Date(detail.submittedAt).toLocaleString('vi-VN')}
+            />
             <div>
               <Label>Trạng thái</Label>
               <div className="mt-1">
@@ -118,12 +130,18 @@ export function TeacherSubmissionDetail({
                         <tr key={tc.id}>
                           <td className="border px-2 py-1">{tc.id}</td>
                           <td className="border px-2 py-1">{tc.testCaseId}</td>
-                          <td className="border px-2 py-1">{tc.actualOutput}</td>
+                          <td className="border px-2 py-1">
+                            {tc.actualOutput}
+                          </td>
                           <td className="border px-2 py-1">
                             {tc.isPassed ? (
-                              <span className="text-green-600 font-medium">Passed</span>
+                              <span className="text-green-600 font-medium">
+                                Passed
+                              </span>
                             ) : (
-                              <span className="text-red-600 font-medium">Failed</span>
+                              <span className="text-red-600 font-medium">
+                                Failed
+                              </span>
                             )}
                           </td>
                         </tr>
@@ -131,7 +149,9 @@ export function TeacherSubmissionDetail({
                     </tbody>
                   </table>
                 ) : (
-                  <span className="text-sm text-muted-foreground">Không có test case</span>
+                  <span className="text-sm text-muted-foreground">
+                    Không có test case
+                  </span>
                 )}
               </div>
             </div>
