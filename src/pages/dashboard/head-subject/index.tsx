@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -16,7 +15,6 @@ import {
   Target,
   School,
   UserCheck,
-  AlertTriangle,
   CheckCircle,
 } from 'lucide-react'
 
@@ -103,32 +101,7 @@ const teacherPerformance = [
   },
 ]
 
-const alerts = [
-  {
-    id: 1,
-    type: 'performance',
-    message: 'LAB211 pass rate decreased by 5% compared to last semester',
-    severity: 'warning',
-    time: '2 hours ago',
-  },
-  {
-    id: 2,
-    type: 'deadline',
-    message: 'End-of-semester report due in 3 days',
-    severity: 'info',
-    time: '1 day ago',
-  },
-  {
-    id: 3,
-    type: 'resource',
-    message: 'Need to allocate more teachers for PRF192',
-    severity: 'warning',
-    time: '2 days ago',
-  },
-]
-
 export const HeadSubjectDashboard = () => {
-  const [selectedPeriod, setSelectedPeriod] = useState('semester')
 
   return (
     <div className="space-y-6">

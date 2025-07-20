@@ -7,7 +7,6 @@ import {
   FileText,
   Trophy,
   Target,
-  Clock,
   TrendingUp,
   Calendar,
   BookOpen,
@@ -18,7 +17,6 @@ import {
   Users,
   BarChart3,
 } from 'lucide-react'
-import { authStore } from '@/stores/authStore'
 
 const studentData = {
   name: 'John Smith',
@@ -77,33 +75,6 @@ const subjects = [
   },
 ]
 
-const recentActivities = [
-  {
-    id: 1,
-    type: 'assignment_submitted',
-    message: 'Submitted Assignment 3 - PRF192',
-    time: '2 hours ago',
-    icon: FileText,
-    color: 'text-green-600',
-  },
-  {
-    id: 2,
-    type: 'grade_received',
-    message: 'Received grade for Assignment 2 - LAB211: A',
-    time: '1 day ago',
-    icon: Trophy,
-    color: 'text-orange-600',
-  },
-  {
-    id: 3,
-    type: 'deadline_reminder',
-    message: 'Assignment 4 - PRO192 deadline approaching',
-    time: '2 days ago',
-    icon: Clock,
-    color: 'text-red-600',
-  },
-]
-
 const achievements = [
   {
     icon: Trophy,
@@ -132,8 +103,6 @@ const achievements = [
 ]
 
 export const StudentDashboard = () => {
-  const { authValues } = authStore()
-
   const progressPercentage =
     (studentData.totalLOC / studentData.targetLOC) * 100
   const assignmentProgress =

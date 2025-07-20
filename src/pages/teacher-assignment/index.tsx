@@ -3,7 +3,6 @@ import {
   BookOpen,
   Search,
   Plus,
-  Filter,
   MoreHorizontal,
   Clock,
   Star,
@@ -20,13 +19,6 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -65,7 +57,6 @@ import { TeacherAssignmentDetail } from '@/components/features/teacher-assignmen
 export const TeacherAssignmentPage = () => {
   const queryClient = useQueryClient()
   const [searchTerm, setSearchTerm] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all')
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
@@ -659,7 +650,6 @@ export const TeacherAssignmentPage = () => {
                 variant="outline"
                 onClick={() => {
                   setSearchTerm('')
-                  setStatusFilter('all')
                 }}
               >
                 Clear filters
