@@ -5,12 +5,10 @@
  */
 export const getLoginUrlWithRedirect = (currentPath?: string): string => {
   const path = currentPath || window.location.pathname + window.location.search
-
   // Don't add redirect parameter if already on login page
   if (path === '/login' || path.startsWith('/login?')) {
     return '/login'
   }
-
   return `/login?redirectTo=${encodeURIComponent(path)}`
 }
 

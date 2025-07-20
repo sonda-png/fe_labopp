@@ -9,8 +9,8 @@ export const mutations = {
   ...authMutations,
   ...assignmentMutations,
   ...accountMutations,
-  ...teacherSubmissionMutations,
   ...semestersMutations,
+  ...teacherSubmissionMutations,
   ...teacherAssignmentMutations,
   // API_COLLECTION_MUTATIONS
 } as const

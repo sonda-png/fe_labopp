@@ -9,10 +9,7 @@ import {
 const handleAddAssignment =
   (client: AxiosInstance) => async (body: AssignmentRequest) => {
     return (
-      await client.post<AssignmentListResponse>(
-        '/head_subject/assignment/add',
-        body
-      )
+      await client.post<AssignmentListResponse>('/head_subject/assignment/add', body)
     ).data
   }
 
@@ -20,10 +17,7 @@ const handleAddAssignment =
 const handleUpdateAssignment =
   (client: AxiosInstance) => async (body: AssignmentRequest) => {
     return (
-      await client.put<AssignmentListResponse>(
-        `/head_subject/assignment/update/${body.id}`,
-        body
-      )
+      await client.put<AssignmentListResponse>(`/head_subject/assignment/update/${body.id}`, body)
     ).data
   }
 
@@ -31,17 +25,13 @@ const handleUpdateAssignment =
 const handleDeleteAssignment =
   (client: AxiosInstance) => async (id: string) => {
     return (
-      await client.delete<AssignmentListResponse>(
-        `/head_subject/assignment/delete/${id}`
-      )
+      await client.delete<AssignmentListResponse>(`/head_subject/assignment/delete/${id}`)
     ).data
   }
 
 // Export mutations object
 export const assignmentMutations = {
   addAssignmentMutation: (client: AxiosInstance) => handleAddAssignment(client),
-  updateAssignmentMutation: (client: AxiosInstance) =>
-    handleUpdateAssignment(client),
-  deleteAssignmentMutation: (client: AxiosInstance) =>
-    handleDeleteAssignment(client),
+  updateAssignmentMutation: (client: AxiosInstance) => handleUpdateAssignment(client),
+  deleteAssignmentMutation: (client: AxiosInstance) => handleDeleteAssignment(client),
 }
