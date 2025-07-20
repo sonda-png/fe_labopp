@@ -28,6 +28,7 @@ import { Route as AuthStudentManageIndexImport } from './routes/_auth/student-ma
 import { Route as AuthSemesterManagementIndexImport } from './routes/_auth/semester-management/index'
 import { Route as AuthMysubmitIndexImport } from './routes/_auth/mysubmit/index'
 import { Route as AuthManageAccountIndexImport } from './routes/_auth/manage-account/index'
+import { Route as AuthLocRankingIndexImport } from './routes/_auth/loc-ranking/index'
 import { Route as AuthHomeIndexImport } from './routes/_auth/home/index'
 import { Route as AuthFapSyncIndexImport } from './routes/_auth/fap-sync/index'
 import { Route as AuthClassManageIndexImport } from './routes/_auth/class-manage/index'
@@ -145,6 +146,12 @@ const AuthMysubmitIndexRoute = AuthMysubmitIndexImport.update({
 const AuthManageAccountIndexRoute = AuthManageAccountIndexImport.update({
   id: '/manage-account/',
   path: '/manage-account/',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthLocRankingIndexRoute = AuthLocRankingIndexImport.update({
+  id: '/loc-ranking/',
+  path: '/loc-ranking/',
   getParentRoute: () => AuthRoute,
 } as any)
 
@@ -324,6 +331,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthHomeIndexImport
       parentRoute: typeof AuthImport
     }
+    '/_auth/loc-ranking/': {
+      id: '/_auth/loc-ranking/'
+      path: '/loc-ranking'
+      fullPath: '/loc-ranking'
+      preLoaderRoute: typeof AuthLocRankingIndexImport
+      parentRoute: typeof AuthImport
+    }
     '/_auth/manage-account/': {
       id: '/_auth/manage-account/'
       path: '/manage-account'
@@ -472,6 +486,7 @@ interface AuthRouteChildren {
   AuthClassManageIndexRoute: typeof AuthClassManageIndexRoute
   AuthFapSyncIndexRoute: typeof AuthFapSyncIndexRoute
   AuthHomeIndexRoute: typeof AuthHomeIndexRoute
+  AuthLocRankingIndexRoute: typeof AuthLocRankingIndexRoute
   AuthManageAccountIndexRoute: typeof AuthManageAccountIndexRoute
   AuthMysubmitIndexRoute: typeof AuthMysubmitIndexRoute
   AuthSemesterManagementIndexRoute: typeof AuthSemesterManagementIndexRoute
@@ -498,6 +513,7 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthClassManageIndexRoute: AuthClassManageIndexRoute,
   AuthFapSyncIndexRoute: AuthFapSyncIndexRoute,
   AuthHomeIndexRoute: AuthHomeIndexRoute,
+  AuthLocRankingIndexRoute: AuthLocRankingIndexRoute,
   AuthManageAccountIndexRoute: AuthManageAccountIndexRoute,
   AuthMysubmitIndexRoute: AuthMysubmitIndexRoute,
   AuthSemesterManagementIndexRoute: AuthSemesterManagementIndexRoute,
@@ -548,6 +564,7 @@ export interface FileRoutesByFullPath {
   '/class-manage': typeof AuthClassManageIndexRoute
   '/fap-sync': typeof AuthFapSyncIndexRoute
   '/home': typeof AuthHomeIndexRoute
+  '/loc-ranking': typeof AuthLocRankingIndexRoute
   '/manage-account': typeof AuthManageAccountIndexRoute
   '/mysubmit': typeof AuthMysubmitIndexRoute
   '/semester-management': typeof AuthSemesterManagementIndexRoute
@@ -581,6 +598,7 @@ export interface FileRoutesByTo {
   '/class-manage': typeof AuthClassManageIndexRoute
   '/fap-sync': typeof AuthFapSyncIndexRoute
   '/home': typeof AuthHomeIndexRoute
+  '/loc-ranking': typeof AuthLocRankingIndexRoute
   '/manage-account': typeof AuthManageAccountIndexRoute
   '/mysubmit': typeof AuthMysubmitIndexRoute
   '/semester-management': typeof AuthSemesterManagementIndexRoute
@@ -616,6 +634,7 @@ export interface FileRoutesById {
   '/_auth/class-manage/': typeof AuthClassManageIndexRoute
   '/_auth/fap-sync/': typeof AuthFapSyncIndexRoute
   '/_auth/home/': typeof AuthHomeIndexRoute
+  '/_auth/loc-ranking/': typeof AuthLocRankingIndexRoute
   '/_auth/manage-account/': typeof AuthManageAccountIndexRoute
   '/_auth/mysubmit/': typeof AuthMysubmitIndexRoute
   '/_auth/semester-management/': typeof AuthSemesterManagementIndexRoute
@@ -651,6 +670,7 @@ export interface FileRouteTypes {
     | '/class-manage'
     | '/fap-sync'
     | '/home'
+    | '/loc-ranking'
     | '/manage-account'
     | '/mysubmit'
     | '/semester-management'
@@ -683,6 +703,7 @@ export interface FileRouteTypes {
     | '/class-manage'
     | '/fap-sync'
     | '/home'
+    | '/loc-ranking'
     | '/manage-account'
     | '/mysubmit'
     | '/semester-management'
@@ -716,6 +737,7 @@ export interface FileRouteTypes {
     | '/_auth/class-manage/'
     | '/_auth/fap-sync/'
     | '/_auth/home/'
+    | '/_auth/loc-ranking/'
     | '/_auth/manage-account/'
     | '/_auth/mysubmit/'
     | '/_auth/semester-management/'
@@ -780,6 +802,7 @@ export const routeTree = rootRoute
         "/_auth/class-manage/",
         "/_auth/fap-sync/",
         "/_auth/home/",
+        "/_auth/loc-ranking/",
         "/_auth/manage-account/",
         "/_auth/mysubmit/",
         "/_auth/semester-management/",
@@ -840,6 +863,10 @@ export const routeTree = rootRoute
     },
     "/_auth/home/": {
       "filePath": "_auth/home/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/loc-ranking/": {
+      "filePath": "_auth/loc-ranking/index.tsx",
       "parent": "/_auth"
     },
     "/_auth/manage-account/": {
