@@ -148,6 +148,20 @@ export default function StudentManagement() {
             <p className="text-muted-foreground">Class ID: {classId}</p>
           </div>
         </div>
+        <div className="flex items-center gap-2">
+          <Button
+            onClick={() =>
+              navigate({
+                to: `/teacher-assignment/$classId`,
+                params: { classId },
+              })
+            }
+            className="bg-orange-500 hover:bg-orange-600"
+          >
+            <BookOpen className="h-4 w-4 mr-2" />
+            Manage Assignments
+          </Button>
+        </div>
       </div>
 
       {/* Overview statistics */}
