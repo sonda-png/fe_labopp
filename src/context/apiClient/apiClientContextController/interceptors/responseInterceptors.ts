@@ -14,11 +14,11 @@ export function responseSuccessInterceptor<T>(
 export const useResponseFailureInterceptor = async (
   error: AxiosError<unknown>
 ) => {
-  const { clearTokens } = authStore.getState();
+  const { clearTokens } = authStore.getState()
   const loginUrl = getLoginUrlWithRedirect()
   const standarizedError = getStandardizedApiError(error)
   if (standarizedError.statusCode === 401) {
-    clearTokens();
+    clearTokens()
     window.location.replace(loginUrl)
     toast.error('Session expired, please login again')
     return Promise.reject(standarizedError)

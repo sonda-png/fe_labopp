@@ -5,12 +5,12 @@
  */
 export const getLoginUrlWithRedirect = (currentPath?: string): string => {
   const path = currentPath || window.location.pathname + window.location.search
-  
+
   // Don't add redirect parameter if already on login page
   if (path === '/login' || path.startsWith('/login?')) {
     return '/login'
   }
-  
+
   return `/login?redirectTo=${encodeURIComponent(path)}`
 }
 
@@ -20,6 +20,9 @@ export const getLoginUrlWithRedirect = (currentPath?: string): string => {
  * @param defaultPath - The default path to redirect to if no redirect parameter is found
  * @returns The redirect path
  */
-export const getRedirectPath = (searchParams: Record<string, string | undefined>, defaultPath: string = '/class-manage'): string => {
+export const getRedirectPath = (
+  searchParams: Record<string, string | undefined>,
+  defaultPath: string = '/class-manage'
+): string => {
   return searchParams.redirect || defaultPath
-} 
+}

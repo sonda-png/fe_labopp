@@ -1,4 +1,4 @@
-import type * as React from "react"
+import type * as React from 'react'
 import {
   Search,
   Bell,
@@ -15,7 +15,7 @@ import {
   Trophy,
   Home,
   BookOpen,
-} from "lucide-react"
+} from 'lucide-react'
 import {
   Sidebar,
   SidebarContent,
@@ -29,48 +29,48 @@ import {
   SidebarProvider,
   SidebarInset,
   SidebarTrigger,
-} from "@/components/ui/sidebar"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+} from '@/components/ui/sidebar'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 
 // Sidebar menu items for student
 const menuItems = [
   {
-    title: "Overview",
-    url: "#",
+    title: 'Overview',
+    url: '#',
     icon: Home,
     isActive: false,
   },
   {
-    title: "Assignment Results",
-    url: "#",
+    title: 'Assignment Results',
+    url: '#',
     icon: FileText,
     isActive: true,
   },
   {
-    title: "LOC Ranking",
-    url: "#",
+    title: 'LOC Ranking',
+    url: '#',
     icon: Trophy,
     isActive: false,
   },
   {
-    title: "Submission History",
-    url: "#",
+    title: 'Submission History',
+    url: '#',
     icon: BookOpen,
     isActive: false,
   },
   {
-    title: "Class Schedule",
-    url: "#",
+    title: 'Class Schedule',
+    url: '#',
     icon: Calendar,
     isActive: false,
   },
   {
-    title: "Notifications",
-    url: "#",
+    title: 'Notifications',
+    url: '#',
     icon: Bell,
     isActive: false,
   },
@@ -86,7 +86,9 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <BarChart3 className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h2 className="font-semibold text-gray-900">Class Tracking System</h2>
+            <h2 className="font-semibold text-gray-900">
+              Class Tracking System
+            </h2>
             <p className="text-sm text-gray-600">Student Assignment Tracking</p>
           </div>
         </div>
@@ -96,12 +98,16 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {menuItems.map((item) => (
+              {menuItems.map(item => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
                     isActive={item.isActive}
-                    className={item.isActive ? "bg-orange-500 text-white hover:bg-orange-600" : ""}
+                    className={
+                      item.isActive
+                        ? 'bg-orange-500 text-white hover:bg-orange-600'
+                        : ''
+                    }
                   >
                     <a href={item.url} className="flex items-center gap-3">
                       <item.icon className="w-4 h-4" />
@@ -122,59 +128,59 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 // Assignment data
 const assignments = [
   {
-    id: "LAB01",
-    title: "Basic Java Programming",
-    subject: "LAB 01 - Java Fundamentals",
-    status: "Pass",
+    id: 'LAB01',
+    title: 'Basic Java Programming',
+    subject: 'LAB 01 - Java Fundamentals',
+    status: 'Pass',
     loc: 245,
     maxLoc: 200,
-    submittedDate: "2025-04-15",
-    deadline: "2025-04-20",
+    submittedDate: '2025-04-15',
+    deadline: '2025-04-20',
     feedback:
-      "Excellent work! Your code is well-structured and follows best practices. The algorithm implementation is efficient and the comments are clear.",
-    instructor: "Nguyễn Văn A",
+      'Excellent work! Your code is well-structured and follows best practices. The algorithm implementation is efficient and the comments are clear.',
+    instructor: 'Nguyễn Văn A',
     grade: 9.5,
   },
   {
-    id: "LAB02",
-    title: "Selection Sort Algorithm",
-    subject: "LAB 02 - Java OOP",
-    status: "Draft",
+    id: 'LAB02',
+    title: 'Selection Sort Algorithm',
+    subject: 'LAB 02 - Java OOP',
+    status: 'Draft',
     loc: 150,
     maxLoc: 150,
-    submittedDate: "2025-05-07",
-    deadline: "2025-08-10",
+    submittedDate: '2025-05-07',
+    deadline: '2025-08-10',
     feedback:
-      "Good start, but needs improvement in error handling and code optimization. Please review the sorting logic.",
-    instructor: "Trần Thị B",
+      'Good start, but needs improvement in error handling and code optimization. Please review the sorting logic.',
+    instructor: 'Trần Thị B',
     grade: null,
   },
   {
-    id: "LAB03",
-    title: "Data Structures Implementation",
-    subject: "LAB 03 - Advanced Java",
-    status: "Reject",
+    id: 'LAB03',
+    title: 'Data Structures Implementation',
+    subject: 'LAB 03 - Advanced Java',
+    status: 'Reject',
     loc: 89,
     maxLoc: 300,
-    submittedDate: "2025-03-22",
-    deadline: "2025-03-25",
+    submittedDate: '2025-03-22',
+    deadline: '2025-03-25',
     feedback:
       "The implementation is incomplete and doesn't meet the requirements. Please implement all required methods and add proper documentation.",
-    instructor: "Lê Văn C",
+    instructor: 'Lê Văn C',
     grade: 4.0,
   },
   {
-    id: "LAB04",
-    title: "GUI Application Development",
-    subject: "LAB 04 - Java Swing",
-    status: "Pass",
+    id: 'LAB04',
+    title: 'GUI Application Development',
+    subject: 'LAB 04 - Java Swing',
+    status: 'Pass',
     loc: 420,
     maxLoc: 400,
-    submittedDate: "2025-06-10",
-    deadline: "2025-06-15",
+    submittedDate: '2025-06-10',
+    deadline: '2025-06-15',
     feedback:
-      "Great UI design and functionality. The event handling is implemented correctly and the code is well-organized.",
-    instructor: "Phạm Thị D",
+      'Great UI design and functionality. The event handling is implemented correctly and the code is well-organized.',
+    instructor: 'Phạm Thị D',
     grade: 8.8,
   },
 ]
@@ -182,11 +188,11 @@ const assignments = [
 // Helper functions
 const getStatusIcon = (status: string) => {
   switch (status) {
-    case "Pass":
+    case 'Pass':
       return <CheckCircle className="w-4 h-4 text-green-600" />
-    case "Draft":
+    case 'Draft':
       return <Clock className="w-4 h-4 text-yellow-600" />
-    case "Reject":
+    case 'Reject':
       return <XCircle className="w-4 h-4 text-red-600" />
     default:
       return <AlertCircle className="w-4 h-4 text-gray-600" />
@@ -195,22 +201,24 @@ const getStatusIcon = (status: string) => {
 
 const getStatusColor = (status: string) => {
   switch (status) {
-    case "Pass":
-      return "bg-green-100 text-green-800 border-green-200"
-    case "Draft":
-      return "bg-yellow-100 text-yellow-800 border-yellow-200"
-    case "Reject":
-      return "bg-red-100 text-red-800 border-red-200"
+    case 'Pass':
+      return 'bg-green-100 text-green-800 border-green-200'
+    case 'Draft':
+      return 'bg-yellow-100 text-yellow-800 border-yellow-200'
+    case 'Reject':
+      return 'bg-red-100 text-red-800 border-red-200'
     default:
-      return "bg-gray-100 text-gray-800 border-gray-200"
+      return 'bg-gray-100 text-gray-800 border-gray-200'
   }
 }
 
 // Main Student Results Component
 export default function StudentResults() {
-  const passedAssignments = assignments.filter((a) => a.status === "Pass").length
+  const passedAssignments = assignments.filter(a => a.status === 'Pass').length
   const totalAssignments = assignments.length
-  const averageLOC = Math.round(assignments.reduce((sum, a) => sum + a.loc, 0) / assignments.length)
+  const averageLOC = Math.round(
+    assignments.reduce((sum, a) => sum + a.loc, 0) / assignments.length
+  )
 
   return (
     <SidebarProvider>
@@ -222,7 +230,10 @@ export default function StudentResults() {
           <div className="flex flex-1 items-center gap-4">
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <Input placeholder="Search students, assignments..." className="pl-10 border-gray-200" />
+              <Input
+                placeholder="Search students, assignments..."
+                className="pl-10 border-gray-200"
+              />
             </div>
             <div className="flex items-center gap-3">
               <Button variant="ghost" size="icon">
@@ -230,7 +241,9 @@ export default function StudentResults() {
               </Button>
               <div className="flex items-center gap-2">
                 <Avatar>
-                  <AvatarFallback className="bg-orange-500 text-white">HN</AvatarFallback>
+                  <AvatarFallback className="bg-orange-500 text-white">
+                    HN
+                  </AvatarFallback>
                 </Avatar>
                 <div className="hidden md:block">
                   <p className="text-sm font-medium">Nguyễn Thị Hải Nang</p>
@@ -279,7 +292,9 @@ export default function StudentResults() {
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">Average LOC</p>
-                    <p className="text-2xl font-bold text-blue-600">{averageLOC}</p>
+                    <p className="text-2xl font-bold text-blue-600">
+                      {averageLOC}
+                    </p>
                   </div>
                 </div>
               </CardContent>
@@ -324,25 +339,37 @@ export default function StudentResults() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {assignments.map((assignment) => (
-                  <div key={assignment.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                {assignments.map(assignment => (
+                  <div
+                    key={assignment.id}
+                    className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                  >
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
-                          <h3 className="font-semibold text-gray-900">{assignment.title}</h3>
-                          <Badge className={`${getStatusColor(assignment.status)} border`}>
+                          <h3 className="font-semibold text-gray-900">
+                            {assignment.title}
+                          </h3>
+                          <Badge
+                            className={`${getStatusColor(assignment.status)} border`}
+                          >
                             <div className="flex items-center gap-1">
                               {getStatusIcon(assignment.status)}
                               {assignment.status}
                             </div>
                           </Badge>
                           {assignment.grade && (
-                            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                            <Badge
+                              variant="outline"
+                              className="bg-blue-50 text-blue-700 border-blue-200"
+                            >
                               Grade: {assignment.grade}
                             </Badge>
                           )}
                         </div>
-                        <p className="text-sm text-gray-600 mb-2">{assignment.subject}</p>
+                        <p className="text-sm text-gray-600 mb-2">
+                          {assignment.subject}
+                        </p>
                         <div className="flex items-center gap-4 text-sm text-gray-500">
                           <div className="flex items-center gap-1">
                             <Code className="w-4 h-4" />
@@ -366,10 +393,16 @@ export default function StudentResults() {
                     <div className="bg-gray-50 rounded-lg p-3 mt-3">
                       <div className="flex items-center gap-2 mb-2">
                         <MessageSquare className="w-4 h-4 text-gray-600" />
-                        <span className="text-sm font-medium text-gray-700">Instructor Feedback</span>
-                        <span className="text-xs text-gray-500">- {assignment.instructor}</span>
+                        <span className="text-sm font-medium text-gray-700">
+                          Instructor Feedback
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          - {assignment.instructor}
+                        </span>
                       </div>
-                      <p className="text-sm text-gray-700 leading-relaxed">{assignment.feedback}</p>
+                      <p className="text-sm text-gray-700 leading-relaxed">
+                        {assignment.feedback}
+                      </p>
                     </div>
 
                     {/* LOC Progress Bar */}
@@ -384,12 +417,14 @@ export default function StudentResults() {
                         <div
                           className={`h-2 rounded-full ${
                             assignment.loc >= assignment.maxLoc
-                              ? "bg-green-500"
+                              ? 'bg-green-500'
                               : assignment.loc >= assignment.maxLoc * 0.8
-                                ? "bg-yellow-500"
-                                : "bg-red-500"
+                                ? 'bg-yellow-500'
+                                : 'bg-red-500'
                           }`}
-                          style={{ width: `${Math.min((assignment.loc / assignment.maxLoc) * 100, 100)}%` }}
+                          style={{
+                            width: `${Math.min((assignment.loc / assignment.maxLoc) * 100, 100)}%`,
+                          }}
                         ></div>
                       </div>
                     </div>
