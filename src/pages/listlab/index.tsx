@@ -16,11 +16,6 @@ import {
 } from "@/components/ui/pagination"
 import { Badge } from "@/components/ui/badge"
 
-// Override default badge color to orange
-const badgeVariants = {
-  default: "bg-orange-500 text-white hover:bg-orange-600",
-}
-
 // Mock data based on the Submission table
 const submissions = [
   {

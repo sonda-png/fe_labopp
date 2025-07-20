@@ -1,9 +1,6 @@
-"use client"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from "recharts"
 import {
   Code,
-  Trophy,
-  Users,
   FileText,
   Clock,
   CheckCircle,

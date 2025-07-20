@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -19,7 +19,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Checkbox } from '@/components/ui/checkbox'
 import { Badge } from '@/components/ui/badge'
 import {
   DropdownMenu,
@@ -59,7 +58,6 @@ import {
 } from 'lucide-react'
 import { useQuery, useMutation } from '@/hooks'
 import { getAssignmentList } from '@/api/actions/assignment-manage/assignment.query'
-import { assignmentMutations } from '@/api/actions/assignment-manage/assignment.mutation'
 import { Skeleton } from '@/components/ui/skeleton'
 import { toast } from 'react-toastify'
 import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
@@ -153,7 +151,7 @@ export default function AssignmentManagement() {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     setValue,
     getValues,
   } = useForm<AssignmentFormValues>({
@@ -224,20 +222,6 @@ export default function AssignmentManagement() {
       color: 'text-orange-600',
     },
   ]
-
-  const buttonRef = useRef<HTMLButtonElement>(null)
-
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const openButtonRef = useRef<HTMLButtonElement>(null)
-
-  const handleDialogChange = (open: boolean) => {
-    setIsDialogOpen(open)
-    if (!open) {
-      setTimeout(() => {
-        openButtonRef.current?.focus()
-      }, 0)
-    }
-  }
 
   // Log dialog open state for debugging
   if (isEditDialogOpen) {

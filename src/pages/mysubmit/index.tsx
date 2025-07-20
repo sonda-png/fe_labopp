@@ -1,8 +1,4 @@
-import type * as React from "react"
 import {
-  Search,
-  Bell,
-  ChevronDown,
   FileText,
   Clock,
   CheckCircle,
@@ -12,11 +8,8 @@ import {
   Code,
   Calendar,
 } from "lucide-react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 
 // Assignment data
 const assignments = [

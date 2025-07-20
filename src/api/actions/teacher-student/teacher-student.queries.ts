@@ -1,5 +1,4 @@
 import { queryFactoryOptions } from "@/api/utils/queryFactoryOptions";
-import { AdminAccountQueryParams } from "../admin-account/admin-account.type";
 import { AxiosInstance } from "axios";
 import { TeacherStudentInClassResponse, StudentProgressResponse } from "./teacher-student.type";
 
