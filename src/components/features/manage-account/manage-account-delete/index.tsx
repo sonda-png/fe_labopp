@@ -28,32 +28,32 @@ export const ManageAccountDelete = ({
         <DialogHeader>
           <DialogTitle className="flex items-center text-red-600">
             <AlertTriangle className="mr-2 h-5 w-5" />
-            Xóa tài khoản
+            Delete Account
           </DialogTitle>
           <DialogDescription>
-            Bạn có chắc chắn muốn xóa vĩnh viễn tài khoản của{' '}
+            Are you sure you want to permanently delete the account of{' '}
             {userToDelete?.fullName}?
           </DialogDescription>
         </DialogHeader>
         <div className="py-4">
           <div className="bg-red-50 border border-red-200 rounded-lg p-3">
             <p className="text-sm text-red-700">
-              <strong>Cảnh báo:</strong> Hành động này không thể hoàn tác. Tất
-              cả dữ liệu liên quan đến tài khoản này sẽ bị xóa vĩnh viễn.
+              <strong>Warning:</strong> This action cannot be undone. All data
+              related to this account will be permanently deleted.
             </p>
           </div>
           <div className="mt-4 space-y-2">
             <Label htmlFor="delete-confirm">
-              Để xác nhận, vui lòng nhập tên người dùng
+              To confirm, please enter the user's name
             </Label>
             <Input id="delete-confirm" placeholder={userToDelete?.fullName} />
           </div>
         </div>
         <div className="flex justify-end space-x-2">
           <Button variant="outline" onClick={() => setIsDeleteModalOpen(false)}>
-            Hủy
+            Cancel
           </Button>
-          <Button variant="destructive">Xóa vĩnh viễn</Button>
+          <Button variant="destructive">Delete Permanently</Button>
         </div>
       </DialogContent>
     </Dialog>

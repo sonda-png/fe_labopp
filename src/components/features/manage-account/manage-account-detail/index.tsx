@@ -67,7 +67,7 @@ export const ManageAccountDetail = ({
   }
 
   const getStatusText = (status: boolean) => {
-    return status ? 'Hoạt động' : 'Không hoạt động'
+    return status ? 'Active' : 'Inactive'
   }
 
   if (isLoading) {
@@ -88,10 +88,10 @@ export const ManageAccountDetail = ({
         <DialogHeader>
           <DialogTitle className="flex items-center space-x-2">
             <User className="h-5 w-5 text-orange-500" />
-            <span>Chi tiết tài khoản người dùng</span>
+            <span>User Account Details</span>
           </DialogTitle>
           <DialogDescription>
-            Thông tin chi tiết của {userDetail?.fullName}
+            Detailed information for {userDetail?.fullName}
           </DialogDescription>
         </DialogHeader>
 
@@ -150,13 +150,13 @@ export const ManageAccountDetail = ({
               </CardContent>
             </Card>
 
-            {/* Thông tin liên hệ */}
+            {/* Contact Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2">
                     <Mail className="h-4 w-4 text-orange-500" />
-                    <span>Thông tin liên hệ</span>
+                    <span>Contact Information</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -173,7 +173,7 @@ export const ManageAccountDetail = ({
                   <div className="flex items-center space-x-3">
                     <Phone className="h-4 w-4 text-gray-400" />
                     <div>
-                      <p className="text-sm text-gray-500">Số điện thoại</p>
+                      <p className="text-sm text-gray-500">Phone Number</p>
                       <p className="font-medium">{userDetail.phone}</p>
                     </div>
                   </div>
@@ -185,7 +185,7 @@ export const ManageAccountDetail = ({
                         <Building className="h-4 w-4 text-gray-400" />
                         <div>
                           <p className="text-sm text-gray-500">
-                            Khoa/Phòng ban
+                            Department/Faculty
                           </p>
                           <p className="font-medium">{userDetail.department}</p>
                         </div>
@@ -195,12 +195,12 @@ export const ManageAccountDetail = ({
                 </CardContent>
               </Card>
 
-              {/* Thông tin hệ thống */}
+              {/* System Information */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2">
                     <Clock className="h-4 w-4 text-orange-500" />
-                    <span>Thông tin hệ thống</span>
+                    <span>System Information</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -209,7 +209,7 @@ export const ManageAccountDetail = ({
                   <div className="flex items-center space-x-3">
                     <Clock className="h-4 w-4 text-gray-400" />
                     <div>
-                      <p className="text-sm text-gray-500">Hoạt động cuối</p>
+                      <p className="text-sm text-gray-500">Last Activity</p>
                       <p className="font-medium">
                         {convertLocalTime(userDetail.lastActive)}
                       </p>
@@ -221,27 +221,27 @@ export const ManageAccountDetail = ({
               </Card>
             </div>
 
-            {/* Thông tin bổ sung */}
+            {/* Additional Information */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <User className="h-4 w-4 text-orange-500" />
-                  <span>Thông tin chi tiết</span>
+                  <span>Additional Details</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="text-center p-4 bg-gray-50 rounded-lg">
-                    <h4 className="font-semibold text-gray-900">Vai trò</h4>
+                    <h4 className="font-semibold text-gray-900">Role</h4>
                     <p className="text-sm text-gray-600 mt-1">
                       {rolesData?.find(
                         role => role.name === userDetail.roleName
-                      )?.name || 'Không xác định'}
+                      )?.name || 'Unknown'}
                     </p>
                   </div>
 
                   <div className="text-center p-4 bg-gray-50 rounded-lg">
-                    <h4 className="font-semibold text-gray-900">Trạng thái</h4>
+                    <h4 className="font-semibold text-gray-900">Status</h4>
                     <p
                       className={`text-sm mt-1 ${userDetail.isActive ? 'text-green-600' : 'text-gray-600'}`}
                     >
@@ -251,10 +251,10 @@ export const ManageAccountDetail = ({
 
                   <div className="text-center p-4 bg-gray-50 rounded-lg">
                     <h4 className="font-semibold text-gray-900">
-                      Khoa/Phòng ban
+                      Department/Faculty
                     </h4>
                     <p className="text-sm text-gray-600 mt-1">
-                      {userDetail.department || 'Không có thông tin'}
+                      {userDetail.department || 'No information'}
                     </p>
                   </div>
                 </div>
@@ -270,7 +270,7 @@ export const ManageAccountDetail = ({
             className="min-w-[100px]"
           >
             <X className="mr-2 h-4 w-4" />
-            Đóng
+            Close
           </Button>
         </div>
       </DialogContent>

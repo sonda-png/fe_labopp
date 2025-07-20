@@ -32,7 +32,6 @@ export const suspendAccountSchema = z.object({
 // Zod schema for password validation
 export const changePasswordSchema = z
   .object({
-    currentPassword: z.string().min(1, 'Vui lòng nhập mật khẩu hiện tại'),
     newPassword: z
       .string()
       .min(8, 'Mật khẩu phải có ít nhất 8 ký tự')
