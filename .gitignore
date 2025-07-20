@@ -27,3 +27,4 @@ dist-ssr
 build/
 .vercel
 src/routeTree.gen.ts
+coverage/

@@ -56,10 +56,10 @@ export const ManageAccountAudit = ({
         queryKey: adminAccountQueries.getAll().queryKey,
       })
       setIsModalOpen(false)
-      toast.success('Tạo tài khoản thành công')
+      toast.success('Account created successfully')
     },
     onError: (error: StandardizedApiError) => {
-      toast.error(error.message || 'Đã xảy ra lỗi')
+      toast.error(error.message || 'An error occurred')
     },
   })
 
@@ -69,10 +69,10 @@ export const ManageAccountAudit = ({
         queryKey: adminAccountQueries.getAll().queryKey,
       })
       setIsModalOpen(false)
-      toast.success('Cập nhật tài khoản thành công')
+      toast.success('Account updated successfully')
     },
     onError: (error: StandardizedApiError) => {
-      toast.error(error.message || 'Đã xảy ra lỗi')
+      toast.error(error.message || 'An error occurred')
     },
   })
 
@@ -120,24 +120,24 @@ export const ManageAccountAudit = ({
         <DialogHeader>
           <DialogTitle>
             {auditMode === 'update'
-              ? 'Chỉnh sửa thông tin người dùng'
-              : 'Tạo tài khoản người dùng mới'}
+              ? 'Edit User Information'
+              : 'Create New User Account'}
           </DialogTitle>
           <DialogDescription>
             {auditMode === 'update'
-              ? `Cập nhật thông tin cho ${userToEdit?.fullName}`
-              : 'Tạo tài khoản mới'}
+              ? `Update information for ${userToEdit?.fullName}`
+              : 'Create a new account'}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(handleAuditAccount)}>
           <div className="grid grid-cols-2 gap-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="fullName">Họ và tên</Label>
+              <Label htmlFor="fullName">Full Name</Label>
               <Input
                 defaultValue={userToEdit?.fullName}
                 id="fullName"
                 {...register('fullName', {
-                  required: 'Vui lòng nhập họ và tên',
+                  required: 'Please enter full name',
                 })}
               />
               {errors.fullName && (
@@ -153,10 +153,10 @@ export const ManageAccountAudit = ({
                 id="email"
                 type="email"
                 {...register('email', {
-                  required: 'Vui lòng nhập email',
+                  required: 'Please enter email',
                   pattern: {
                     value: /^\S+@\S+$/i,
-                    message: 'Email không hợp lệ',
+                    message: 'Invalid email format',
                   },
                 })}
               />
@@ -167,11 +167,11 @@ export const ManageAccountAudit = ({
 
             {auditMode === 'create' && (
               <div className="space-y-2">
-                <Label htmlFor="userName">Tên đăng nhập</Label>
+                <Label htmlFor="userName">Username</Label>
                 <Input
                   id="userName"
                   {...register('userName', {
-                    required: 'Vui lòng nhập tên đăng nhập',
+                    required: 'Please enter username',
                   })}
                 />
                 {errors.userName && (
@@ -184,11 +184,11 @@ export const ManageAccountAudit = ({
 
             {auditMode === 'create' && (
               <div className="space-y-2">
-                <Label htmlFor="password">Mật khẩu</Label>
+                <Label htmlFor="password">Password</Label>
                 <Input
                   id="password"
                   {...register('password', {
-                    required: 'Vui lòng nhập mật khẩu',
+                    required: 'Please enter password',
                   })}
                 />
                 {errors.password && (
@@ -200,14 +200,14 @@ export const ManageAccountAudit = ({
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="phone">Số điện thoại</Label>
+              <Label htmlFor="phone">Phone Number</Label>
               <Input
                 id="phone"
                 {...register('phone', {
-                  required: 'Vui lòng nhập số điện thoại',
+                  required: 'Please enter phone number',
                   pattern: {
                     value: /^[0-9]{10,11}$/,
-                    message: 'Số điện thoại không hợp lệ',
+                    message: 'Invalid phone number format',
                   },
                 })}
               />
@@ -217,14 +217,14 @@ export const ManageAccountAudit = ({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="roleId">Vai trò</Label>
+              <Label htmlFor="roleId">Role</Label>
               <Controller
                 name="roleId"
                 control={control}
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Chọn vai trò" />
+                      <SelectValue placeholder="Select role" />
                     </SelectTrigger>
                     <SelectContent>
                       {rolesData?.map(role => (
@@ -244,10 +244,10 @@ export const ManageAccountAudit = ({
 
           <div className="flex justify-end space-x-2">
             <Button variant="outline" onClick={() => setIsModalOpen(false)}>
-              Hủy
+              Cancel
             </Button>
             <Button type="submit" className="bg-orange-500 hover:bg-orange-600">
-              Cập nhật
+              {auditMode === 'update' ? 'Update' : 'Create'}
             </Button>
           </div>
         </form>

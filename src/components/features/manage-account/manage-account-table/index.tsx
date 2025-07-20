@@ -17,6 +17,7 @@ import {
   Phone,
   UserCheck,
   UserX,
+  Lock,
 } from 'lucide-react'
 import {
   DropdownMenu,
@@ -37,6 +38,7 @@ import { TableSkeleton } from '@/components/common/table-loading'
 import { ManageAccountAudit } from '../manage-account-audit'
 import { ManageAccountSuspend } from '../manage-account-suspend'
 import { ManageAccountDetail } from '../manage-account-detail'
+import { ManageAccountChangePass } from '../manage-account-change-pass'
 
 interface ManageAccountTableProps {
   searchTerm: string
@@ -53,6 +55,9 @@ export const ManageAccountTable = ({
   const [userToEdit, setUserToEdit] = useState<AdminAccountResponse | null>(
     null
   )
+  const [isChangePassModalOpen, setIsChangePassModalOpen] = useState(false)
+  const [userToChangePass, setUserToChangePass] =
+    useState<AdminAccountResponse | null>(null)
   const [isSuspendModalOpen, setIsSuspendModalOpen] = useState(false)
   const [userToSuspend, setUserToSuspend] =
     useState<AdminAccountResponse | null>(null)
@@ -102,11 +107,11 @@ export const ManageAccountTable = ({
   const getStatusText = (status: boolean) => {
     switch (status) {
       case true:
-        return 'Hoạt động'
+        return 'Active'
       case false:
-        return 'Không hoạt động'
+        return 'Inactive'
       default:
-        return 'Không xác định'
+        return 'Unknown'
     }
   }
   return (
@@ -119,17 +124,17 @@ export const ManageAccountTable = ({
                 <TableRow className="bg-gray-50">
                   <TableHead className="w-10 text-center">#</TableHead>
                   <TableHead className="min-w-[200px]">
-                    Thông tin người dùng
+                    User Information
                   </TableHead>
-                  <TableHead className="min-w-[180px]">Liên hệ</TableHead>
-                  <TableHead className="w-[160px]">Vai trò</TableHead>
+                  <TableHead className="min-w-[180px]">Contact</TableHead>
+                  <TableHead className="w-[160px]">Role</TableHead>
                   <TableHead className="w-[120px] text-center">
-                    Trạng thái
+                    Status
                   </TableHead>
                   <TableHead className="w-[160px] text-center">
-                    Hoạt động cuối
+                    Last Activity
                   </TableHead>
-                  <TableHead className="w-[120px]">Thao tác</TableHead>
+                  <TableHead className="w-[120px]">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -226,7 +231,7 @@ export const ManageAccountTable = ({
                               }}
                             >
                               <Eye className="mr-2 h-4 w-4" />
-                              Xem chi tiết
+                              View Details
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => {
@@ -235,7 +240,16 @@ export const ManageAccountTable = ({
                               }}
                             >
                               <Edit className="mr-2 h-4 w-4" />
-                              Chỉnh sửa
+                              Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => {
+                                setUserToChangePass(user)
+                                setIsChangePassModalOpen(true)
+                              }}
+                            >
+                              <Lock className="mr-2 h-4 w-4" />
+                              Change Password
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
 
@@ -249,7 +263,7 @@ export const ManageAccountTable = ({
                                 }}
                               >
                                 <UserX className="mr-2 h-4 w-4" />
-                                Tạm khóa
+                                Suspend
                               </DropdownMenuItem>
                             ) : (
                               <DropdownMenuItem
@@ -261,7 +275,7 @@ export const ManageAccountTable = ({
                                 }}
                               >
                                 <UserCheck className="mr-2 h-4 w-4" />
-                                Kích hoạt
+                                Activate
                               </DropdownMenuItem>
                             )}
 
@@ -281,6 +295,12 @@ export const ManageAccountTable = ({
         isSuspendModalOpen={isSuspendModalOpen}
         setIsSuspendModalOpen={setIsSuspendModalOpen}
         id={userToSuspend?.id}
+      />
+      <ManageAccountChangePass
+        isOpen={isChangePassModalOpen}
+        setIsOpen={setIsChangePassModalOpen}
+        userId={userToChangePass?.id}
+        userName={userToChangePass?.fullName}
       />
       <ManageAccountAudit
         auditMode="update"
