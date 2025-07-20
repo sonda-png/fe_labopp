@@ -191,12 +191,6 @@ export default function StudentManagement() {
     }
   }
 
-  const getProgressColor = (progress: number) => {
-    if (progress >= 80) return 'bg-green-500'
-    if (progress >= 60) return 'bg-yellow-500'
-    return 'bg-red-500'
-  }
-
   return (
     <div className="p-6 space-y-6 w-full">
       {/* Header with class information */}
@@ -212,9 +206,7 @@ export default function StudentManagement() {
             <p className="text-gray-600">{classInfo.subject}</p>
           </div>
           <Badge className="ml-auto bg-green-100 text-green-800 hover:bg-green-100">
-            {classInfo.status === 'Active'
-              ? 'Active'
-              : 'Inactive'}
+            {classInfo.status === 'Active' ? 'Active' : 'Inactive'}
           </Badge>
         </div>
 
