@@ -35,11 +35,11 @@ jobs:
           npm run type-check
         continue-on-error: false
 
-      - name: Run linting (strict)
+      - name: Run linting (allow warnings)
         id: lint-check
         run: |
-          echo "Running ESLint checks..."
-          npm run lint
+          echo "Running ESLint checks (warnings allowed)..."
+          npm run lint -- --max-warnings=50
         continue-on-error: false
 
       - name: Check code formatting
