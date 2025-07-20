@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import { Menu, X } from 'lucide-react'
+import { Menu } from 'lucide-react'
 import { useState } from 'react'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { NavContent } from '@/components/common/sidebar/nav-content'
@@ -20,13 +20,13 @@ export const SidebarComponent = () => {
           <SheetContent side="left" className="w-[300px] p-6">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-lg font-semibold">Menu</h2>
-              <Button
+              {/* <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsOpen(false)}
               >
                 <X className="h-6 w-6" />
-              </Button>
+              </Button> */}
             </div>
             <NavContent setIsOpen={setIsOpen} />
           </SheetContent>

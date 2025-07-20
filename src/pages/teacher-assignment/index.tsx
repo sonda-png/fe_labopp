@@ -138,7 +138,7 @@ export const TeacherAssignmentPage = () => {
   })
 
   const deleteAssignmentMutation = () => {
-    toast.error('Chức năng đang phát triển')
+    toast.error('Feature under development')
   }
 
   const getStatusColor = (status: string) => {
@@ -170,7 +170,9 @@ export const TeacherAssignmentPage = () => {
 
   const handleDeleteAssignment = (assignment: TeacherAssignment) => {
     if (
-      confirm(`Bạn có chắc chắn muốn xóa assignment "${assignment.title}"?`)
+      confirm(
+        `Are you sure you want to delete assignment "${assignment.title}"?`
+      )
     ) {
       deleteAssignmentMutation()
     }
@@ -205,7 +207,7 @@ export const TeacherAssignmentPage = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Đang tải dữ liệu...</p>
+          <p className="mt-4 text-gray-600">Loading data...</p>
         </div>
       </div>
     )
@@ -219,7 +221,9 @@ export const TeacherAssignmentPage = () => {
           <h1 className="text-2xl font-bold text-gray-900">
             Teacher Assignment Management
           </h1>
-          <p className="text-gray-600">Quản lý assignments cho lớp {classId}</p>
+          <p className="text-gray-600">
+            Managing assignments for class {classId}
+          </p>
         </div>
       </div>
 
@@ -231,7 +235,7 @@ export const TeacherAssignmentPage = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">
-                    Tổng Assignments
+                    Total Assignments
                   </p>
                   <p className="text-2xl font-bold text-gray-900">
                     {assignmentsData?.length || 0}
@@ -245,9 +249,7 @@ export const TeacherAssignmentPage = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">
-                    Đang hoạt động
-                  </p>
+                  <p className="text-sm font-medium text-gray-600">Active</p>
                   <p className="text-2xl font-bold text-green-600">
                     {
                       assignmentsData?.filter(
@@ -264,7 +266,7 @@ export const TeacherAssignmentPage = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Bản nháp</p>
+                  <p className="text-sm font-medium text-gray-600">Draft</p>
                   <p className="text-2xl font-bold text-yellow-600">
                     {
                       assignmentsData?.filter(
@@ -281,7 +283,7 @@ export const TeacherAssignmentPage = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Tổng LOC</p>
+                  <p className="text-sm font-medium text-gray-600">Total LOC</p>
                   <p className="text-2xl font-bold text-blue-600">
                     {assignmentsData?.reduce((sum, a) => sum + a.locTarget, 0)}
                   </p>
@@ -298,53 +300,36 @@ export const TeacherAssignmentPage = () => {
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
-                placeholder="Tìm kiếm assignments..."
+                placeholder="Search assignments..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
                 className="pl-10 w-80 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
               />
             </div>
-
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-48">
-                <SelectValue placeholder="Trạng thái" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tất cả trạng thái</SelectItem>
-                <SelectItem value="active">Đang hoạt động</SelectItem>
-                <SelectItem value="completed">Đã hoàn thành</SelectItem>
-                <SelectItem value="draft">Bản nháp</SelectItem>
-                <SelectItem value="archived">Đã lưu trữ</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Button variant="outline">
-              <Filter className="mr-2 h-4 w-4" />
-              Bộ lọc nâng cao
-            </Button>
           </div>
 
           <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
             <DialogTrigger asChild>
               <Button className="bg-orange-500 hover:bg-orange-600">
                 <Plus className="mr-2 h-4 w-4" />
-                Tạo Assignment mới
+                Create New Assignment
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-3xl">
               <DialogHeader>
-                <DialogTitle>Tạo Assignment mới</DialogTitle>
+                <DialogTitle>Create New Assignment</DialogTitle>
                 <DialogDescription>
-                  Nhập thông tin để tạo assignment mới cho lớp {classId}
+                  Enter information to create a new assignment for class{' '}
+                  {classId}
                 </DialogDescription>
               </DialogHeader>
               <form onSubmit={handleSubmitCreate(handleCreateAssignment)}>
                 <div className="grid grid-cols-1 gap-4 py-4">
                   <div className="space-y-2">
-                    <Label htmlFor="title">Tiêu đề *</Label>
+                    <Label htmlFor="title">Title *</Label>
                     <Input
                       id="title"
-                      placeholder="VD: Lab 1: Basic OOP Concepts"
+                      placeholder="e.g: Lab 1: Basic OOP Concepts"
                       {...registerCreate('title')}
                       className={errorsCreate.title ? 'border-red-500' : ''}
                     />
@@ -356,10 +341,10 @@ export const TeacherAssignmentPage = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="description">Mô tả *</Label>
+                    <Label htmlFor="description">Description *</Label>
                     <Textarea
                       id="description"
-                      placeholder="Mô tả chi tiết về assignment..."
+                      placeholder="Detailed description of the assignment..."
                       rows={4}
                       {...registerCreate('description')}
                       className={
@@ -375,12 +360,12 @@ export const TeacherAssignmentPage = () => {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="locTarget">LOC yêu cầu *</Label>
+                      <Label htmlFor="locTarget">Required LOC *</Label>
                       <Input
                         id="locTarget"
                         type="number"
                         min="1"
-                        placeholder="VD: 500"
+                        placeholder="e.g: 500"
                         {...registerCreate('locTarget', {
                           valueAsNumber: true,
                         })}
@@ -395,7 +380,7 @@ export const TeacherAssignmentPage = () => {
                       )}
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="dueDate">Ngày hạn nộp *</Label>
+                      <Label htmlFor="dueDate">Due Date *</Label>
                       <Input
                         id="dueDate"
                         type="datetime-local"
@@ -419,7 +404,7 @@ export const TeacherAssignmentPage = () => {
                       resetCreate()
                     }}
                   >
-                    Hủy
+                    Cancel
                   </Button>
                   <Button
                     type="submit"
@@ -430,8 +415,8 @@ export const TeacherAssignmentPage = () => {
                   >
                     <Save className="mr-2 h-4 w-4" />
                     {isCreateAssignmentPending || isUpdateAssignmentPending
-                      ? 'Đang tạo...'
-                      : 'Tạo Assignment'}
+                      ? 'Creating...'
+                      : 'Create Assignment'}
                   </Button>
                 </div>
               </form>
@@ -475,7 +460,7 @@ export const TeacherAssignmentPage = () => {
                       </p>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600 mb-3">
                         <div>
-                          <span className="font-medium">LOC yêu cầu:</span>
+                          <span className="font-medium">Required LOC:</span>
                           <div className="text-blue-600 font-semibold">
                             {assignment.locTarget}
                           </div>
@@ -488,13 +473,13 @@ export const TeacherAssignmentPage = () => {
                           </div>
                         </div>
                         <div>
-                          <span className="font-medium">Đã pass:</span>
+                          <span className="font-medium">Passed:</span>
                           <div className="text-green-600 font-semibold">
                             {assignment.passedCount}
                           </div>
                         </div>
                         <div>
-                          <span className="font-medium">Tỷ lệ pass:</span>
+                          <span className="font-medium">Pass Rate:</span>
                           <div className="text-green-600 font-semibold">
                             {calculatePassRate(assignment)}%
                           </div>
@@ -502,9 +487,9 @@ export const TeacherAssignmentPage = () => {
                       </div>
                       <div className="text-xs text-gray-500">
                         <Calendar className="h-3 w-3 inline mr-1" />
-                        Hạn nộp:{' '}
+                        Due Date:{' '}
                         {new Date(assignment.dueDate).toLocaleDateString(
-                          'vi-VN'
+                          'en-US'
                         )}
                       </div>
                     </div>
@@ -522,17 +507,17 @@ export const TeacherAssignmentPage = () => {
                           onClick={() => openEditModal(assignment)}
                         >
                           <Edit className="mr-2 h-4 w-4" />
-                          Chỉnh sửa
+                          Edit
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => openDetailModal(assignment)}
                         >
                           <Eye className="mr-2 h-4 w-4" />
-                          Xem chi tiết
+                          View Details
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <Users className="mr-2 h-4 w-4" />
-                          Xem submissions
+                          View Submissions
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
@@ -540,7 +525,7 @@ export const TeacherAssignmentPage = () => {
                           onClick={() => handleDeleteAssignment(assignment)}
                         >
                           <Trash2 className="mr-2 h-4 w-4" />
-                          Xóa assignment
+                          Delete Assignment
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -563,18 +548,18 @@ export const TeacherAssignmentPage = () => {
         <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
           <DialogContent className="max-w-3xl">
             <DialogHeader>
-              <DialogTitle>Chỉnh sửa Assignment</DialogTitle>
+              <DialogTitle>Edit Assignment</DialogTitle>
               <DialogDescription>
-                Cập nhật thông tin assignment "{selectedAssignment?.title}"
+                Update assignment information "{selectedAssignment?.title}"
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmitEdit(handleEditAssignment)}>
               <div className="grid grid-cols-1 gap-4 py-4">
                 <div className="space-y-2">
-                  <Label htmlFor="editTitle">Tiêu đề *</Label>
+                  <Label htmlFor="editTitle">Title *</Label>
                   <Input
                     id="editTitle"
-                    placeholder="VD: Lab 1: Basic OOP Concepts"
+                    placeholder="e.g: Lab 1: Basic OOP Concepts"
                     {...registerEdit('title')}
                     className={errorsEdit.title ? 'border-red-500' : ''}
                   />
@@ -586,10 +571,10 @@ export const TeacherAssignmentPage = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="editDescription">Mô tả *</Label>
+                  <Label htmlFor="editDescription">Description *</Label>
                   <Textarea
                     id="editDescription"
-                    placeholder="Mô tả chi tiết về assignment..."
+                    placeholder="Detailed description of the assignment..."
                     rows={4}
                     {...registerEdit('description')}
                     className={errorsEdit.description ? 'border-red-500' : ''}
@@ -603,12 +588,12 @@ export const TeacherAssignmentPage = () => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="editLocTarget">LOC yêu cầu *</Label>
+                    <Label htmlFor="editLocTarget">Required LOC *</Label>
                     <Input
                       id="editLocTarget"
                       type="number"
                       min="1"
-                      placeholder="VD: 500"
+                      placeholder="e.g: 500"
                       {...registerEdit('locTarget', { valueAsNumber: true })}
                       className={errorsEdit.locTarget ? 'border-red-500' : ''}
                     />
@@ -619,7 +604,7 @@ export const TeacherAssignmentPage = () => {
                     )}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="editDueDate">Ngày hạn nộp *</Label>
+                    <Label htmlFor="editDueDate">Due Date *</Label>
                     <Input
                       id="editDueDate"
                       type="datetime-local"
@@ -644,7 +629,7 @@ export const TeacherAssignmentPage = () => {
                   }}
                 >
                   <X className="mr-2 h-4 w-4" />
-                  Hủy
+                  Cancel
                 </Button>
                 <Button
                   type="submit"
@@ -652,7 +637,7 @@ export const TeacherAssignmentPage = () => {
                   disabled={isCreateAssignmentPending}
                 >
                   <Save className="mr-2 h-4 w-4" />
-                  {isCreateAssignmentPending ? 'Đang cập nhật...' : 'Cập nhật'}
+                  {isCreateAssignmentPending ? 'Updating...' : 'Update'}
                 </Button>
               </div>
             </form>
@@ -665,10 +650,10 @@ export const TeacherAssignmentPage = () => {
             <CardContent>
               <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Không tìm thấy assignment nào
+                No assignments found
               </h3>
               <p className="text-gray-600 mb-4">
-                Không có assignment nào phù hợp với tiêu chí tìm kiếm.
+                No assignments match the search criteria.
               </p>
               <Button
                 variant="outline"
@@ -677,7 +662,7 @@ export const TeacherAssignmentPage = () => {
                   setStatusFilter('all')
                 }}
               >
-                Xóa bộ lọc
+                Clear filters
               </Button>
             </CardContent>
           </Card>
