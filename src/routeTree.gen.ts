@@ -20,12 +20,15 @@ import { Route as PublicLoginIndexImport } from './routes/_public/login/index'
 import { Route as PublicForgotPassIndexImport } from './routes/_public/forgot-pass/index'
 import { Route as PublicForbiddenIndexImport } from './routes/_public/forbidden/index'
 import { Route as AuthTestAuthIndexImport } from './routes/_auth/test-auth/index'
+import { Route as AuthTeacherSubmissionIndexImport } from './routes/_auth/teacher-submission/index'
+import { Route as AuthTeacherGradeIndexImport } from './routes/_auth/teacher-grade/index'
 import { Route as AuthSubmitlabIndexImport } from './routes/_auth/submitlab/index'
 import { Route as AuthStudentdashboardIndexImport } from './routes/_auth/studentdashboard/index'
 import { Route as AuthStudentManageIndexImport } from './routes/_auth/student-manage/index'
 import { Route as AuthSemesterManagementIndexImport } from './routes/_auth/semester-management/index'
 import { Route as AuthMysubmitIndexImport } from './routes/_auth/mysubmit/index'
 import { Route as AuthManageAccountIndexImport } from './routes/_auth/manage-account/index'
+import { Route as AuthLocRankingIndexImport } from './routes/_auth/loc-ranking/index'
 import { Route as AuthHomeIndexImport } from './routes/_auth/home/index'
 import { Route as AuthFapSyncIndexImport } from './routes/_auth/fap-sync/index'
 import { Route as AuthClassManageIndexImport } from './routes/_auth/class-manage/index'
@@ -95,6 +98,20 @@ const AuthTestAuthIndexRoute = AuthTestAuthIndexImport.update({
   getParentRoute: () => AuthRoute,
 } as any)
 
+const AuthTeacherSubmissionIndexRoute = AuthTeacherSubmissionIndexImport.update(
+  {
+    id: '/teacher-submission/',
+    path: '/teacher-submission/',
+    getParentRoute: () => AuthRoute,
+  } as any,
+)
+
+const AuthTeacherGradeIndexRoute = AuthTeacherGradeIndexImport.update({
+  id: '/teacher-grade/',
+  path: '/teacher-grade/',
+  getParentRoute: () => AuthRoute,
+} as any)
+
 const AuthSubmitlabIndexRoute = AuthSubmitlabIndexImport.update({
   id: '/submitlab/',
   path: '/submitlab/',
@@ -129,6 +146,12 @@ const AuthMysubmitIndexRoute = AuthMysubmitIndexImport.update({
 const AuthManageAccountIndexRoute = AuthManageAccountIndexImport.update({
   id: '/manage-account/',
   path: '/manage-account/',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthLocRankingIndexRoute = AuthLocRankingIndexImport.update({
+  id: '/loc-ranking/',
+  path: '/loc-ranking/',
   getParentRoute: () => AuthRoute,
 } as any)
 
@@ -308,6 +331,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthHomeIndexImport
       parentRoute: typeof AuthImport
     }
+    '/_auth/loc-ranking/': {
+      id: '/_auth/loc-ranking/'
+      path: '/loc-ranking'
+      fullPath: '/loc-ranking'
+      preLoaderRoute: typeof AuthLocRankingIndexImport
+      parentRoute: typeof AuthImport
+    }
     '/_auth/manage-account/': {
       id: '/_auth/manage-account/'
       path: '/manage-account'
@@ -348,6 +378,20 @@ declare module '@tanstack/react-router' {
       path: '/submitlab'
       fullPath: '/submitlab'
       preLoaderRoute: typeof AuthSubmitlabIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/teacher-grade/': {
+      id: '/_auth/teacher-grade/'
+      path: '/teacher-grade'
+      fullPath: '/teacher-grade'
+      preLoaderRoute: typeof AuthTeacherGradeIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/teacher-submission/': {
+      id: '/_auth/teacher-submission/'
+      path: '/teacher-submission'
+      fullPath: '/teacher-submission'
+      preLoaderRoute: typeof AuthTeacherSubmissionIndexImport
       parentRoute: typeof AuthImport
     }
     '/_auth/test-auth/': {
@@ -442,12 +486,15 @@ interface AuthRouteChildren {
   AuthClassManageIndexRoute: typeof AuthClassManageIndexRoute
   AuthFapSyncIndexRoute: typeof AuthFapSyncIndexRoute
   AuthHomeIndexRoute: typeof AuthHomeIndexRoute
+  AuthLocRankingIndexRoute: typeof AuthLocRankingIndexRoute
   AuthManageAccountIndexRoute: typeof AuthManageAccountIndexRoute
   AuthMysubmitIndexRoute: typeof AuthMysubmitIndexRoute
   AuthSemesterManagementIndexRoute: typeof AuthSemesterManagementIndexRoute
   AuthStudentManageIndexRoute: typeof AuthStudentManageIndexRoute
   AuthStudentdashboardIndexRoute: typeof AuthStudentdashboardIndexRoute
   AuthSubmitlabIndexRoute: typeof AuthSubmitlabIndexRoute
+  AuthTeacherGradeIndexRoute: typeof AuthTeacherGradeIndexRoute
+  AuthTeacherSubmissionIndexRoute: typeof AuthTeacherSubmissionIndexRoute
   AuthTestAuthIndexRoute: typeof AuthTestAuthIndexRoute
   AuthDashboardAdminIndexRoute: typeof AuthDashboardAdminIndexRoute
   AuthDashboardHeadSubjectIndexRoute: typeof AuthDashboardHeadSubjectIndexRoute
@@ -466,12 +513,15 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthClassManageIndexRoute: AuthClassManageIndexRoute,
   AuthFapSyncIndexRoute: AuthFapSyncIndexRoute,
   AuthHomeIndexRoute: AuthHomeIndexRoute,
+  AuthLocRankingIndexRoute: AuthLocRankingIndexRoute,
   AuthManageAccountIndexRoute: AuthManageAccountIndexRoute,
   AuthMysubmitIndexRoute: AuthMysubmitIndexRoute,
   AuthSemesterManagementIndexRoute: AuthSemesterManagementIndexRoute,
   AuthStudentManageIndexRoute: AuthStudentManageIndexRoute,
   AuthStudentdashboardIndexRoute: AuthStudentdashboardIndexRoute,
   AuthSubmitlabIndexRoute: AuthSubmitlabIndexRoute,
+  AuthTeacherGradeIndexRoute: AuthTeacherGradeIndexRoute,
+  AuthTeacherSubmissionIndexRoute: AuthTeacherSubmissionIndexRoute,
   AuthTestAuthIndexRoute: AuthTestAuthIndexRoute,
   AuthDashboardAdminIndexRoute: AuthDashboardAdminIndexRoute,
   AuthDashboardHeadSubjectIndexRoute: AuthDashboardHeadSubjectIndexRoute,
@@ -514,12 +564,15 @@ export interface FileRoutesByFullPath {
   '/class-manage': typeof AuthClassManageIndexRoute
   '/fap-sync': typeof AuthFapSyncIndexRoute
   '/home': typeof AuthHomeIndexRoute
+  '/loc-ranking': typeof AuthLocRankingIndexRoute
   '/manage-account': typeof AuthManageAccountIndexRoute
   '/mysubmit': typeof AuthMysubmitIndexRoute
   '/semester-management': typeof AuthSemesterManagementIndexRoute
   '/student-manage': typeof AuthStudentManageIndexRoute
   '/studentdashboard': typeof AuthStudentdashboardIndexRoute
   '/submitlab': typeof AuthSubmitlabIndexRoute
+  '/teacher-grade': typeof AuthTeacherGradeIndexRoute
+  '/teacher-submission': typeof AuthTeacherSubmissionIndexRoute
   '/test-auth': typeof AuthTestAuthIndexRoute
   '/forbidden': typeof PublicForbiddenIndexRoute
   '/forgot-pass': typeof PublicForgotPassIndexRoute
@@ -545,12 +598,15 @@ export interface FileRoutesByTo {
   '/class-manage': typeof AuthClassManageIndexRoute
   '/fap-sync': typeof AuthFapSyncIndexRoute
   '/home': typeof AuthHomeIndexRoute
+  '/loc-ranking': typeof AuthLocRankingIndexRoute
   '/manage-account': typeof AuthManageAccountIndexRoute
   '/mysubmit': typeof AuthMysubmitIndexRoute
   '/semester-management': typeof AuthSemesterManagementIndexRoute
   '/student-manage': typeof AuthStudentManageIndexRoute
   '/studentdashboard': typeof AuthStudentdashboardIndexRoute
   '/submitlab': typeof AuthSubmitlabIndexRoute
+  '/teacher-grade': typeof AuthTeacherGradeIndexRoute
+  '/teacher-submission': typeof AuthTeacherSubmissionIndexRoute
   '/test-auth': typeof AuthTestAuthIndexRoute
   '/forbidden': typeof PublicForbiddenIndexRoute
   '/forgot-pass': typeof PublicForgotPassIndexRoute
@@ -578,12 +634,15 @@ export interface FileRoutesById {
   '/_auth/class-manage/': typeof AuthClassManageIndexRoute
   '/_auth/fap-sync/': typeof AuthFapSyncIndexRoute
   '/_auth/home/': typeof AuthHomeIndexRoute
+  '/_auth/loc-ranking/': typeof AuthLocRankingIndexRoute
   '/_auth/manage-account/': typeof AuthManageAccountIndexRoute
   '/_auth/mysubmit/': typeof AuthMysubmitIndexRoute
   '/_auth/semester-management/': typeof AuthSemesterManagementIndexRoute
   '/_auth/student-manage/': typeof AuthStudentManageIndexRoute
   '/_auth/studentdashboard/': typeof AuthStudentdashboardIndexRoute
   '/_auth/submitlab/': typeof AuthSubmitlabIndexRoute
+  '/_auth/teacher-grade/': typeof AuthTeacherGradeIndexRoute
+  '/_auth/teacher-submission/': typeof AuthTeacherSubmissionIndexRoute
   '/_auth/test-auth/': typeof AuthTestAuthIndexRoute
   '/_public/forbidden/': typeof PublicForbiddenIndexRoute
   '/_public/forgot-pass/': typeof PublicForgotPassIndexRoute
@@ -611,12 +670,15 @@ export interface FileRouteTypes {
     | '/class-manage'
     | '/fap-sync'
     | '/home'
+    | '/loc-ranking'
     | '/manage-account'
     | '/mysubmit'
     | '/semester-management'
     | '/student-manage'
     | '/studentdashboard'
     | '/submitlab'
+    | '/teacher-grade'
+    | '/teacher-submission'
     | '/test-auth'
     | '/forbidden'
     | '/forgot-pass'
@@ -641,12 +703,15 @@ export interface FileRouteTypes {
     | '/class-manage'
     | '/fap-sync'
     | '/home'
+    | '/loc-ranking'
     | '/manage-account'
     | '/mysubmit'
     | '/semester-management'
     | '/student-manage'
     | '/studentdashboard'
     | '/submitlab'
+    | '/teacher-grade'
+    | '/teacher-submission'
     | '/test-auth'
     | '/forbidden'
     | '/forgot-pass'
@@ -672,12 +737,15 @@ export interface FileRouteTypes {
     | '/_auth/class-manage/'
     | '/_auth/fap-sync/'
     | '/_auth/home/'
+    | '/_auth/loc-ranking/'
     | '/_auth/manage-account/'
     | '/_auth/mysubmit/'
     | '/_auth/semester-management/'
     | '/_auth/student-manage/'
     | '/_auth/studentdashboard/'
     | '/_auth/submitlab/'
+    | '/_auth/teacher-grade/'
+    | '/_auth/teacher-submission/'
     | '/_auth/test-auth/'
     | '/_public/forbidden/'
     | '/_public/forgot-pass/'
@@ -734,12 +802,15 @@ export const routeTree = rootRoute
         "/_auth/class-manage/",
         "/_auth/fap-sync/",
         "/_auth/home/",
+        "/_auth/loc-ranking/",
         "/_auth/manage-account/",
         "/_auth/mysubmit/",
         "/_auth/semester-management/",
         "/_auth/student-manage/",
         "/_auth/studentdashboard/",
         "/_auth/submitlab/",
+        "/_auth/teacher-grade/",
+        "/_auth/teacher-submission/",
         "/_auth/test-auth/",
         "/_auth/dashboard/admin/",
         "/_auth/dashboard/head-subject/",
@@ -794,6 +865,10 @@ export const routeTree = rootRoute
       "filePath": "_auth/home/index.tsx",
       "parent": "/_auth"
     },
+    "/_auth/loc-ranking/": {
+      "filePath": "_auth/loc-ranking/index.tsx",
+      "parent": "/_auth"
+    },
     "/_auth/manage-account/": {
       "filePath": "_auth/manage-account/index.tsx",
       "parent": "/_auth"
@@ -816,6 +891,14 @@ export const routeTree = rootRoute
     },
     "/_auth/submitlab/": {
       "filePath": "_auth/submitlab/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/teacher-grade/": {
+      "filePath": "_auth/teacher-grade/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/teacher-submission/": {
+      "filePath": "_auth/teacher-submission/index.tsx",
       "parent": "/_auth"
     },
     "/_auth/test-auth/": {

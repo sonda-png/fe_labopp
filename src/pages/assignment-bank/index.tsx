@@ -2,16 +2,11 @@ import { useState } from 'react'
 import {
   FileText,
   Search,
-  Bell,
-  Settings,
-  LogOut,
-  ChevronDown,
   Eye,
   Edit,
   Plus,
   Filter,
   MoreHorizontal,
-  User,
   Code,
   Trash2,
   Save,
@@ -29,7 +24,6 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   Select,
   SelectContent,
@@ -453,9 +447,7 @@ export default function AssignmentBank() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">
-                    Active
-                  </p>
+                  <p className="text-sm font-medium text-gray-600">Active</p>
                   <p className="text-2xl font-semibold text-gray-900">
                     {stats.active}
                   </p>
@@ -645,7 +637,9 @@ export default function AssignmentBank() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="description">Assignment Description *</Label>
+                    <Label htmlFor="description">
+                      Assignment Description *
+                    </Label>
                     <Textarea
                       id="description"
                       placeholder="Detailed description about the assignment..."
@@ -777,27 +771,32 @@ export default function AssignmentBank() {
 
                   <div className="space-y-2">
                     <Label>Program Specifications</Label>
-                    {formData.specifications.map((spec: string, index: number) => (
-                      <div key={index} className="flex items-center space-x-2">
-                        <Input
-                          placeholder={`Specification ${index + 1}`}
-                          value={spec}
-                          onChange={e =>
-                            updateSpecification(index, e.target.value)
-                          }
-                        />
-                        {formData.specifications.length > 1 && (
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() => removeSpecification(index)}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        )}
-                      </div>
-                    ))}
+                    {formData.specifications.map(
+                      (spec: string, index: number) => (
+                        <div
+                          key={index}
+                          className="flex items-center space-x-2"
+                        >
+                          <Input
+                            placeholder={`Specification ${index + 1}`}
+                            value={spec}
+                            onChange={e =>
+                              updateSpecification(index, e.target.value)
+                            }
+                          />
+                          {formData.specifications.length > 1 && (
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => removeSpecification(index)}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
+                      )
+                    )}
                     <Button
                       type="button"
                       variant="outline"
@@ -889,7 +888,8 @@ export default function AssignmentBank() {
                           variant="outline"
                           className={getDifficultyColor(assignment.difficulty)}
                         >
-                          {getDifficultyText(assignment.difficulty)} ({assignment.difficulty}/5)
+                          {getDifficultyText(assignment.difficulty)} (
+                          {assignment.difficulty}/5)
                         </Badge>
                         {!assignment.isPublic && (
                           <Badge
@@ -952,8 +952,14 @@ export default function AssignmentBank() {
                       </div>
 
                       <div className="text-xs text-gray-500">
-                        Created: {new Date(assignment.createdAt).toLocaleDateString('en-US')}
-                        • Updated: {new Date(assignment.updatedAt).toLocaleDateString('en-US')}
+                        Created:{' '}
+                        {new Date(assignment.createdAt).toLocaleDateString(
+                          'en-US'
+                        )}
+                        • Updated:{' '}
+                        {new Date(assignment.updatedAt).toLocaleDateString(
+                          'en-US'
+                        )}
                         • By: {assignment.createdBy}
                       </div>
                     </div>
@@ -1140,7 +1146,9 @@ export default function AssignmentBank() {
                 </div>
 
                 <div>
-                  <h4 className="font-medium text-gray-900 mb-2">Description</h4>
+                  <h4 className="font-medium text-gray-900 mb-2">
+                    Description
+                  </h4>
                   <p className="text-gray-700 text-sm">
                     {selectedAssignment.description}
                   </p>
@@ -1158,24 +1166,28 @@ export default function AssignmentBank() {
                     Program Specifications
                   </h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
-                    {selectedAssignment.specifications.map((spec: string, index: number) => (
-                      <li key={index}>{spec}</li>
-                    ))}
+                    {selectedAssignment.specifications.map(
+                      (spec: string, index: number) => (
+                        <li key={index}>{spec}</li>
+                      )
+                    )}
                   </ul>
                 </div>
 
                 <div>
                   <h4 className="font-medium text-gray-900 mb-2">Tags</h4>
                   <div className="flex flex-wrap gap-2">
-                    {selectedAssignment.tags.map((tag: string, index: number) => (
-                      <Badge
-                        key={index}
-                        variant="secondary"
-                        className="text-xs"
-                      >
-                        {tag}
-                      </Badge>
-                    ))}
+                    {selectedAssignment.tags.map(
+                      (tag: string, index: number) => (
+                        <Badge
+                          key={index}
+                          variant="secondary"
+                          className="text-xs"
+                        >
+                          {tag}
+                        </Badge>
+                      )
+                    )}
                   </div>
                 </div>
               </div>

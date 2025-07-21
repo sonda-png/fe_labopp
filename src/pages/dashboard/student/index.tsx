@@ -7,7 +7,6 @@ import {
   FileText,
   Trophy,
   Target,
-  Clock,
   TrendingUp,
   Calendar,
   BookOpen,
@@ -20,7 +19,7 @@ import {
 } from 'lucide-react'
 
 const studentData = {
-  name: 'Nguyễn Văn An',
+  name: 'John Smith',
   studentId: 'HE173456',
   semester: 'Fall 2024',
   totalLOC: 12450,
@@ -76,56 +75,29 @@ const subjects = [
   },
 ]
 
-const recentActivities = [
-  {
-    id: 1,
-    type: 'assignment_submitted',
-    message: 'Đã nộp bài Assignment 3 - PRF192',
-    time: '2 giờ trước',
-    icon: FileText,
-    color: 'text-green-600',
-  },
-  {
-    id: 2,
-    type: 'grade_received',
-    message: 'Nhận điểm Assignment 2 - LAB211: A',
-    time: '1 ngày trước',
-    icon: Trophy,
-    color: 'text-orange-600',
-  },
-  {
-    id: 3,
-    type: 'deadline_reminder',
-    message: 'Sắp đến hạn nộp Assignment 4 - PRO192',
-    time: '2 ngày trước',
-    icon: Clock,
-    color: 'text-red-600',
-  },
-]
-
 const achievements = [
   {
     icon: Trophy,
     title: 'Top 20',
-    description: 'Xếp hạng top 20 lớp',
+    description: 'Ranked in top 20 of class',
     earned: true,
   },
   {
     icon: Code,
     title: '10k LOC',
-    description: 'Đạt 10,000 dòng code',
+    description: 'Achieved 10,000 lines of code',
     earned: true,
   },
   {
     icon: Star,
     title: 'Perfect Score',
-    description: 'Đạt điểm tuyệt đối',
+    description: 'Achieved perfect score',
     earned: false,
   },
   {
     icon: Target,
     title: 'Goal Achiever',
-    description: 'Hoàn thành mục tiêu',
+    description: 'Completed target goals',
     earned: false,
   },
 ]
@@ -146,7 +118,7 @@ export const StudentDashboard = () => {
           </div>
           <div>
             <h1 className="text-3xl font-bold text-gray-900">
-              Xin chào, {studentData.name}!
+              Hello, {studentData.name}!
             </h1>
             <p className="text-gray-600">
               {studentData.studentId} • {studentData.semester}
@@ -158,7 +130,7 @@ export const StudentDashboard = () => {
             GPA: {studentData.gpa}
           </p>
           <p className="text-sm text-gray-600">
-            Tỷ lệ đậu: {studentData.passRate}%
+            Pass Rate: {studentData.passRate}%
           </p>
         </div>
       </div>
@@ -169,7 +141,7 @@ export const StudentDashboard = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Tổng LOC</p>
+                <p className="text-sm font-medium text-gray-600">Total LOC</p>
                 <p className="text-3xl font-bold text-gray-900">
                   {studentData.totalLOC.toLocaleString()}
                 </p>
@@ -189,7 +161,7 @@ export const StudentDashboard = () => {
                 />
               </Progress>
               <p className="text-xs text-gray-500 mt-1">
-                {progressPercentage.toFixed(1)}% hoàn thành
+                {progressPercentage.toFixed(1)}% completed
               </p>
             </div>
           </CardContent>
@@ -199,7 +171,7 @@ export const StudentDashboard = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Bài tập</p>
+                <p className="text-sm font-medium text-gray-600">Assignments</p>
                 <p className="text-3xl font-bold text-gray-900">
                   {studentData.completedAssignments}
                 </p>
@@ -219,7 +191,7 @@ export const StudentDashboard = () => {
                 />
               </Progress>
               <p className="text-xs text-gray-500 mt-1">
-                {assignmentProgress.toFixed(1)}% hoàn thành
+                {assignmentProgress.toFixed(1)}% completed
               </p>
             </div>
           </CardContent>
@@ -229,7 +201,7 @@ export const StudentDashboard = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Xếp hạng</p>
+                <p className="text-sm font-medium text-gray-600">Ranking</p>
                 <p className="text-3xl font-bold text-gray-900">
                   #{studentData.rank}
                 </p>
@@ -243,7 +215,9 @@ export const StudentDashboard = () => {
             </div>
             <div className="mt-4 flex items-center">
               <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
-              <span className="text-sm text-green-600">+3 vị trí tuần này</span>
+              <span className="text-sm text-green-600">
+                +3 positions this week
+              </span>
             </div>
           </CardContent>
         </Card>
@@ -252,11 +226,11 @@ export const StudentDashboard = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Môn học</p>
+                <p className="text-sm font-medium text-gray-600">Subjects</p>
                 <p className="text-3xl font-bold text-gray-900">
                   {subjects.length}
                 </p>
-                <p className="text-sm text-gray-500">môn đang học</p>
+                <p className="text-sm text-gray-500">subjects enrolled</p>
               </div>
               <div className="p-3 bg-purple-100 rounded-lg">
                 <BookOpen className="h-8 w-8 text-purple-600" />
@@ -264,7 +238,9 @@ export const StudentDashboard = () => {
             </div>
             <div className="mt-4 flex items-center">
               <CheckCircle className="h-4 w-4 text-green-500 mr-1" />
-              <span className="text-sm text-green-600">1 môn hoàn thành</span>
+              <span className="text-sm text-green-600">
+                1 subject completed
+              </span>
             </div>
           </CardContent>
         </Card>
@@ -277,7 +253,7 @@ export const StudentDashboard = () => {
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <BookOpen className="h-5 w-5 text-orange-500" />
-              <span>Tiến độ các môn học</span>
+              <span>Subject Progress</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -310,8 +286,8 @@ export const StudentDashboard = () => {
                           }
                         >
                           {subject.status === 'completed'
-                            ? 'Hoàn thành'
-                            : 'Đang học'}
+                            ? 'Completed'
+                            : 'In Progress'}
                         </Badge>
                       </div>
                     </div>
@@ -321,13 +297,13 @@ export const StudentDashboard = () => {
                       </p>
                       <p className="text-sm text-gray-600">
                         {subject.assignments.completed}/
-                        {subject.assignments.total} bài
+                        {subject.assignments.total} assignments
                       </p>
                     </div>
                   </div>
                   <div className="mb-2">
                     <div className="flex justify-between text-sm mb-1">
-                      <span>Tiến độ LOC</span>
+                      <span>LOC Progress</span>
                       <span>{subject.progress}%</span>
                     </div>
                     <Progress
@@ -347,13 +323,13 @@ export const StudentDashboard = () => {
         </Card>
 
         {/* Side Panel */}
-        <div className="space-y-6">
+        <div>
           {/* Achievements */}
           <Card className="shadow-lg">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <Award className="h-5 w-5 text-orange-500" />
-                <span>Thành tích</span>
+                <span>Achievements</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -387,38 +363,6 @@ export const StudentDashboard = () => {
               </div>
             </CardContent>
           </Card>
-
-          {/* Recent Activities */}
-          <Card className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Clock className="h-5 w-5 text-orange-500" />
-                <span>Hoạt động gần đây</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {recentActivities.map(activity => (
-                  <div
-                    key={activity.id}
-                    className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50"
-                  >
-                    <div
-                      className={`p-2 rounded-full bg-gray-100 ${activity.color}`}
-                    >
-                      <activity.icon className="h-4 w-4" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900">
-                        {activity.message}
-                      </p>
-                      <p className="text-xs text-gray-500">{activity.time}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </div>
 
@@ -427,35 +371,35 @@ export const StudentDashboard = () => {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Target className="h-5 w-5 text-orange-500" />
-            <span>Thao tác nhanh</span>
+            <span>Quick Actions</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Button className="bg-orange-500 hover:bg-orange-600 h-auto p-4 flex-col space-y-2">
               <FileText className="h-6 w-6" />
-              <span>Nộp bài mới</span>
+              <span>Submit New</span>
             </Button>
             <Button
               variant="outline"
               className="border-orange-200 text-orange-600 hover:bg-orange-50 h-auto p-4 flex-col space-y-2"
             >
               <BarChart3 className="h-6 w-6" />
-              <span>Xem thống kê</span>
+              <span>View Statistics</span>
             </Button>
             <Button
               variant="outline"
               className="border-orange-200 text-orange-600 hover:bg-orange-50 h-auto p-4 flex-col space-y-2"
             >
               <Calendar className="h-6 w-6" />
-              <span>Lịch học</span>
+              <span>Schedule</span>
             </Button>
             <Button
               variant="outline"
               className="border-orange-200 text-orange-600 hover:bg-orange-50 h-auto p-4 flex-col space-y-2"
             >
               <Users className="h-6 w-6" />
-              <span>Bảng xếp hạng</span>
+              <span>Leaderboard</span>
             </Button>
           </div>
         </CardContent>

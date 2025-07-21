@@ -48,8 +48,8 @@ export const ManageAccountSuspend = ({
   })
 
   const isActivating = !userToSuspend?.isActive
-  const actionText = isActivating ? 'kích hoạt' : 'tạm khóa'
-  const actionTextCapitalized = isActivating ? 'Kích hoạt' : 'Tạm khóa'
+  const actionText = isActivating ? 'activate' : 'suspend'
+  const actionTextCapitalized = isActivating ? 'Activate' : 'Suspend'
 
   const { mutateAsync: handleSuspendAccount } = useMutation(
     'changeStatusAccount',
@@ -67,12 +67,12 @@ export const ManageAccountSuspend = ({
         reset()
         toast.success(
           isActivating
-            ? 'Kích hoạt tài khoản thành công'
-            : 'Khóa tài khoản thành công'
+            ? 'Account activated successfully'
+            : 'Account suspended successfully'
         )
       },
       onError: (error: StandardizedApiError) => {
-        toast.error(error.message || 'Đã xảy ra lỗi')
+        toast.error(error.message || 'An error occurred')
       },
     }
   )
@@ -97,20 +97,20 @@ export const ManageAccountSuspend = ({
             ) : (
               <AlertTriangle className="mr-2 h-5 w-5 text-orange-500" />
             )}
-            {actionTextCapitalized} tài khoản
+            {actionTextCapitalized} Account
           </DialogTitle>
           <DialogDescription>
-            Bạn có chắc chắn muốn {actionText} tài khoản của{' '}
+            Are you sure you want to {actionText} the account of{' '}
             <strong>{userToSuspend?.fullName}</strong>?
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="py-4">
             <div className="space-y-2">
-              <Label htmlFor="reason">Lý do {actionText} *</Label>
+              <Label htmlFor="reason">Reason for {actionText} *</Label>
               <Input
                 id="reason"
-                placeholder={`Nhập lý do ${actionText}...`}
+                placeholder={`Enter reason for ${actionText}...`}
                 {...register('reason')}
                 className={errors.reason ? 'border-red-500' : ''}
               />
@@ -126,7 +126,7 @@ export const ManageAccountSuspend = ({
               onClick={() => setIsSuspendModalOpen(false)}
               disabled={isSubmitting}
             >
-              Hủy
+              Cancel
             </Button>
             <Button
               type="submit"
@@ -134,7 +134,7 @@ export const ManageAccountSuspend = ({
               className={isActivating ? 'bg-green-600 hover:bg-green-700' : ''}
               disabled={isSubmitting}
             >
-              {isSubmitting ? 'Đang xử lý...' : actionTextCapitalized}
+              {isSubmitting ? 'Processing...' : actionTextCapitalized}
             </Button>
           </div>
         </form>

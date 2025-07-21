@@ -44,8 +44,12 @@ getRedirectPath({}, '/home') // "/home"
 ## Ví dụ sử dụng
 
 ### Trong component
+
 ```typescript
-import { getLoginUrlWithRedirect, getRedirectPath } from '@/utils/helpers/redirectAfterLogin'
+import {
+  getLoginUrlWithRedirect,
+  getRedirectPath,
+} from '@/utils/helpers/redirectAfterLogin'
 
 // Khi logout
 const handleLogout = () => {
@@ -64,4 +68,4 @@ navigate({ to: redirectTo })
 - User đang ở `/dashboard` → Token hết hạn → `/login?redirect=%2Fdashboard`
 - User đang ở `/profile?tab=settings` → Logout → `/login?redirect=%2Fprofile%3Ftab%3Dsettings`
 - User đăng nhập thành công với redirect → Về trang ban đầu
-- User đăng nhập thành công không có redirect → `/class-manage` 
+- User đăng nhập thành công không có redirect → `/class-manage`

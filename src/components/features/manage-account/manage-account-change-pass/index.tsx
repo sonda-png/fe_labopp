@@ -21,17 +21,17 @@ import { useMutation } from '@/hooks'
 
 interface ManageAccountChangePassProps {
   isOpen: boolean
-  onClose: () => void
+  setIsOpen: (isOpen: boolean) => void
   userId?: string
   userName?: string
 }
 
 export const ManageAccountChangePass = ({
   isOpen,
-  onClose,
+  setIsOpen,
   userId,
+  userName,
 }: ManageAccountChangePassProps) => {
-  const [showCurrentPassword, setShowCurrentPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -45,7 +45,6 @@ export const ManageAccountChangePass = ({
   } = useForm<ChangePasswordFormData>({
     resolver: zodResolver(changePasswordSchema),
     defaultValues: {
-      currentPassword: '',
       newPassword: '',
       confirmPassword: '',
     },
@@ -55,7 +54,7 @@ export const ManageAccountChangePass = ({
     onSuccess: () => {
       toast.success('Đổi mật khẩu thành công')
       reset()
-      onClose()
+      setIsOpen(false)
     },
     onError: () => {
       toast.error('Đổi mật khẩu thất bại. Vui lòng thử lại.')
@@ -80,7 +79,7 @@ export const ManageAccountChangePass = ({
 
   const handleClose = () => {
     reset()
-    onClose()
+    setIsOpen(false)
   }
 
   // Password strength checker
@@ -127,38 +126,6 @@ export const ManageAccountChangePass = ({
           onSubmit={handleSubmit(handleChangePassword)}
           className="space-y-4"
         >
-          {/* Current Password */}
-          <div className="space-y-2">
-            <Label htmlFor="currentPassword">Mật khẩu hiện tại *</Label>
-            <div className="relative">
-              <Input
-                id="currentPassword"
-                type={showCurrentPassword ? 'text' : 'password'}
-                placeholder="Nhập mật khẩu hiện tại"
-                {...register('currentPassword')}
-                className={`pr-10 ${errors.currentPassword ? 'border-red-500' : ''}`}
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-              >
-                {showCurrentPassword ? (
-                  <EyeOff className="h-4 w-4 text-gray-400" />
-                ) : (
-                  <Eye className="h-4 w-4 text-gray-400" />
-                )}
-              </Button>
-            </div>
-            {errors.currentPassword && (
-              <p className="text-sm text-red-600">
-                {errors.currentPassword.message}
-              </p>
-            )}
-          </div>
-
           {/* New Password */}
           <div className="space-y-2">
             <Label htmlFor="newPassword">Mật khẩu mới *</Label>

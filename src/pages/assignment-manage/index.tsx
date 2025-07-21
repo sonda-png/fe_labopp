@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -151,7 +151,7 @@ export default function AssignmentManagement() {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     setValue,
     getValues,
   } = useForm<AssignmentFormValues>({
@@ -222,20 +222,6 @@ export default function AssignmentManagement() {
       color: 'text-orange-600',
     },
   ]
-
-  const buttonRef = useRef<HTMLButtonElement>(null)
-
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const openButtonRef = useRef<HTMLButtonElement>(null)
-
-  const handleDialogChange = (open: boolean) => {
-    setIsDialogOpen(open)
-    if (!open) {
-      setTimeout(() => {
-        openButtonRef.current?.focus()
-      }, 0)
-    }
-  }
 
   // Log dialog open state for debugging
   if (isEditDialogOpen) {

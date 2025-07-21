@@ -1,31 +1,32 @@
-"use client"
-
-import type React from "react"
-import { useState, useRef } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Separator } from "@/components/ui/separator"
-import { Progress } from "@/components/ui/progress"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import type React from 'react'
+import { useState, useRef } from 'react'
+import { Button } from '@/components/ui/button'
 import {
-  FileArchive,
-  Upload,
-  X,
-  FileCode,
-  Check,
-} from "lucide-react"
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Separator } from '@/components/ui/separator'
+import { Progress } from '@/components/ui/progress'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { FileArchive, Upload, X, FileCode, Check } from 'lucide-react'
 
 export default function StudentSubmission() {
   const [file, setFile] = useState<File | null>(null)
   const [isDragging, setIsDragging] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
-  const [uploadStatus, setUploadStatus] = useState<"idle" | "uploading" | "success" | "error">("idle")
-  const [errorMessage, setErrorMessage] = useState("")
-  const [submissionStatus, setSubmissionStatus] = useState("draft")
-  const [comment, setComment] = useState("")
+  const [uploadStatus, setUploadStatus] = useState<
+    'idle' | 'uploading' | 'success' | 'error'
+  >('idle')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [submissionStatus, setSubmissionStatus] = useState('draft')
+  const [comment, setComment] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -46,14 +47,16 @@ export default function StudentSubmission() {
   }
 
   const handleFileSelection = (selectedFile: File) => {
-    if (selectedFile && selectedFile.type === "application/zip") {
+    if (selectedFile && selectedFile.type === 'application/zip') {
       setFile(selectedFile)
-      setErrorMessage("")
+      setErrorMessage('')
       simulateUpload()
     } else {
       setFile(null)
-      setErrorMessage("Only ZIP files are accepted. Please compress your files before uploading.")
-      setUploadStatus("error")
+      setErrorMessage(
+        'Only ZIP files are accepted. Please compress your files before uploading.'
+      )
+      setUploadStatus('error')
     }
   }
 
@@ -64,14 +67,14 @@ export default function StudentSubmission() {
   }
 
   const simulateUpload = () => {
-    setUploadStatus("uploading")
+    setUploadStatus('uploading')
     setUploadProgress(0)
 
     const interval = setInterval(() => {
-      setUploadProgress((prev) => {
+      setUploadProgress(prev => {
         if (prev >= 100) {
           clearInterval(interval)
-          setUploadStatus("success")
+          setUploadStatus('success')
           return 100
         }
         return prev + 5
@@ -81,20 +84,20 @@ export default function StudentSubmission() {
 
   const removeFile = () => {
     setFile(null)
-    setUploadStatus("idle")
+    setUploadStatus('idle')
     setUploadProgress(0)
     if (fileInputRef.current) {
-      fileInputRef.current.value = ""
+      fileInputRef.current.value = ''
     }
   }
 
   const handleSubmit = () => {
     if (!file) {
-      setErrorMessage("Please select a file to submit.")
+      setErrorMessage('Please select a file to submit.')
       return
     }
 
-    const action = submissionStatus === "submit" ? "submit" : "save draft"
+    const action = submissionStatus === 'submit' ? 'submit' : 'save draft'
     alert(`Successfully ${action}!`)
   }
 
@@ -115,44 +118,62 @@ export default function StudentSubmission() {
           <Card>
             <CardHeader>
               <CardTitle>Submit Assignment</CardTitle>
-              <CardDescription>Please submit your assignment in the required format</CardDescription>
+              <CardDescription>
+                Please submit your assignment in the required format
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Assignment Details */}
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <h3 className="text-sm font-medium text-muted-foreground">Subject</h3>
+                    <h3 className="text-sm font-medium text-muted-foreground">
+                      Subject
+                    </h3>
                     <p className="font-medium">LAB 02 - Java OOP</p>
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-muted-foreground">Assignment Code</h3>
+                    <h3 className="text-sm font-medium text-muted-foreground">
+                      Assignment Code
+                    </h3>
                     <p className="font-medium">J1.S.P0002</p>
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-muted-foreground">Assignment Name</h3>
+                    <h3 className="text-sm font-medium text-muted-foreground">
+                      Assignment Name
+                    </h3>
                     <p className="font-medium">Selection sort algorithm</p>
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-muted-foreground">Required LOC</h3>
+                    <h3 className="text-sm font-medium text-muted-foreground">
+                      Required LOC
+                    </h3>
                     <p className="font-medium">150</p>
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-muted-foreground">Start Date</h3>
+                    <h3 className="text-sm font-medium text-muted-foreground">
+                      Start Date
+                    </h3>
                     <p className="font-medium">2025-05-07</p>
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-muted-foreground">Due Date</h3>
+                    <h3 className="text-sm font-medium text-muted-foreground">
+                      Due Date
+                    </h3>
                     <p className="font-medium text-red-500">2025-08-10</p>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="text-sm font-medium text-muted-foreground">Description</h3>
+                  <h3 className="text-sm font-medium text-muted-foreground">
+                    Description
+                  </h3>
                   <p className="text-sm mt-1">
-                    Implement the selection sort algorithm in Java. The program should allow users to input an array
-                    of integers and display the sorted result using the selection sort algorithm. Include detailed
-                    comments explaining each step of the algorithm.
+                    Implement the selection sort algorithm in Java. The program
+                    should allow users to input an array of integers and display
+                    the sorted result using the selection sort algorithm.
+                    Include detailed comments explaining each step of the
+                    algorithm.
                   </p>
                 </div>
               </div>
@@ -168,8 +189,8 @@ export default function StudentSubmission() {
                     <div
                       className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors mt-2 ${
                         isDragging
-                          ? "border-orange-500 bg-orange-50"
-                          : "border-gray-300 hover:border-orange-500 hover:bg-orange-50"
+                          ? 'border-orange-500 bg-orange-50'
+                          : 'border-gray-300 hover:border-orange-500 hover:bg-orange-50'
                       }`}
                       onDragOver={handleDragOver}
                       onDragLeave={handleDragLeave}
@@ -181,8 +202,12 @@ export default function StudentSubmission() {
                           <FileArchive size={24} />
                         </div>
                         <div className="space-y-1">
-                          <p className="font-medium">Drag and drop ZIP file or click to select file</p>
-                          <p className="text-sm text-muted-foreground">Only ZIP files accepted, maximum 50MB</p>
+                          <p className="font-medium">
+                            Drag and drop ZIP file or click to select file
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            Only ZIP files accepted, maximum 50MB
+                          </p>
                         </div>
                         <Button variant="outline" size="sm" className="mt-2">
                           <Upload className="h-4 w-4 mr-2" />
@@ -219,12 +244,16 @@ export default function StudentSubmission() {
                             </p>
                           </div>
                         </div>
-                        <Button variant="ghost" size="icon" onClick={removeFile}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={removeFile}
+                        >
                           <X className="h-4 w-4" />
                         </Button>
                       </div>
 
-                      {uploadStatus === "uploading" && (
+                      {uploadStatus === 'uploading' && (
                         <div className="mt-4 space-y-1">
                           <div className="flex justify-between text-sm">
                             <span>Uploading...</span>
@@ -234,7 +263,7 @@ export default function StudentSubmission() {
                         </div>
                       )}
 
-                      {uploadStatus === "success" && (
+                      {uploadStatus === 'success' && (
                         <div className="mt-4 flex items-center gap-2 text-sm text-green-600">
                           <Check className="h-4 w-4" />
                           <span>Upload successful</span>
@@ -245,7 +274,10 @@ export default function StudentSubmission() {
 
                   <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
                     <FileCode className="h-4 w-4" />
-                    <span>You can compress files using WinRAR, 7-Zip, or built-in compression tools on your computer</span>
+                    <span>
+                      You can compress files using WinRAR, 7-Zip, or built-in
+                      compression tools on your computer
+                    </span>
                   </div>
                 </div>
 
@@ -276,14 +308,16 @@ export default function StudentSubmission() {
                     placeholder="Enter comment for instructor..."
                     className="mt-1"
                     value={comment}
-                    onChange={(e) => setComment(e.target.value)}
+                    onChange={e => setComment(e.target.value)}
                   />
                 </div>
               </div>
             </CardContent>
             <CardFooter className="flex justify-between">
               <Button variant="outline">Cancel</Button>
-              <Button onClick={handleSubmit}>{submissionStatus === "submit" ? "Submit" : "Save Draft"}</Button>
+              <Button onClick={handleSubmit}>
+                {submissionStatus === 'submit' ? 'Submit' : 'Save Draft'}
+              </Button>
             </CardFooter>
           </Card>
         </div>
@@ -298,7 +332,8 @@ export default function StudentSubmission() {
               <div className="space-y-2">
                 <h3 className="font-medium">1. Prepare your files</h3>
                 <p className="text-sm text-muted-foreground">
-                  Make sure your code has been tested and runs correctly before submitting.
+                  Make sure your code has been tested and runs correctly before
+                  submitting.
                 </p>
               </div>
 
@@ -312,16 +347,19 @@ export default function StudentSubmission() {
               <div className="space-y-2">
                 <h3 className="font-medium">3. Upload to system</h3>
                 <p className="text-sm text-muted-foreground">
-                  Upload the ZIP file to the system by dragging and dropping or selecting the file.
+                  Upload the ZIP file to the system by dragging and dropping or
+                  selecting the file.
                 </p>
               </div>
 
               <div className="space-y-2">
                 <h3 className="font-medium">4. Choose status</h3>
                 <p className="text-sm text-muted-foreground">
-                  <strong>Draft:</strong> Save your submission but don't send it to the instructor yet.
+                  <strong>Draft:</strong> Save your submission but don't send it
+                  to the instructor yet.
                   <br />
-                  <strong>Submit:</strong> Send your submission officially to the instructor.
+                  <strong>Submit:</strong> Send your submission officially to
+                  the instructor.
                 </p>
               </div>
             </CardContent>
