@@ -102,7 +102,6 @@ const teacherPerformance = [
 ]
 
 export const HeadSubjectDashboard = () => {
-
   return (
     <div className="space-y-6">
       {/* Header */}

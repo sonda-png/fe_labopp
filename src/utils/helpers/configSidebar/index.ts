@@ -41,7 +41,7 @@ export const allNavigationItems: NavigationItem[] = [
   },
   {
     id: 'fap-sync',
-    label: 'Đồng bộ FAP',
+    label: 'Fap-sync',
     icon: Database,
     path: '/fap-sync',
     roles: ['Admin'],
@@ -50,21 +50,21 @@ export const allNavigationItems: NavigationItem[] = [
   // Head Subject specific items
   {
     id: 'assignment-bank',
-    label: 'Quản lý ngân hàng bài tập',
+    label: 'Ngân hàng đề',
     icon: Layers,
     path: '/assignment-bank',
     roles: ['Head Subject', 'Admin'],
   },
   {
     id: 'semester-management',
-    label: 'Quản lý học kỳ',
+    label: 'Quản lý học kì',
     icon: Calendar,
     path: '/semester-management',
     roles: ['Head Subject', 'Admin'],
   },
   {
     id: 'assignment-statistic',
-    label: 'Thống kê Assignment',
+    label: 'Thống kê đề',
     icon: TrendingUp,
     path: '/assignment-statistic',
     roles: ['Head Subject', 'Teacher'],
@@ -87,7 +87,7 @@ export const allNavigationItems: NavigationItem[] = [
   },
   {
     id: 'submissions',
-    label: 'Chấm bài & Review',
+    label: 'Nộp bài & Review',
     icon: FileCheck,
     path: '/submissions',
     roles: ['Teacher'],
@@ -101,7 +101,7 @@ export const allNavigationItems: NavigationItem[] = [
   },
   {
     id: 'classes',
-    label: 'Quản lý lớp học',
+    label: 'Quản lý lớp',
     icon: Users,
     path: '/class-manage',
     roles: ['Teacher', 'Admin'],
@@ -119,7 +119,7 @@ export const allNavigationItems: NavigationItem[] = [
   // Shared items (Teacher, Student, Head Subject)
   {
     id: 'ranking',
-    label: 'Bảng xếp hạng LOC',
+    label: 'Xếp hạng',
     icon: Trophy,
     path: '/ranking',
     roles: ['Teacher', 'Student', 'Head Subject'],

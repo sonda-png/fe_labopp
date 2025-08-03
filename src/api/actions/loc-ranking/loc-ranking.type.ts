@@ -1,15 +1,15 @@
 export interface StudentRankingData {
-    rank: number
-    studentId: string
-    fullName: string
-    email: string
-    passedAssignments: number
-    totalLOC: number
+  rank: number
+  studentId: string
+  fullName: string
+  email: string
+  passedAssignments: number
+  totalLOC: number
 }
 
 export interface LocRankingResponse {
-    success: boolean
-    message: string
-    data: StudentRankingData[]
-    errors: null | string
+  success: boolean
+  message: string
+  data: StudentRankingData[]
+  errors: null | string
 }

@@ -1,4 +1,14 @@
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from "recharts"
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Area,
+  AreaChart,
+} from 'recharts'
 import {
   Code,
   FileText,
@@ -7,87 +17,110 @@ import {
   XCircle,
   AlertCircle,
   TrendingUp,
-} from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
+} from 'lucide-react'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
 
 // Sample data for LOC progress over time
 const locProgressData = [
-  { week: "Tuần 1", loc: 45, labs: 1 },
-  { week: "Tuần 2", loc: 120, labs: 2 },
-  { week: "Tuần 3", loc: 180, labs: 3 },
-  { week: "Tuần 4", loc: 226, labs: 4 },
-  { week: "Tuần 5", loc: 280, labs: 5 },
-  { week: "Tuần 6", loc: 340, labs: 6 },
+  { week: 'Tuần 1', loc: 45, labs: 1 },
+  { week: 'Tuần 2', loc: 120, labs: 2 },
+  { week: 'Tuần 3', loc: 180, labs: 3 },
+  { week: 'Tuần 4', loc: 226, labs: 4 },
+  { week: 'Tuần 5', loc: 280, labs: 5 },
+  { week: 'Tuần 6', loc: 340, labs: 6 },
 ]
 
 // Sample lab data
 const labData = [
   {
     id: 1,
-    name: "Basic Java Programming",
-    subtitle: "LAB 01 - Java Fundamentals",
-    status: "Pass",
+    name: 'Basic Java Programming',
+    subtitle: 'LAB 01 - Java Fundamentals',
+    status: 'Pass',
     score: 9.5,
     loc: 245,
     maxLoc: 200,
-    submittedDate: "2025-04-15",
-    deadline: "2025-04-20",
-    feedback: "Excellent work! Your code is well-structured and follows best practices.",
-    teacher: "Nguyễn Văn A",
+    submittedDate: '2025-04-15',
+    deadline: '2025-04-20',
+    feedback:
+      'Excellent work! Your code is well-structured and follows best practices.',
+    teacher: 'Nguyễn Văn A',
   },
   {
     id: 2,
-    name: "Selection Sort Algorithm",
-    subtitle: "LAB 02 - Java OOP",
-    status: "Draft",
+    name: 'Selection Sort Algorithm',
+    subtitle: 'LAB 02 - Java OOP',
+    status: 'Draft',
     score: null,
     loc: 156,
     maxLoc: 180,
     submittedDate: null,
-    deadline: "2025-04-25",
+    deadline: '2025-04-25',
     feedback: null,
     teacher: null,
   },
   {
     id: 3,
-    name: "Data Structures",
-    subtitle: "LAB 03 - Arrays & Lists",
-    status: "Pending",
+    name: 'Data Structures',
+    subtitle: 'LAB 03 - Arrays & Lists',
+    status: 'Pending',
     score: null,
     loc: 89,
     maxLoc: 150,
-    submittedDate: "2025-04-18",
-    deadline: "2025-04-22",
+    submittedDate: '2025-04-18',
+    deadline: '2025-04-22',
     feedback: null,
     teacher: null,
   },
   {
     id: 4,
-    name: "Object Oriented Design",
-    subtitle: "LAB 04 - Inheritance",
-    status: "Rejected",
+    name: 'Object Oriented Design',
+    subtitle: 'LAB 04 - Inheritance',
+    status: 'Rejected',
     score: 4.2,
     loc: 67,
     maxLoc: 200,
-    submittedDate: "2025-04-10",
-    deadline: "2025-04-15",
-    feedback: "Code needs improvement in error handling and documentation.",
-    teacher: "Trần Thị B",
+    submittedDate: '2025-04-10',
+    deadline: '2025-04-15',
+    feedback: 'Code needs improvement in error handling and documentation.',
+    teacher: 'Trần Thị B',
   },
 ]
 
 function getStatusBadge(status: string) {
   switch (status) {
-    case "Pass":
-      return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Pass</Badge>
-    case "Draft":
-      return <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">Draft</Badge>
-    case "Pending":
-      return <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">Đang chờ</Badge>
-    case "Rejected":
-      return <Badge className="bg-red-100 text-red-800 hover:bg-red-100">Bị từ chối</Badge>
+    case 'Pass':
+      return (
+        <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+          Pass
+        </Badge>
+      )
+    case 'Draft':
+      return (
+        <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
+          Draft
+        </Badge>
+      )
+    case 'Pending':
+      return (
+        <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
+          Đang chờ
+        </Badge>
+      )
+    case 'Rejected':
+      return (
+        <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
+          Bị từ chối
+        </Badge>
+      )
     default:
       return <Badge variant="secondary">{status}</Badge>
   }
@@ -95,13 +128,13 @@ function getStatusBadge(status: string) {
 
 function getStatusIcon(status: string) {
   switch (status) {
-    case "Pass":
+    case 'Pass':
       return <CheckCircle className="w-4 h-4 text-green-600" />
-    case "Draft":
+    case 'Draft':
       return <AlertCircle className="w-4 h-4 text-yellow-600" />
-    case "Pending":
+    case 'Pending':
       return <Clock className="w-4 h-4 text-blue-600" />
-    case "Rejected":
+    case 'Rejected':
       return <XCircle className="w-4 h-4 text-red-600" />
     default:
       return null
@@ -110,10 +143,12 @@ function getStatusIcon(status: string) {
 
 export default function StudentDashboard() {
   const totalLabs = labData.length
-  const passedLabs = labData.filter((lab) => lab.status === "Pass").length
-  const averageLoc = Math.round(labData.reduce((sum, lab) => sum + lab.loc, 0) / totalLabs)
-  const pendingLabs = labData.filter((lab) => lab.status === "Pending").length
-  const rejectedLabs = labData.filter((lab) => lab.status === "Rejected").length
+  const passedLabs = labData.filter(lab => lab.status === 'Pass').length
+  const averageLoc = Math.round(
+    labData.reduce((sum, lab) => sum + lab.loc, 0) / totalLabs
+  )
+  const pendingLabs = labData.filter(lab => lab.status === 'Pending').length
+  const rejectedLabs = labData.filter(lab => lab.status === 'Rejected').length
 
   return (
     <div className="flex-1 space-y-6 p-6">
@@ -124,7 +159,9 @@ export default function StudentDashboard() {
             <FileText className="w-5 h-5" />
             Kết quả bài tập
           </CardTitle>
-          <CardDescription className="text-orange-100">Summer2025 - LAB211 - SE1973</CardDescription>
+          <CardDescription className="text-orange-100">
+            Summer2025 - LAB211 - SE1973
+          </CardDescription>
         </CardHeader>
       </Card>
 
@@ -168,7 +205,9 @@ export default function StudentDashboard() {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Đang chờ</p>
-                <p className="text-2xl font-bold text-yellow-600">{pendingLabs}</p>
+                <p className="text-2xl font-bold text-yellow-600">
+                  {pendingLabs}
+                </p>
               </div>
             </div>
           </CardContent>
@@ -182,7 +221,9 @@ export default function StudentDashboard() {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Bị từ chối</p>
-                <p className="text-2xl font-bold text-red-600">{rejectedLabs}</p>
+                <p className="text-2xl font-bold text-red-600">
+                  {rejectedLabs}
+                </p>
               </div>
             </div>
           </CardContent>
@@ -198,7 +239,9 @@ export default function StudentDashboard() {
               <TrendingUp className="w-5 h-5" />
               Tiến độ LOC theo thời gian
             </CardTitle>
-            <CardDescription>Theo dõi sự cải thiện LOC qua các tuần</CardDescription>
+            <CardDescription>
+              Theo dõi sự cải thiện LOC qua các tuần
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -207,7 +250,13 @@ export default function StudentDashboard() {
                 <XAxis dataKey="week" />
                 <YAxis />
                 <Tooltip />
-                <Area type="monotone" dataKey="loc" stroke="#f97316" fill="#fed7aa" strokeWidth={2} />
+                <Area
+                  type="monotone"
+                  dataKey="loc"
+                  stroke="#f97316"
+                  fill="#fed7aa"
+                  strokeWidth={2}
+                />
               </AreaChart>
             </ResponsiveContainer>
           </CardContent>
@@ -217,13 +266,20 @@ export default function StudentDashboard() {
         <Card>
           <CardHeader>
             <CardTitle>LOC theo từng bài Lab</CardTitle>
-            <CardDescription>So sánh LOC đã hoàn thành với yêu cầu</CardDescription>
+            <CardDescription>
+              So sánh LOC đã hoàn thành với yêu cầu
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={labData}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} />
+                <XAxis
+                  dataKey="name"
+                  angle={-45}
+                  textAnchor="end"
+                  height={80}
+                />
                 <YAxis />
                 <Tooltip />
                 <Bar dataKey="loc" fill="#f97316" name="LOC đã làm" />
@@ -243,16 +299,20 @@ export default function StudentDashboard() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {labData.map((lab) => (
+          {labData.map(lab => (
             <div key={lab.id} className="border rounded-lg p-4 space-y-3">
               <div className="flex items-start justify-between">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <h3 className="font-semibold">{lab.name}</h3>
                     {getStatusBadge(lab.status)}
-                    {lab.score && <Badge variant="outline">Điểm: {lab.score}</Badge>}
+                    {lab.score && (
+                      <Badge variant="outline">Điểm: {lab.score}</Badge>
+                    )}
                   </div>
-                  <p className="text-sm text-muted-foreground">{lab.subtitle}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {lab.subtitle}
+                  </p>
                 </div>
                 {getStatusIcon(lab.status)}
               </div>
@@ -272,14 +332,23 @@ export default function StudentDashboard() {
                     {lab.loc}/{lab.maxLoc}
                   </span>
                 </div>
-                <Progress value={(lab.loc / lab.maxLoc) * 100} className="h-2" />
+                <Progress
+                  value={(lab.loc / lab.maxLoc) * 100}
+                  className="h-2"
+                />
               </div>
 
               {lab.feedback && (
                 <div className="bg-muted p-3 rounded-md">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-sm font-medium">💬 Feedback từ giảng viên</span>
-                    {lab.teacher && <span className="text-sm text-muted-foreground">- {lab.teacher}</span>}
+                    <span className="text-sm font-medium">
+                      💬 Feedback từ giảng viên
+                    </span>
+                    {lab.teacher && (
+                      <span className="text-sm text-muted-foreground">
+                        - {lab.teacher}
+                      </span>
+                    )}
                   </div>
                   <p className="text-sm">{lab.feedback}</p>
                 </div>
