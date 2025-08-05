@@ -47,7 +47,12 @@ export default function StudentSubmission() {
   }
 
   const handleFileSelection = (selectedFile: File) => {
-    if (selectedFile && selectedFile.type === 'application/zip') {
+    if (
+      selectedFile &&
+      (selectedFile.type === 'application/zip' ||
+        selectedFile.type === 'application/x-zip-compressed' ||
+        selectedFile.type === 'application/x-rar-compressed')
+    ) {
       setFile(selectedFile)
       setErrorMessage('')
       simulateUpload()

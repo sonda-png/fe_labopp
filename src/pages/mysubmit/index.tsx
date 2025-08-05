@@ -11,8 +11,39 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
-// Assignment data
-const assignments = [
+import { useState } from 'react'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { CalendarDays, Clock, Eye, FileText, Search } from 'lucide-react'
+import { useQuery } from '@/hooks'
+import { mySubmissionsQueries } from '@/api/actions/my-submissions/my-submissions.queries'
+import { MySubmissions } from '@/api/actions/my-submissions/my-submissions.type'
+
+const submittedPosts = [
   {
     id: "LAB01",
     title: "Basic Java Programming",
@@ -71,17 +102,71 @@ const assignments = [
   },
 ]
 
-// Helper functions
-const getStatusIcon = (status: string) => {
-  switch (status) {
-    case "Pass":
-      return <CheckCircle className="w-4 h-4 text-green-600" />
-    case "Draft":
-      return <Clock className="w-4 h-4 text-yellow-600" />
-    case "Reject":
-      return <XCircle className="w-4 h-4 text-red-600" />
-    default:
-      return <AlertCircle className="w-4 h-4 text-gray-600" />
+const draftPosts = [
+  {
+    id: 4,
+    title: 'Phân tích hệ thống quản lý cơ sở dữ liệu',
+    subject: 'Cơ sở dữ liệu',
+    lastModified: '2024-01-28',
+    status: 'draft',
+    content:
+      'Hệ quản trị cơ sở dữ liệu (DBMS) là phần mềm cho phép người dùng tạo, quản lý và truy xuất dữ liệu từ cơ sở dữ liệu...',
+    progress: 65,
+  },
+  {
+    id: 5,
+    title: 'Ứng dụng blockchain trong tài chính',
+    subject: 'Công nghệ Blockchain',
+    lastModified: '2024-01-30',
+    status: 'draft',
+    content:
+      'Blockchain là một công nghệ sổ cái phân tán cho phép lưu trữ dữ liệu một cách an toàn, minh bạch và không thể thay đổi...',
+    progress: 40,
+  },
+]
+
+export default function MySubmitPage() {
+  const [searchTerm, setSearchTerm] = useState('')
+  const [filterSubject, setFilterSubject] = useState('all')
+  const [selectedPost, setSelectedPost] = useState<MySubmissions | null>(null)
+
+  const { data: mySubmissionsData } = useQuery({
+    ...mySubmissionsQueries.getAll(),
+  })
+
+  const allPosts = [...submittedPosts, ...draftPosts]
+
+  const filteredPosts = allPosts.filter(post => {
+    const matchesSearch =
+      post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      post.subject.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesSubject =
+      filterSubject === 'all' || post.subject === filterSubject
+    return matchesSearch && matchesSubject
+  })
+
+  const subjects = Array.from(new Set(allPosts.map(post => post.subject)))
+
+  const getStatusBadge = (status: string, score?: number) => {
+    if (status === 'submitted') {
+      return (
+        <div className="flex items-center gap-2">
+          <Badge variant="default" className="bg-green-100 text-green-800">
+            Đã nộp
+          </Badge>
+          {score && (
+            <Badge variant="outline" className="text-blue-600">
+              {score}/100
+            </Badge>
+          )}
+        </div>
+      )
+    }
+    return (
+      <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
+        Bản nháp
+      </Badge>
+    )
   }
 }
 

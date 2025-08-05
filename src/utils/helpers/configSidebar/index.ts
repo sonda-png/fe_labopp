@@ -9,7 +9,6 @@ import {
   Layers,
   ShieldCheck,
   TrendingUp,
-  Trophy,
   Users,
 } from 'lucide-react'
 
@@ -23,14 +22,35 @@ interface NavigationItem {
 
 // Define all navigation items with their allowed roles
 export const allNavigationItems: NavigationItem[] = [
+  // Dashboard
   {
-    id: 'overview',
-    label: 'Tổng quan',
-    icon: BarChart3,
-    path: '/',
-    roles: ['Admin', 'Teacher', 'Student', 'Head Subject'],
+    id: 'dashboard/admin',
+    label: 'Bảng điều khiển',
+    icon: ShieldCheck,
+    path: '/dashboard/admin',
+    roles: ['Admin'],
   },
-
+  {
+    id: 'dashboard/student',
+    label: 'Bảng điều khiển',
+    icon: BookOpen,
+    path: '/dashboard/student',
+    roles: ['Student'],
+  },
+  {
+    id: 'dashboard/teacher',
+    label: 'Bảng điều khiển',
+    icon: GraduationCap,
+    path: '/dashboard/teacher',
+    roles: ['Teacher'],
+  },
+  {
+    id: 'dashboard/head-subject',
+    label: 'Bảng điều khiển',
+    icon: GraduationCap,
+    path: '/dashboard/head-subject',
+    roles: ['Head Subject'],
+  },
   // Admin specific items
   {
     id: 'users',
@@ -47,20 +67,22 @@ export const allNavigationItems: NavigationItem[] = [
     roles: ['Admin'],
   },
 
+
   // Head Subject specific items
+
   {
-    id: 'assignment-bank',
-    label: 'Quản lý ngân hàng bài tập',
+    id: 'assignment manage',
+    label: 'Quản lý đề',
     icon: Layers,
-    path: '/assignment-bank',
-    roles: ['Head Subject', 'Admin'],
+    path: '/assignment-manage',
+    roles: ['Head Subject'],
   },
   {
     id: 'semester-management',
     label: 'Quản lý học kỳ',
     icon: Calendar,
     path: '/semester-management',
-    roles: ['Head Subject', 'Admin'],
+    roles: ['Head Subject'],
   },
   {
     id: 'assignment-statistic',
@@ -69,35 +91,31 @@ export const allNavigationItems: NavigationItem[] = [
     path: '/assignment-statistic',
     roles: ['Head Subject', 'Teacher'],
   },
+  {
+    id: 'assignment-bank',
+    label: 'Ngân hàng đề',
+    icon: TrendingUp,
+    path: '/assignment-bank',
+    roles: ['Head Subject', 'Teacher'],
+  },
+  {
+    id: 'teacher-submission',
+    label: 'Quản lý bài tập của giáo viên',
+    icon: TrendingUp,
+    path: '/teacher-submission',
+    roles: ['Teacher'],
+  },
+
+
 
   // Teacher specific items
+
   {
-    id: 'dashboard/teacher',
-    label: 'Teacher Dashboard',
-    icon: GraduationCap,
-    path: '/dashboard/teacher',
-    roles: ['Teacher'],
-  },
-  {
-    id: 'assignments',
-    label: 'Quản lý bài tập',
+    id: 'Teacher Grade',
+    label: 'Quản lý điểm',
     icon: FileText,
-    path: '/assignment-manage',
+    path: '/teacher-grade',
     roles: ['Teacher'],
-  },
-  {
-    id: 'submissions',
-    label: 'Chấm bài & Review',
-    icon: FileCheck,
-    path: '/submissions',
-    roles: ['Teacher'],
-  },
-  {
-    id: 'students',
-    label: 'Quản lý sinh viên',
-    icon: Users,
-    path: '/student-manage',
-    roles: ['Teacher', 'Admin'],
   },
   {
     id: 'classes',
@@ -112,18 +130,36 @@ export const allNavigationItems: NavigationItem[] = [
     id: 'assignment-list',
     label: 'Danh sách bài tập',
     icon: BookOpen,
-    path: '/assignmentlist',
+    path: '/assignment-list',
+    roles: ['Student', 'Teacher'],
+  },
+  {
+    id: 'my-submit',
+    label: 'Bài tập đã nộp',
+    icon: BookOpen,
+    path: '/my-submit',
+    roles: ['Student'],
+  },
+  {
+    id: 'submit-lab',
+    label: 'Nộp bài tập',
+    icon: BookOpen,
+    path: '/submitlab',
     roles: ['Student'],
   },
 
+
+
+
+
   // Shared items (Teacher, Student, Head Subject)
-  {
-    id: 'ranking',
-    label: 'Bảng xếp hạng LOC',
-    icon: Trophy,
-    path: '/ranking',
-    roles: ['Teacher', 'Student', 'Head Subject'],
-  },
+  // {
+  //   id: 'ranking',
+  //   label: 'Xếp hạng',
+  //   icon: Trophy,
+  //   path: '/ranking',
+  //   roles: ['Teacher', 'Student', 'Head Subject'],
+  // },
   {
     id: 'academic-outcome-report',
     label: 'Báo cáo kết quả học tập',
