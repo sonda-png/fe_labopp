@@ -2,9 +2,9 @@ import { queryFactoryOptions } from '@/api/utils/queryFactoryOptions'
 import { AxiosInstance } from 'axios'
 import { MySubmissionsResponse } from './my-submissions.type'
 
-/* Admin account queries */
+/* My submissions queries */
 export const mySubmissionsQueries = {
-  all: () => ['admin-account'],
+  all: () => ['my-submissions'],
   getAll: () =>
     queryFactoryOptions({
       queryKey: [...mySubmissionsQueries.all(), 'list'],
@@ -14,7 +14,7 @@ export const mySubmissionsQueries = {
 
 }
 
-/* Get all admin accounts */
+/* Get all my submissions */
 const getAllMySubmissions =
   () => (client: AxiosInstance) => async () => {
     return (

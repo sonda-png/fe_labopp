@@ -40,6 +40,7 @@ import { Route as AuthDashboardTeacherIndexRouteImport } from './routes/_auth/da
 import { Route as AuthDashboardStudentIndexRouteImport } from './routes/_auth/dashboard/student/index'
 import { Route as AuthDashboardHeadSubjectIndexRouteImport } from './routes/_auth/dashboard/head-subject/index'
 import { Route as AuthDashboardAdminIndexRouteImport } from './routes/_auth/dashboard/admin/index'
+import { Route as AuthAssignmentDetailAssignmentIdIndexRouteImport } from './routes/_auth/assignment-detail/$assignmentId/index'
 
 const PublicRoute = PublicRouteImport.update({
   id: '/_public',
@@ -203,6 +204,12 @@ const AuthDashboardAdminIndexRoute = AuthDashboardAdminIndexRouteImport.update({
   path: '/dashboard/admin/',
   getParentRoute: () => AuthRoute,
 } as any)
+const AuthAssignmentDetailAssignmentIdIndexRoute =
+  AuthAssignmentDetailAssignmentIdIndexRouteImport.update({
+    id: '/assignment-detail/$assignmentId/',
+    path: '/assignment-detail/$assignmentId/',
+    getParentRoute: () => AuthRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -229,6 +236,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof PublicLoginIndexRoute
   '/not-found': typeof PublicNotFoundIndexRoute
   '/test': typeof PublicTestIndexRoute
+  '/assignment-detail/$assignmentId': typeof AuthAssignmentDetailAssignmentIdIndexRoute
   '/dashboard/admin': typeof AuthDashboardAdminIndexRoute
   '/dashboard/head-subject': typeof AuthDashboardHeadSubjectIndexRoute
   '/dashboard/student': typeof AuthDashboardStudentIndexRoute
@@ -260,6 +268,7 @@ export interface FileRoutesByTo {
   '/login': typeof PublicLoginIndexRoute
   '/not-found': typeof PublicNotFoundIndexRoute
   '/test': typeof PublicTestIndexRoute
+  '/assignment-detail/$assignmentId': typeof AuthAssignmentDetailAssignmentIdIndexRoute
   '/dashboard/admin': typeof AuthDashboardAdminIndexRoute
   '/dashboard/head-subject': typeof AuthDashboardHeadSubjectIndexRoute
   '/dashboard/student': typeof AuthDashboardStudentIndexRoute
@@ -294,6 +303,7 @@ export interface FileRoutesById {
   '/_public/login/': typeof PublicLoginIndexRoute
   '/_public/not-found/': typeof PublicNotFoundIndexRoute
   '/_public/test/': typeof PublicTestIndexRoute
+  '/_auth/assignment-detail/$assignmentId/': typeof AuthAssignmentDetailAssignmentIdIndexRoute
   '/_auth/dashboard/admin/': typeof AuthDashboardAdminIndexRoute
   '/_auth/dashboard/head-subject/': typeof AuthDashboardHeadSubjectIndexRoute
   '/_auth/dashboard/student/': typeof AuthDashboardStudentIndexRoute
@@ -327,6 +337,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/not-found'
     | '/test'
+    | '/assignment-detail/$assignmentId'
     | '/dashboard/admin'
     | '/dashboard/head-subject'
     | '/dashboard/student'
@@ -358,6 +369,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/not-found'
     | '/test'
+    | '/assignment-detail/$assignmentId'
     | '/dashboard/admin'
     | '/dashboard/head-subject'
     | '/dashboard/student'
@@ -391,6 +403,7 @@ export interface FileRouteTypes {
     | '/_public/login/'
     | '/_public/not-found/'
     | '/_public/test/'
+    | '/_auth/assignment-detail/$assignmentId/'
     | '/_auth/dashboard/admin/'
     | '/_auth/dashboard/head-subject/'
     | '/_auth/dashboard/student/'
@@ -623,6 +636,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthDashboardAdminIndexRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_auth/assignment-detail/$assignmentId/': {
+      id: '/_auth/assignment-detail/$assignmentId/'
+      path: '/assignment-detail/$assignmentId'
+      fullPath: '/assignment-detail/$assignmentId'
+      preLoaderRoute: typeof AuthAssignmentDetailAssignmentIdIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
   }
 }
 
@@ -645,6 +665,7 @@ interface AuthRouteChildren {
   AuthTeacherGradeIndexRoute: typeof AuthTeacherGradeIndexRoute
   AuthTeacherSubmissionIndexRoute: typeof AuthTeacherSubmissionIndexRoute
   AuthTestAuthIndexRoute: typeof AuthTestAuthIndexRoute
+  AuthAssignmentDetailAssignmentIdIndexRoute: typeof AuthAssignmentDetailAssignmentIdIndexRoute
   AuthDashboardAdminIndexRoute: typeof AuthDashboardAdminIndexRoute
   AuthDashboardHeadSubjectIndexRoute: typeof AuthDashboardHeadSubjectIndexRoute
   AuthDashboardStudentIndexRoute: typeof AuthDashboardStudentIndexRoute
@@ -671,6 +692,8 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthTeacherGradeIndexRoute: AuthTeacherGradeIndexRoute,
   AuthTeacherSubmissionIndexRoute: AuthTeacherSubmissionIndexRoute,
   AuthTestAuthIndexRoute: AuthTestAuthIndexRoute,
+  AuthAssignmentDetailAssignmentIdIndexRoute:
+    AuthAssignmentDetailAssignmentIdIndexRoute,
   AuthDashboardAdminIndexRoute: AuthDashboardAdminIndexRoute,
   AuthDashboardHeadSubjectIndexRoute: AuthDashboardHeadSubjectIndexRoute,
   AuthDashboardStudentIndexRoute: AuthDashboardStudentIndexRoute,

@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
-import LabAssignmentList from '@/pages/lab_assignment_list'
+import { StudentAssignmentList } from '@/components/features/student-assignment/student-assignment-list'
+
 export const Route = createFileRoute('/_auth/assignment-list/')({
-  component: LabAssignmentList,
+  component: StudentAssignmentList,
 })
