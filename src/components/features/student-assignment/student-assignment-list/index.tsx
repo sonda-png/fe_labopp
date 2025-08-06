@@ -32,6 +32,7 @@ import {
   Eye,
   Download,
   Clock,
+  Loader2,
 } from 'lucide-react'
 import { useState, useMemo } from 'react'
 import { format } from 'date-fns'
@@ -42,10 +43,12 @@ const AssignmentCard = ({
   assignment,
   onView,
   onDownload,
+  downloading,
 }: {
   assignment: Assignment
   onView: (assignment: Assignment) => void
   onDownload: (assignment: Assignment) => void
+  downloading?: boolean
 }) => {
   const formatDate = (dateString: string) => {
     try {
@@ -114,12 +117,17 @@ const AssignmentCard = ({
             variant="ghost"
             size="sm"
             className="px-3"
+            disabled={downloading}
             onClick={e => {
               e.stopPropagation()
               onDownload(assignment)
             }}
           >
-            <Download className="h-4 w-4" />
+            {downloading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Download className="h-4 w-4" />
+            )}
           </Button>
         </div>
       </CardContent>
@@ -353,15 +361,22 @@ export const StudentAssignmentList = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [sortBy, setSortBy] = useState<string>('createdAt')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
+  const [downloadingId, setDownloadingId] = useState<string | null>(null)
 
   const handleView = (assignment: Assignment) => {
     // Navigate to assignment detail page
-    navigate({ to: `/assignment-detail/${assignment.id}` })
+    navigate({ to: `/student-assignment/${assignment.id}` })
   }
 
-  const handleDownload = (assignment: Assignment) => {
-    // Handle download assignment
-    console.log('Download assignment:', assignment)
+  const handleDownload = async (assignment: Assignment) => {
+    setDownloadingId(assignment.id)
+    try {
+      // Simulate download delay (replace with real download logic)
+      await new Promise(res => setTimeout(res, 1200))
+      // ...real download logic here
+    } finally {
+      setDownloadingId(null)
+    }
   }
 
   // Filtered and sorted data
@@ -450,6 +465,7 @@ export const StudentAssignmentList = () => {
             assignment={assignment}
             onView={handleView}
             onDownload={handleDownload}
+            downloading={downloadingId === assignment.id}
           />
         ))}
       </div>

@@ -7,3 +7,8 @@ export type Assignment = {
 }
 
 export type AssignmentListResponse = Assignment[]
+
+export type AssignmentSubmitRequest = {
+  assignmentId: string
+  zipFile: File
+}

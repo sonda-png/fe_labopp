@@ -16,8 +16,15 @@ import { Separator } from '@/components/ui/separator'
 import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { FileArchive, Upload, X, FileCode, Check } from 'lucide-react'
+import { useMutation, useQuery } from '@/hooks'
+import { toast } from 'react-toastify'
+import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
+import { useSearch } from '@tanstack/react-router'
+import { assignmentQueries } from '@/api/actions/assignment/assignment.queries'
 
 export default function StudentSubmission() {
+  const search = useSearch({ strict: false })
+
   const [file, setFile] = useState<File | null>(null)
   const [isDragging, setIsDragging] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
@@ -28,6 +35,22 @@ export default function StudentSubmission() {
   const [submissionStatus, setSubmissionStatus] = useState('draft')
   const [comment, setComment] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const { data: assignmentData } = useQuery({
+    ...assignmentQueries.getById(search.assignmentId),
+  })
+
+  const { mutateAsync: submitAssignmentMutation } = useMutation(
+    'handleSubmitAssignment',
+    {
+      onSuccess: () => {
+        toast.success('Assignment submitted successfully')
+      },
+      onError: (error: StandardizedApiError) => {
+        toast.error(error.message)
+      },
+    }
+  )
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault()
@@ -46,7 +69,7 @@ export default function StudentSubmission() {
     handleFileSelection(droppedFile)
   }
 
-  const handleFileSelection = (selectedFile: File) => {
+  const handleFileSelection = async (selectedFile: File) => {
     if (
       selectedFile &&
       (selectedFile.type === 'application/zip' ||
@@ -55,7 +78,10 @@ export default function StudentSubmission() {
     ) {
       setFile(selectedFile)
       setErrorMessage('')
-      simulateUpload()
+      await submitAssignmentMutation({
+        assignmentId: search.assignmentId,
+        zipFile: selectedFile,
+      })
     } else {
       setFile(null)
       setErrorMessage(
@@ -69,22 +95,6 @@ export default function StudentSubmission() {
     if (e.target.files && e.target.files[0]) {
       handleFileSelection(e.target.files[0])
     }
-  }
-
-  const simulateUpload = () => {
-    setUploadStatus('uploading')
-    setUploadProgress(0)
-
-    const interval = setInterval(() => {
-      setUploadProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval)
-          setUploadStatus('success')
-          return 100
-        }
-        return prev + 5
-      })
-    }, 100)
   }
 
   const removeFile = () => {
@@ -141,31 +151,25 @@ export default function StudentSubmission() {
                     <h3 className="text-sm font-medium text-muted-foreground">
                       Assignment Code
                     </h3>
-                    <p className="font-medium">J1.S.P0002</p>
+                    <p className="font-medium">{search.assignmentId}</p>
                   </div>
                   <div>
                     <h3 className="text-sm font-medium text-muted-foreground">
                       Assignment Name
                     </h3>
-                    <p className="font-medium">Selection sort algorithm</p>
+                    <p className="font-medium">{assignmentData?.title}</p>
                   </div>
                   <div>
                     <h3 className="text-sm font-medium text-muted-foreground">
                       Required LOC
                     </h3>
-                    <p className="font-medium">150</p>
+                    <p className="font-medium">{assignmentData?.locTotal}</p>
                   </div>
                   <div>
                     <h3 className="text-sm font-medium text-muted-foreground">
-                      Start Date
+                      Created At
                     </h3>
-                    <p className="font-medium">2025-05-07</p>
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-medium text-muted-foreground">
-                      Due Date
-                    </h3>
-                    <p className="font-medium text-red-500">2025-08-10</p>
+                    <p className="font-medium">{assignmentData?.createdAt}</p>
                   </div>
                 </div>
 
@@ -173,13 +177,7 @@ export default function StudentSubmission() {
                   <h3 className="text-sm font-medium text-muted-foreground">
                     Description
                   </h3>
-                  <p className="text-sm mt-1">
-                    Implement the selection sort algorithm in Java. The program
-                    should allow users to input an array of integers and display
-                    the sorted result using the selection sort algorithm.
-                    Include detailed comments explaining each step of the
-                    algorithm.
-                  </p>
+                  <p className="text-sm mt-1">{assignmentData?.description}</p>
                 </div>
               </div>
 

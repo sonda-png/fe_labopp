@@ -1,7 +1,6 @@
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
@@ -156,7 +155,7 @@ export const AssignmentDetail = ({
             <CardContent className="space-y-3">
               <Button
                 onClick={onSubmit}
-                className="w-full bg-green-600 hover:bg-green-700"
+                className="w-full bg-orange-500 hover:bg-green-700"
               >
                 <Upload className="h-4 w-4 mr-2" />
                 Submit Assignment

@@ -6,31 +6,27 @@ export const useRequestSuccessInterceptor = async (
 ): Promise<InternalAxiosRequestConfig> => {
   const { authValues } = authStore.getState()
 
-  // Dynamically adjust the `Content-Type` header so that callers can
-  // freely send either JSON bodies or FormData without manually
-  // overriding headers each time. If the payload is an instance of
-  // `FormData`, we REMOVE the `Content-Type` header and let the
-  // browser/axios set the appropriate multipart boundary. Otherwise we
-  // default to `application/json`.
   const headers = (config.headers ?? {}) as AxiosRequestHeaders
-  const isFormData =
-    typeof FormData !== 'undefined' && config.data instanceof FormData
 
+  const isBrowser = typeof FormData !== 'undefined'
+  const isFormData =
+    isBrowser && config.data instanceof FormData
+
+  // 👇 Handle FormData (single or multiple file uploads)
   if (isFormData) {
-    // Let the browser set the correct multipart boundary automatically.
+    // Let the browser set the correct multipart/form-data boundary automatically
     delete headers['Content-Type']
   } else {
     headers['Content-Type'] = headers['Content-Type'] ?? 'application/json'
   }
 
-  // Attach authorization header if token is available
+  // 👇 Attach Authorization header if token exists
   if (authValues.isAuthenticated) {
     headers['Authorization'] = `Bearer ${authValues.token}`
   }
 
   return {
     ...config,
-    withCredentials: false,
-    headers: headers,
+    withCredentials: true,
   }
 }

@@ -3,7 +3,6 @@ import {
   BookOpen,
   Calendar,
   Database,
-  FileCheck,
   FileText,
   GraduationCap,
   Layers,
@@ -122,7 +121,7 @@ export const allNavigationItems: NavigationItem[] = [
     label: 'Quản lý lớp học',
     icon: Users,
     path: '/class-manage',
-    roles: ['Teacher', 'Admin'],
+    roles: ['Teacher'],
   },
 
   // Student specific items
@@ -130,7 +129,7 @@ export const allNavigationItems: NavigationItem[] = [
     id: 'assignment-list',
     label: 'Danh sách bài tập',
     icon: BookOpen,
-    path: '/assignment-list',
+    path: '/student-assignment',
     roles: ['Student', 'Teacher'],
   },
   {
@@ -140,17 +139,6 @@ export const allNavigationItems: NavigationItem[] = [
     path: '/my-submit',
     roles: ['Student'],
   },
-  {
-    id: 'submit-lab',
-    label: 'Nộp bài tập',
-    icon: BookOpen,
-    path: '/submitlab',
-    roles: ['Student'],
-  },
-
-
-
-
 
   // Shared items (Teacher, Student, Head Subject)
   // {

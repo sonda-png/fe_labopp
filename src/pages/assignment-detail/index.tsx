@@ -1,9 +1,10 @@
-import { createFileRoute, useParams, useNavigate } from '@tanstack/react-router'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { useQuery } from '@/hooks'
 import { assignmentQueries } from '@/api/actions/assignment/assignment.queries'
 import { AssignmentDetail } from '@/components/features/student-assignment/assignment-detail'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useQuery } from '@/hooks'
+import { useNavigate, useParams } from '@tanstack/react-router'
 import { AlertTriangle } from 'lucide-react'
 
 // Loading Component
@@ -41,10 +42,10 @@ const ErrorState = () => (
 )
 
 // Assignment Detail Page Component
-const AssignmentDetailPage = () => {
+export const AssignmentDetailPage = () => {
   const navigate = useNavigate()
   const { assignmentId } = useParams({
-    from: '/_auth/assignment-detail/$assignmentId',
+    from: '/_auth/student-assignment/$assignmentId/',
   })
 
   const {
@@ -62,7 +63,7 @@ const AssignmentDetailPage = () => {
   const handleSubmitAssignment = () => {
     navigate({
       to: '/submitlab',
-      search: { assignmentId: assignment?.id },
+      search: { assignmentId: assignmentId },
     })
   }
 
@@ -84,9 +85,3 @@ const AssignmentDetailPage = () => {
     />
   )
 }
-
-export const Route = createFileRoute('/_auth/assignment-detail/$assignmentId/')(
-  {
-    component: AssignmentDetailPage,
-  }
-)
