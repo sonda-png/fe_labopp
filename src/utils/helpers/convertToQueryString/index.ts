@@ -1,5 +1,5 @@
 export const objectToQueryString = (
-  params: Record<string, string | undefined>
+  params: Record<string, string | number | undefined>
 ): string => {
   const query = Object.entries(params)
     .filter(([, value]) => value !== undefined)

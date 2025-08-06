@@ -30,7 +30,7 @@ const handleDeleteAssignment =
   }
 
 // Export mutations object
-export const assignmentMutations = {
+export const assignmentManageMutations = {
   addAssignmentMutation: (client: AxiosInstance) => handleAddAssignment(client),
   updateAssignmentMutation: (client: AxiosInstance) => handleUpdateAssignment(client),
   deleteAssignmentMutation: (client: AxiosInstance) => handleDeleteAssignment(client),
