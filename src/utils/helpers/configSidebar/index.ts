@@ -3,7 +3,6 @@ import {
   BookOpen,
   Calendar,
   Database,
-  FileText,
   GraduationCap,
   Layers,
   ShieldCheck,
@@ -91,13 +90,6 @@ export const allNavigationItems: NavigationItem[] = [
     roles: ['Head Subject', 'Teacher'],
   },
   {
-    id: 'assignment-bank',
-    label: 'Ngân hàng đề',
-    icon: TrendingUp,
-    path: '/assignment-bank',
-    roles: ['Head Subject', 'Teacher'],
-  },
-  {
     id: 'teacher-submission',
     label: 'Quản lý bài tập của giáo viên',
     icon: TrendingUp,
@@ -109,13 +101,6 @@ export const allNavigationItems: NavigationItem[] = [
 
   // Teacher specific items
 
-  {
-    id: 'Teacher Grade',
-    label: 'Quản lý điểm',
-    icon: FileText,
-    path: '/teacher-grade',
-    roles: ['Teacher'],
-  },
   {
     id: 'classes',
     label: 'Quản lý lớp học',
@@ -130,7 +115,7 @@ export const allNavigationItems: NavigationItem[] = [
     label: 'Danh sách bài tập',
     icon: BookOpen,
     path: '/student-assignment',
-    roles: ['Student', 'Teacher'],
+    roles: ['Student'],
   },
   {
     id: 'my-submit',

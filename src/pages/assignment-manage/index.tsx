@@ -57,7 +57,6 @@ import {
   User,
 } from 'lucide-react'
 import { useQuery, useMutation } from '@/hooks'
-import { getAssignmentList } from '@/api/actions/assignment-manage/assignment.query'
 import { Skeleton } from '@/components/ui/skeleton'
 import { toast } from 'react-toastify'
 import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
@@ -67,6 +66,7 @@ import {
   assignmentSchema,
   AssignmentFormValues,
 } from '@/schema/assignmentSchema'
+import { assignmentManageQueries } from '@/api/actions/assignment-manage/assignment.query'
 
 interface Lab {
   id: string
@@ -82,7 +82,7 @@ export default function AssignmentManagement() {
     isLoading,
     refetch,
   } = useQuery({
-    ...getAssignmentList.get(),
+    ...assignmentManageQueries.get(),
   })
 
   const { mutateAsync: addAssignmentMutation } = useMutation(

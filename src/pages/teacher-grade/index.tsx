@@ -18,7 +18,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Search, User, Code, Calendar, FileText, Eye } from 'lucide-react'
-import CodeFileViewer, { CodeFile } from '@/components/features/code-viewer'
+import CodeFileViewer from '@/components/features/code-viewer'
 import { useSearch } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { useApiClient } from '@/hooks/useApiClient/useApiClient'
@@ -56,96 +56,6 @@ export default function TeacherGradingSystem() {
     useState<TeacherSubmissionData | null>(null)
   const [isCodeViewerOpen, setIsCodeViewerOpen] = useState(false)
 
-  // Sample code files - Replace with actual API call
-  const generateSampleFiles = (
-    submission: TeacherSubmissionData
-  ): CodeFile[] => {
-    return [
-      {
-        id: '1',
-        name: 'src',
-        type: 'folder',
-        children: [
-          {
-            id: '2',
-            name: 'Main.java',
-            type: 'file',
-            extension: 'java',
-            content: `public class Main {
-    public static void main(String[] args) {
-        System.out.println("Hello World!");
-        
-        // Student: ${submission.studentName}
-        // Assignment: ${submission.assignmentCode}
-        
-        // Calculate fibonacci numbers
-        int n = 10;
-        for (int i = 0; i < n; i++) {
-            System.out.println("F(" + i + ") = " + fibonacci(i));
-        }
-    }
-    
-    public static int fibonacci(int n) {
-        if (n <= 1) {
-            return n;
-        }
-        return fibonacci(n - 1) + fibonacci(n - 2);
-    }
-}`,
-          },
-          {
-            id: '3',
-            name: 'Utils.java',
-            type: 'file',
-            extension: 'java',
-            content: `public class Utils {
-    public static boolean isPrime(int num) {
-        if (num <= 1) return false;
-        for (int i = 2; i <= Math.sqrt(num); i++) {
-            if (num % i == 0) return false;
-        }
-        return true;
-    }
-    
-    public static int gcd(int a, int b) {
-        while (b != 0) {
-            int temp = b;
-            b = a % b;
-            a = temp;
-        }
-        return a;
-    }
-}`,
-          },
-        ],
-      },
-      {
-        id: '4',
-        name: 'README.md',
-        type: 'file',
-        extension: 'md',
-        content: `# ${submission.assignmentCode} Solution
-
-## Author: ${submission.studentName}
-
-### Implementation Details
-- Implemented fibonacci calculation using recursion
-- Added utility functions for mathematical operations
-- Total LOC: ${submission.loc}
-- Status: ${submission.status}
-
-### How to run
-\`\`\`bash
-javac src/*.java
-java -cp src Main
-\`\`\`
-
-### Comments
-${submission.comment || 'No comments provided'}`,
-      },
-    ]
-  }
-
   const openCodeViewer = (submission: TeacherSubmissionData) => {
     setSelectedSubmission(submission)
     setIsCodeViewerOpen(true)
@@ -164,6 +74,7 @@ ${submission.comment || 'No comments provided'}`,
     }
   )
 
+  console.log(filteredSubmissions)
   if (isLoading) {
     return <div>Loading...</div>
   }
@@ -375,70 +286,10 @@ ${submission.comment || 'No comments provided'}`,
             {selectedSubmission && (
               <div className="flex-1 overflow-y-auto">
                 <CodeFileViewer
-                  files={generateSampleFiles(selectedSubmission)}
-                  showGradingPanel={true}
-                  currentStatus={
-                    selectedSubmission.status === 'Passed'
-                      ? 'passed'
-                      : selectedSubmission.status === 'Rejected'
-                        ? 'not_passed'
-                        : 'pending'
-                  }
-                  onStatusChange={status =>
-                    console.log('Status changed:', status)
-                  }
-                  onSubmitGrade={(status, feedback) => {
-                    console.log('Grade submitted:', { status, feedback })
-                    // TODO: Implement grade submission API call
-                    // You can integrate with TeacherGradeDetail component's logic here
-                  }}
-                  comments={[
-                    // Sample comments - replace with API data
-                    {
-                      id: '1',
-                      author: 'Teacher',
-                      content:
-                        selectedSubmission.comment || 'No previous comments',
-                      timestamp: new Date().toISOString(),
-                      fileName: 'Main.java',
-                    },
-                  ]}
-                  onAddComment={comment => {
-                    console.log('Comment added:', comment)
-                    // TODO: Implement add comment API call
-                  }}
-                  testResults={[
-                    {
-                      id: '1',
-                      name: 'Test Case 1: Basic functionality',
-                      status:
-                        selectedSubmission.status === 'Passed'
-                          ? 'passed'
-                          : 'failed',
-                      output:
-                        selectedSubmission.status === 'Passed'
-                          ? 'All assertions passed'
-                          : undefined,
-                      error:
-                        selectedSubmission.status === 'Rejected'
-                          ? 'Some test cases failed'
-                          : undefined,
-                    },
-                    {
-                      id: '2',
-                      name: 'Test Case 2: Edge cases',
-                      status: 'passed',
-                      output: 'Edge case tests completed successfully',
-                    },
-                  ]}
-                  onRunTests={() => {
-                    console.log(
-                      'Running tests for submission:',
-                      selectedSubmission.id
-                    )
-                    // TODO: Implement test runner API call
-                  }}
-                  isRunningTests={false}
+                  studentId={selectedSubmission.studentId}
+                  classId={classId}
+                  assignmentId={selectedSubmission.assignmentCode}
+                  submission={selectedSubmission}
                 />
               </div>
             )}

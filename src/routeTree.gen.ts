@@ -8,649 +8,466 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as PublicRouteImport } from './routes/_public'
-import { Route as AuthRouteImport } from './routes/_auth'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as PublicTestIndexRouteImport } from './routes/_public/test/index'
-import { Route as PublicNotFoundIndexRouteImport } from './routes/_public/not-found/index'
-import { Route as PublicLoginIndexRouteImport } from './routes/_public/login/index'
-import { Route as PublicForgotPassIndexRouteImport } from './routes/_public/forgot-pass/index'
-import { Route as PublicForbiddenIndexRouteImport } from './routes/_public/forbidden/index'
-import { Route as AuthTestAuthIndexRouteImport } from './routes/_auth/test-auth/index'
-import { Route as AuthTeacherSubmissionIndexRouteImport } from './routes/_auth/teacher-submission/index'
-import { Route as AuthTeacherGradeIndexRouteImport } from './routes/_auth/teacher-grade/index'
-import { Route as AuthSubmitlabIndexRouteImport } from './routes/_auth/submitlab/index'
-import { Route as AuthStudentManageIndexRouteImport } from './routes/_auth/student-manage/index'
-import { Route as AuthStudentAssignmentIndexRouteImport } from './routes/_auth/student-assignment/index'
-import { Route as AuthSemesterManagementIndexRouteImport } from './routes/_auth/semester-management/index'
-import { Route as AuthMySubmitIndexRouteImport } from './routes/_auth/my-submit/index'
-import { Route as AuthManageAccountIndexRouteImport } from './routes/_auth/manage-account/index'
-import { Route as AuthLocRankingIndexRouteImport } from './routes/_auth/loc-ranking/index'
-import { Route as AuthHomeIndexRouteImport } from './routes/_auth/home/index'
-import { Route as AuthFapSyncIndexRouteImport } from './routes/_auth/fap-sync/index'
-import { Route as AuthClassManageIndexRouteImport } from './routes/_auth/class-manage/index'
-import { Route as AuthAssignmentStatisticIndexRouteImport } from './routes/_auth/assignment-statistic/index'
-import { Route as AuthAssignmentManageIndexRouteImport } from './routes/_auth/assignment-manage/index'
-import { Route as AuthAssignmentBankIndexRouteImport } from './routes/_auth/assignment-bank/index'
-import { Route as AuthAcademicOutcomeReportIndexRouteImport } from './routes/_auth/academic-outcome-report/index'
-import { Route as AuthAboutIndexRouteImport } from './routes/_auth/about/index'
-import { Route as AuthTeacherAssignmentClassIdIndexRouteImport } from './routes/_auth/teacher-assignment/$classId/index'
-import { Route as AuthStudentAssignmentAssignmentIdIndexRouteImport } from './routes/_auth/student-assignment/$assignmentId/index'
-import { Route as AuthDashboardTeacherIndexRouteImport } from './routes/_auth/dashboard/teacher/index'
-import { Route as AuthDashboardStudentIndexRouteImport } from './routes/_auth/dashboard/student/index'
-import { Route as AuthDashboardHeadSubjectIndexRouteImport } from './routes/_auth/dashboard/head-subject/index'
-import { Route as AuthDashboardAdminIndexRouteImport } from './routes/_auth/dashboard/admin/index'
+// Import Routes
 
-const PublicRoute = PublicRouteImport.update({
+import { Route as rootRoute } from './routes/__root'
+import { Route as PublicImport } from './routes/_public'
+import { Route as AuthImport } from './routes/_auth'
+import { Route as IndexImport } from './routes/index'
+import { Route as PublicTestIndexImport } from './routes/_public/test/index'
+import { Route as PublicNotFoundIndexImport } from './routes/_public/not-found/index'
+import { Route as PublicLoginIndexImport } from './routes/_public/login/index'
+import { Route as PublicForgotPassIndexImport } from './routes/_public/forgot-pass/index'
+import { Route as PublicForbiddenIndexImport } from './routes/_public/forbidden/index'
+import { Route as AuthTestAuthIndexImport } from './routes/_auth/test-auth/index'
+import { Route as AuthTeacherSubmissionIndexImport } from './routes/_auth/teacher-submission/index'
+import { Route as AuthTeacherGradeIndexImport } from './routes/_auth/teacher-grade/index'
+import { Route as AuthSubmitlabIndexImport } from './routes/_auth/submitlab/index'
+import { Route as AuthStudentManageIndexImport } from './routes/_auth/student-manage/index'
+import { Route as AuthStudentAssignmentIndexImport } from './routes/_auth/student-assignment/index'
+import { Route as AuthSemesterManagementIndexImport } from './routes/_auth/semester-management/index'
+import { Route as AuthMySubmitIndexImport } from './routes/_auth/my-submit/index'
+import { Route as AuthManageAccountIndexImport } from './routes/_auth/manage-account/index'
+import { Route as AuthLocRankingIndexImport } from './routes/_auth/loc-ranking/index'
+import { Route as AuthHomeIndexImport } from './routes/_auth/home/index'
+import { Route as AuthFapSyncIndexImport } from './routes/_auth/fap-sync/index'
+import { Route as AuthClassManageIndexImport } from './routes/_auth/class-manage/index'
+import { Route as AuthAssignmentStatisticIndexImport } from './routes/_auth/assignment-statistic/index'
+import { Route as AuthAssignmentManageIndexImport } from './routes/_auth/assignment-manage/index'
+import { Route as AuthAcademicOutcomeReportIndexImport } from './routes/_auth/academic-outcome-report/index'
+import { Route as AuthAboutIndexImport } from './routes/_auth/about/index'
+import { Route as AuthTeacherAssignmentClassIdIndexImport } from './routes/_auth/teacher-assignment/$classId/index'
+import { Route as AuthStudentAssignmentAssignmentIdIndexImport } from './routes/_auth/student-assignment/$assignmentId/index'
+import { Route as AuthDashboardTeacherIndexImport } from './routes/_auth/dashboard/teacher/index'
+import { Route as AuthDashboardStudentIndexImport } from './routes/_auth/dashboard/student/index'
+import { Route as AuthDashboardHeadSubjectIndexImport } from './routes/_auth/dashboard/head-subject/index'
+import { Route as AuthDashboardAdminIndexImport } from './routes/_auth/dashboard/admin/index'
+
+// Create/Update Routes
+
+const PublicRoute = PublicImport.update({
   id: '/_public',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => rootRoute,
 } as any)
-const AuthRoute = AuthRouteImport.update({
+
+const AuthRoute = AuthImport.update({
   id: '/_auth',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => rootRoute,
 } as any)
-const IndexRoute = IndexRouteImport.update({
+
+const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => rootRoute,
 } as any)
-const PublicTestIndexRoute = PublicTestIndexRouteImport.update({
+
+const PublicTestIndexRoute = PublicTestIndexImport.update({
   id: '/test/',
   path: '/test/',
   getParentRoute: () => PublicRoute,
 } as any)
-const PublicNotFoundIndexRoute = PublicNotFoundIndexRouteImport.update({
+
+const PublicNotFoundIndexRoute = PublicNotFoundIndexImport.update({
   id: '/not-found/',
   path: '/not-found/',
   getParentRoute: () => PublicRoute,
 } as any)
-const PublicLoginIndexRoute = PublicLoginIndexRouteImport.update({
+
+const PublicLoginIndexRoute = PublicLoginIndexImport.update({
   id: '/login/',
   path: '/login/',
   getParentRoute: () => PublicRoute,
 } as any)
-const PublicForgotPassIndexRoute = PublicForgotPassIndexRouteImport.update({
+
+const PublicForgotPassIndexRoute = PublicForgotPassIndexImport.update({
   id: '/forgot-pass/',
   path: '/forgot-pass/',
   getParentRoute: () => PublicRoute,
 } as any)
-const PublicForbiddenIndexRoute = PublicForbiddenIndexRouteImport.update({
+
+const PublicForbiddenIndexRoute = PublicForbiddenIndexImport.update({
   id: '/forbidden/',
   path: '/forbidden/',
   getParentRoute: () => PublicRoute,
 } as any)
-const AuthTestAuthIndexRoute = AuthTestAuthIndexRouteImport.update({
+
+const AuthTestAuthIndexRoute = AuthTestAuthIndexImport.update({
   id: '/test-auth/',
   path: '/test-auth/',
   getParentRoute: () => AuthRoute,
 } as any)
-const AuthTeacherSubmissionIndexRoute =
-  AuthTeacherSubmissionIndexRouteImport.update({
+
+const AuthTeacherSubmissionIndexRoute = AuthTeacherSubmissionIndexImport.update(
+  {
     id: '/teacher-submission/',
     path: '/teacher-submission/',
     getParentRoute: () => AuthRoute,
-  } as any)
-const AuthTeacherGradeIndexRoute = AuthTeacherGradeIndexRouteImport.update({
+  } as any,
+)
+
+const AuthTeacherGradeIndexRoute = AuthTeacherGradeIndexImport.update({
   id: '/teacher-grade/',
   path: '/teacher-grade/',
   getParentRoute: () => AuthRoute,
 } as any)
-const AuthSubmitlabIndexRoute = AuthSubmitlabIndexRouteImport.update({
+
+const AuthSubmitlabIndexRoute = AuthSubmitlabIndexImport.update({
   id: '/submitlab/',
   path: '/submitlab/',
   getParentRoute: () => AuthRoute,
 } as any)
-const AuthStudentManageIndexRoute = AuthStudentManageIndexRouteImport.update({
+
+const AuthStudentManageIndexRoute = AuthStudentManageIndexImport.update({
   id: '/student-manage/',
   path: '/student-manage/',
   getParentRoute: () => AuthRoute,
 } as any)
-const AuthStudentAssignmentIndexRoute =
-  AuthStudentAssignmentIndexRouteImport.update({
+
+const AuthStudentAssignmentIndexRoute = AuthStudentAssignmentIndexImport.update(
+  {
     id: '/student-assignment/',
     path: '/student-assignment/',
     getParentRoute: () => AuthRoute,
-  } as any)
+  } as any,
+)
+
 const AuthSemesterManagementIndexRoute =
-  AuthSemesterManagementIndexRouteImport.update({
+  AuthSemesterManagementIndexImport.update({
     id: '/semester-management/',
     path: '/semester-management/',
     getParentRoute: () => AuthRoute,
   } as any)
-const AuthMySubmitIndexRoute = AuthMySubmitIndexRouteImport.update({
+
+const AuthMySubmitIndexRoute = AuthMySubmitIndexImport.update({
   id: '/my-submit/',
   path: '/my-submit/',
   getParentRoute: () => AuthRoute,
 } as any)
-const AuthManageAccountIndexRoute = AuthManageAccountIndexRouteImport.update({
+
+const AuthManageAccountIndexRoute = AuthManageAccountIndexImport.update({
   id: '/manage-account/',
   path: '/manage-account/',
   getParentRoute: () => AuthRoute,
 } as any)
-const AuthLocRankingIndexRoute = AuthLocRankingIndexRouteImport.update({
+
+const AuthLocRankingIndexRoute = AuthLocRankingIndexImport.update({
   id: '/loc-ranking/',
   path: '/loc-ranking/',
   getParentRoute: () => AuthRoute,
 } as any)
-const AuthHomeIndexRoute = AuthHomeIndexRouteImport.update({
+
+const AuthHomeIndexRoute = AuthHomeIndexImport.update({
   id: '/home/',
   path: '/home/',
   getParentRoute: () => AuthRoute,
 } as any)
-const AuthFapSyncIndexRoute = AuthFapSyncIndexRouteImport.update({
+
+const AuthFapSyncIndexRoute = AuthFapSyncIndexImport.update({
   id: '/fap-sync/',
   path: '/fap-sync/',
   getParentRoute: () => AuthRoute,
 } as any)
-const AuthClassManageIndexRoute = AuthClassManageIndexRouteImport.update({
+
+const AuthClassManageIndexRoute = AuthClassManageIndexImport.update({
   id: '/class-manage/',
   path: '/class-manage/',
   getParentRoute: () => AuthRoute,
 } as any)
+
 const AuthAssignmentStatisticIndexRoute =
-  AuthAssignmentStatisticIndexRouteImport.update({
+  AuthAssignmentStatisticIndexImport.update({
     id: '/assignment-statistic/',
     path: '/assignment-statistic/',
     getParentRoute: () => AuthRoute,
   } as any)
-const AuthAssignmentManageIndexRoute =
-  AuthAssignmentManageIndexRouteImport.update({
-    id: '/assignment-manage/',
-    path: '/assignment-manage/',
-    getParentRoute: () => AuthRoute,
-  } as any)
-const AuthAssignmentBankIndexRoute = AuthAssignmentBankIndexRouteImport.update({
-  id: '/assignment-bank/',
-  path: '/assignment-bank/',
+
+const AuthAssignmentManageIndexRoute = AuthAssignmentManageIndexImport.update({
+  id: '/assignment-manage/',
+  path: '/assignment-manage/',
   getParentRoute: () => AuthRoute,
 } as any)
+
 const AuthAcademicOutcomeReportIndexRoute =
-  AuthAcademicOutcomeReportIndexRouteImport.update({
+  AuthAcademicOutcomeReportIndexImport.update({
     id: '/academic-outcome-report/',
     path: '/academic-outcome-report/',
     getParentRoute: () => AuthRoute,
   } as any)
-const AuthAboutIndexRoute = AuthAboutIndexRouteImport.update({
+
+const AuthAboutIndexRoute = AuthAboutIndexImport.update({
   id: '/about/',
   path: '/about/',
   getParentRoute: () => AuthRoute,
 } as any)
+
 const AuthTeacherAssignmentClassIdIndexRoute =
-  AuthTeacherAssignmentClassIdIndexRouteImport.update({
+  AuthTeacherAssignmentClassIdIndexImport.update({
     id: '/teacher-assignment/$classId/',
     path: '/teacher-assignment/$classId/',
     getParentRoute: () => AuthRoute,
   } as any)
+
 const AuthStudentAssignmentAssignmentIdIndexRoute =
-  AuthStudentAssignmentAssignmentIdIndexRouteImport.update({
+  AuthStudentAssignmentAssignmentIdIndexImport.update({
     id: '/student-assignment/$assignmentId/',
     path: '/student-assignment/$assignmentId/',
     getParentRoute: () => AuthRoute,
   } as any)
-const AuthDashboardTeacherIndexRoute =
-  AuthDashboardTeacherIndexRouteImport.update({
-    id: '/dashboard/teacher/',
-    path: '/dashboard/teacher/',
-    getParentRoute: () => AuthRoute,
-  } as any)
-const AuthDashboardStudentIndexRoute =
-  AuthDashboardStudentIndexRouteImport.update({
-    id: '/dashboard/student/',
-    path: '/dashboard/student/',
-    getParentRoute: () => AuthRoute,
-  } as any)
+
+const AuthDashboardTeacherIndexRoute = AuthDashboardTeacherIndexImport.update({
+  id: '/dashboard/teacher/',
+  path: '/dashboard/teacher/',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthDashboardStudentIndexRoute = AuthDashboardStudentIndexImport.update({
+  id: '/dashboard/student/',
+  path: '/dashboard/student/',
+  getParentRoute: () => AuthRoute,
+} as any)
+
 const AuthDashboardHeadSubjectIndexRoute =
-  AuthDashboardHeadSubjectIndexRouteImport.update({
+  AuthDashboardHeadSubjectIndexImport.update({
     id: '/dashboard/head-subject/',
     path: '/dashboard/head-subject/',
     getParentRoute: () => AuthRoute,
   } as any)
-const AuthDashboardAdminIndexRoute = AuthDashboardAdminIndexRouteImport.update({
+
+const AuthDashboardAdminIndexRoute = AuthDashboardAdminIndexImport.update({
   id: '/dashboard/admin/',
   path: '/dashboard/admin/',
   getParentRoute: () => AuthRoute,
 } as any)
 
-export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/about': typeof AuthAboutIndexRoute
-  '/academic-outcome-report': typeof AuthAcademicOutcomeReportIndexRoute
-  '/assignment-bank': typeof AuthAssignmentBankIndexRoute
-  '/assignment-manage': typeof AuthAssignmentManageIndexRoute
-  '/assignment-statistic': typeof AuthAssignmentStatisticIndexRoute
-  '/class-manage': typeof AuthClassManageIndexRoute
-  '/fap-sync': typeof AuthFapSyncIndexRoute
-  '/home': typeof AuthHomeIndexRoute
-  '/loc-ranking': typeof AuthLocRankingIndexRoute
-  '/manage-account': typeof AuthManageAccountIndexRoute
-  '/my-submit': typeof AuthMySubmitIndexRoute
-  '/semester-management': typeof AuthSemesterManagementIndexRoute
-  '/student-assignment': typeof AuthStudentAssignmentIndexRoute
-  '/student-manage': typeof AuthStudentManageIndexRoute
-  '/submitlab': typeof AuthSubmitlabIndexRoute
-  '/teacher-grade': typeof AuthTeacherGradeIndexRoute
-  '/teacher-submission': typeof AuthTeacherSubmissionIndexRoute
-  '/test-auth': typeof AuthTestAuthIndexRoute
-  '/forbidden': typeof PublicForbiddenIndexRoute
-  '/forgot-pass': typeof PublicForgotPassIndexRoute
-  '/login': typeof PublicLoginIndexRoute
-  '/not-found': typeof PublicNotFoundIndexRoute
-  '/test': typeof PublicTestIndexRoute
-  '/dashboard/admin': typeof AuthDashboardAdminIndexRoute
-  '/dashboard/head-subject': typeof AuthDashboardHeadSubjectIndexRoute
-  '/dashboard/student': typeof AuthDashboardStudentIndexRoute
-  '/dashboard/teacher': typeof AuthDashboardTeacherIndexRoute
-  '/student-assignment/$assignmentId': typeof AuthStudentAssignmentAssignmentIdIndexRoute
-  '/teacher-assignment/$classId': typeof AuthTeacherAssignmentClassIdIndexRoute
-}
-export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/about': typeof AuthAboutIndexRoute
-  '/academic-outcome-report': typeof AuthAcademicOutcomeReportIndexRoute
-  '/assignment-bank': typeof AuthAssignmentBankIndexRoute
-  '/assignment-manage': typeof AuthAssignmentManageIndexRoute
-  '/assignment-statistic': typeof AuthAssignmentStatisticIndexRoute
-  '/class-manage': typeof AuthClassManageIndexRoute
-  '/fap-sync': typeof AuthFapSyncIndexRoute
-  '/home': typeof AuthHomeIndexRoute
-  '/loc-ranking': typeof AuthLocRankingIndexRoute
-  '/manage-account': typeof AuthManageAccountIndexRoute
-  '/my-submit': typeof AuthMySubmitIndexRoute
-  '/semester-management': typeof AuthSemesterManagementIndexRoute
-  '/student-assignment': typeof AuthStudentAssignmentIndexRoute
-  '/student-manage': typeof AuthStudentManageIndexRoute
-  '/submitlab': typeof AuthSubmitlabIndexRoute
-  '/teacher-grade': typeof AuthTeacherGradeIndexRoute
-  '/teacher-submission': typeof AuthTeacherSubmissionIndexRoute
-  '/test-auth': typeof AuthTestAuthIndexRoute
-  '/forbidden': typeof PublicForbiddenIndexRoute
-  '/forgot-pass': typeof PublicForgotPassIndexRoute
-  '/login': typeof PublicLoginIndexRoute
-  '/not-found': typeof PublicNotFoundIndexRoute
-  '/test': typeof PublicTestIndexRoute
-  '/dashboard/admin': typeof AuthDashboardAdminIndexRoute
-  '/dashboard/head-subject': typeof AuthDashboardHeadSubjectIndexRoute
-  '/dashboard/student': typeof AuthDashboardStudentIndexRoute
-  '/dashboard/teacher': typeof AuthDashboardTeacherIndexRoute
-  '/student-assignment/$assignmentId': typeof AuthStudentAssignmentAssignmentIdIndexRoute
-  '/teacher-assignment/$classId': typeof AuthTeacherAssignmentClassIdIndexRoute
-}
-export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/_auth': typeof AuthRouteWithChildren
-  '/_public': typeof PublicRouteWithChildren
-  '/_auth/about/': typeof AuthAboutIndexRoute
-  '/_auth/academic-outcome-report/': typeof AuthAcademicOutcomeReportIndexRoute
-  '/_auth/assignment-bank/': typeof AuthAssignmentBankIndexRoute
-  '/_auth/assignment-manage/': typeof AuthAssignmentManageIndexRoute
-  '/_auth/assignment-statistic/': typeof AuthAssignmentStatisticIndexRoute
-  '/_auth/class-manage/': typeof AuthClassManageIndexRoute
-  '/_auth/fap-sync/': typeof AuthFapSyncIndexRoute
-  '/_auth/home/': typeof AuthHomeIndexRoute
-  '/_auth/loc-ranking/': typeof AuthLocRankingIndexRoute
-  '/_auth/manage-account/': typeof AuthManageAccountIndexRoute
-  '/_auth/my-submit/': typeof AuthMySubmitIndexRoute
-  '/_auth/semester-management/': typeof AuthSemesterManagementIndexRoute
-  '/_auth/student-assignment/': typeof AuthStudentAssignmentIndexRoute
-  '/_auth/student-manage/': typeof AuthStudentManageIndexRoute
-  '/_auth/submitlab/': typeof AuthSubmitlabIndexRoute
-  '/_auth/teacher-grade/': typeof AuthTeacherGradeIndexRoute
-  '/_auth/teacher-submission/': typeof AuthTeacherSubmissionIndexRoute
-  '/_auth/test-auth/': typeof AuthTestAuthIndexRoute
-  '/_public/forbidden/': typeof PublicForbiddenIndexRoute
-  '/_public/forgot-pass/': typeof PublicForgotPassIndexRoute
-  '/_public/login/': typeof PublicLoginIndexRoute
-  '/_public/not-found/': typeof PublicNotFoundIndexRoute
-  '/_public/test/': typeof PublicTestIndexRoute
-  '/_auth/dashboard/admin/': typeof AuthDashboardAdminIndexRoute
-  '/_auth/dashboard/head-subject/': typeof AuthDashboardHeadSubjectIndexRoute
-  '/_auth/dashboard/student/': typeof AuthDashboardStudentIndexRoute
-  '/_auth/dashboard/teacher/': typeof AuthDashboardTeacherIndexRoute
-  '/_auth/student-assignment/$assignmentId/': typeof AuthStudentAssignmentAssignmentIdIndexRoute
-  '/_auth/teacher-assignment/$classId/': typeof AuthTeacherAssignmentClassIdIndexRoute
-}
-export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/about'
-    | '/academic-outcome-report'
-    | '/assignment-bank'
-    | '/assignment-manage'
-    | '/assignment-statistic'
-    | '/class-manage'
-    | '/fap-sync'
-    | '/home'
-    | '/loc-ranking'
-    | '/manage-account'
-    | '/my-submit'
-    | '/semester-management'
-    | '/student-assignment'
-    | '/student-manage'
-    | '/submitlab'
-    | '/teacher-grade'
-    | '/teacher-submission'
-    | '/test-auth'
-    | '/forbidden'
-    | '/forgot-pass'
-    | '/login'
-    | '/not-found'
-    | '/test'
-    | '/dashboard/admin'
-    | '/dashboard/head-subject'
-    | '/dashboard/student'
-    | '/dashboard/teacher'
-    | '/student-assignment/$assignmentId'
-    | '/teacher-assignment/$classId'
-  fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/about'
-    | '/academic-outcome-report'
-    | '/assignment-bank'
-    | '/assignment-manage'
-    | '/assignment-statistic'
-    | '/class-manage'
-    | '/fap-sync'
-    | '/home'
-    | '/loc-ranking'
-    | '/manage-account'
-    | '/my-submit'
-    | '/semester-management'
-    | '/student-assignment'
-    | '/student-manage'
-    | '/submitlab'
-    | '/teacher-grade'
-    | '/teacher-submission'
-    | '/test-auth'
-    | '/forbidden'
-    | '/forgot-pass'
-    | '/login'
-    | '/not-found'
-    | '/test'
-    | '/dashboard/admin'
-    | '/dashboard/head-subject'
-    | '/dashboard/student'
-    | '/dashboard/teacher'
-    | '/student-assignment/$assignmentId'
-    | '/teacher-assignment/$classId'
-  id:
-    | '__root__'
-    | '/'
-    | '/_auth'
-    | '/_public'
-    | '/_auth/about/'
-    | '/_auth/academic-outcome-report/'
-    | '/_auth/assignment-bank/'
-    | '/_auth/assignment-manage/'
-    | '/_auth/assignment-statistic/'
-    | '/_auth/class-manage/'
-    | '/_auth/fap-sync/'
-    | '/_auth/home/'
-    | '/_auth/loc-ranking/'
-    | '/_auth/manage-account/'
-    | '/_auth/my-submit/'
-    | '/_auth/semester-management/'
-    | '/_auth/student-assignment/'
-    | '/_auth/student-manage/'
-    | '/_auth/submitlab/'
-    | '/_auth/teacher-grade/'
-    | '/_auth/teacher-submission/'
-    | '/_auth/test-auth/'
-    | '/_public/forbidden/'
-    | '/_public/forgot-pass/'
-    | '/_public/login/'
-    | '/_public/not-found/'
-    | '/_public/test/'
-    | '/_auth/dashboard/admin/'
-    | '/_auth/dashboard/head-subject/'
-    | '/_auth/dashboard/student/'
-    | '/_auth/dashboard/teacher/'
-    | '/_auth/student-assignment/$assignmentId/'
-    | '/_auth/teacher-assignment/$classId/'
-  fileRoutesById: FileRoutesById
-}
-export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AuthRoute: typeof AuthRouteWithChildren
-  PublicRoute: typeof PublicRouteWithChildren
-}
+// Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_public': {
-      id: '/_public'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof PublicRouteImport
-      parentRoute: typeof rootRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
     }
     '/_auth': {
       id: '/_auth'
       path: ''
       fullPath: ''
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthImport
+      parentRoute: typeof rootRoute
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_public/test/': {
-      id: '/_public/test/'
-      path: '/test'
-      fullPath: '/test'
-      preLoaderRoute: typeof PublicTestIndexRouteImport
-      parentRoute: typeof PublicRoute
-    }
-    '/_public/not-found/': {
-      id: '/_public/not-found/'
-      path: '/not-found'
-      fullPath: '/not-found'
-      preLoaderRoute: typeof PublicNotFoundIndexRouteImport
-      parentRoute: typeof PublicRoute
-    }
-    '/_public/login/': {
-      id: '/_public/login/'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof PublicLoginIndexRouteImport
-      parentRoute: typeof PublicRoute
-    }
-    '/_public/forgot-pass/': {
-      id: '/_public/forgot-pass/'
-      path: '/forgot-pass'
-      fullPath: '/forgot-pass'
-      preLoaderRoute: typeof PublicForgotPassIndexRouteImport
-      parentRoute: typeof PublicRoute
-    }
-    '/_public/forbidden/': {
-      id: '/_public/forbidden/'
-      path: '/forbidden'
-      fullPath: '/forbidden'
-      preLoaderRoute: typeof PublicForbiddenIndexRouteImport
-      parentRoute: typeof PublicRoute
-    }
-    '/_auth/test-auth/': {
-      id: '/_auth/test-auth/'
-      path: '/test-auth'
-      fullPath: '/test-auth'
-      preLoaderRoute: typeof AuthTestAuthIndexRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/teacher-submission/': {
-      id: '/_auth/teacher-submission/'
-      path: '/teacher-submission'
-      fullPath: '/teacher-submission'
-      preLoaderRoute: typeof AuthTeacherSubmissionIndexRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/teacher-grade/': {
-      id: '/_auth/teacher-grade/'
-      path: '/teacher-grade'
-      fullPath: '/teacher-grade'
-      preLoaderRoute: typeof AuthTeacherGradeIndexRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/submitlab/': {
-      id: '/_auth/submitlab/'
-      path: '/submitlab'
-      fullPath: '/submitlab'
-      preLoaderRoute: typeof AuthSubmitlabIndexRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/student-manage/': {
-      id: '/_auth/student-manage/'
-      path: '/student-manage'
-      fullPath: '/student-manage'
-      preLoaderRoute: typeof AuthStudentManageIndexRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/student-assignment/': {
-      id: '/_auth/student-assignment/'
-      path: '/student-assignment'
-      fullPath: '/student-assignment'
-      preLoaderRoute: typeof AuthStudentAssignmentIndexRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/semester-management/': {
-      id: '/_auth/semester-management/'
-      path: '/semester-management'
-      fullPath: '/semester-management'
-      preLoaderRoute: typeof AuthSemesterManagementIndexRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/my-submit/': {
-      id: '/_auth/my-submit/'
-      path: '/my-submit'
-      fullPath: '/my-submit'
-      preLoaderRoute: typeof AuthMySubmitIndexRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/manage-account/': {
-      id: '/_auth/manage-account/'
-      path: '/manage-account'
-      fullPath: '/manage-account'
-      preLoaderRoute: typeof AuthManageAccountIndexRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/loc-ranking/': {
-      id: '/_auth/loc-ranking/'
-      path: '/loc-ranking'
-      fullPath: '/loc-ranking'
-      preLoaderRoute: typeof AuthLocRankingIndexRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/home/': {
-      id: '/_auth/home/'
-      path: '/home'
-      fullPath: '/home'
-      preLoaderRoute: typeof AuthHomeIndexRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/fap-sync/': {
-      id: '/_auth/fap-sync/'
-      path: '/fap-sync'
-      fullPath: '/fap-sync'
-      preLoaderRoute: typeof AuthFapSyncIndexRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/class-manage/': {
-      id: '/_auth/class-manage/'
-      path: '/class-manage'
-      fullPath: '/class-manage'
-      preLoaderRoute: typeof AuthClassManageIndexRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/assignment-statistic/': {
-      id: '/_auth/assignment-statistic/'
-      path: '/assignment-statistic'
-      fullPath: '/assignment-statistic'
-      preLoaderRoute: typeof AuthAssignmentStatisticIndexRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/assignment-manage/': {
-      id: '/_auth/assignment-manage/'
-      path: '/assignment-manage'
-      fullPath: '/assignment-manage'
-      preLoaderRoute: typeof AuthAssignmentManageIndexRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/assignment-bank/': {
-      id: '/_auth/assignment-bank/'
-      path: '/assignment-bank'
-      fullPath: '/assignment-bank'
-      preLoaderRoute: typeof AuthAssignmentBankIndexRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/academic-outcome-report/': {
-      id: '/_auth/academic-outcome-report/'
-      path: '/academic-outcome-report'
-      fullPath: '/academic-outcome-report'
-      preLoaderRoute: typeof AuthAcademicOutcomeReportIndexRouteImport
-      parentRoute: typeof AuthRoute
+    '/_public': {
+      id: '/_public'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof PublicImport
+      parentRoute: typeof rootRoute
     }
     '/_auth/about/': {
       id: '/_auth/about/'
       path: '/about'
       fullPath: '/about'
-      preLoaderRoute: typeof AuthAboutIndexRouteImport
-      parentRoute: typeof AuthRoute
+      preLoaderRoute: typeof AuthAboutIndexImport
+      parentRoute: typeof AuthImport
     }
-    '/_auth/teacher-assignment/$classId/': {
-      id: '/_auth/teacher-assignment/$classId/'
-      path: '/teacher-assignment/$classId'
-      fullPath: '/teacher-assignment/$classId'
-      preLoaderRoute: typeof AuthTeacherAssignmentClassIdIndexRouteImport
-      parentRoute: typeof AuthRoute
+    '/_auth/academic-outcome-report/': {
+      id: '/_auth/academic-outcome-report/'
+      path: '/academic-outcome-report'
+      fullPath: '/academic-outcome-report'
+      preLoaderRoute: typeof AuthAcademicOutcomeReportIndexImport
+      parentRoute: typeof AuthImport
     }
-    '/_auth/student-assignment/$assignmentId/': {
-      id: '/_auth/student-assignment/$assignmentId/'
-      path: '/student-assignment/$assignmentId'
-      fullPath: '/student-assignment/$assignmentId'
-      preLoaderRoute: typeof AuthStudentAssignmentAssignmentIdIndexRouteImport
-      parentRoute: typeof AuthRoute
+    '/_auth/assignment-manage/': {
+      id: '/_auth/assignment-manage/'
+      path: '/assignment-manage'
+      fullPath: '/assignment-manage'
+      preLoaderRoute: typeof AuthAssignmentManageIndexImport
+      parentRoute: typeof AuthImport
     }
-    '/_auth/dashboard/teacher/': {
-      id: '/_auth/dashboard/teacher/'
-      path: '/dashboard/teacher'
-      fullPath: '/dashboard/teacher'
-      preLoaderRoute: typeof AuthDashboardTeacherIndexRouteImport
-      parentRoute: typeof AuthRoute
+    '/_auth/assignment-statistic/': {
+      id: '/_auth/assignment-statistic/'
+      path: '/assignment-statistic'
+      fullPath: '/assignment-statistic'
+      preLoaderRoute: typeof AuthAssignmentStatisticIndexImport
+      parentRoute: typeof AuthImport
     }
-    '/_auth/dashboard/student/': {
-      id: '/_auth/dashboard/student/'
-      path: '/dashboard/student'
-      fullPath: '/dashboard/student'
-      preLoaderRoute: typeof AuthDashboardStudentIndexRouteImport
-      parentRoute: typeof AuthRoute
+    '/_auth/class-manage/': {
+      id: '/_auth/class-manage/'
+      path: '/class-manage'
+      fullPath: '/class-manage'
+      preLoaderRoute: typeof AuthClassManageIndexImport
+      parentRoute: typeof AuthImport
     }
-    '/_auth/dashboard/head-subject/': {
-      id: '/_auth/dashboard/head-subject/'
-      path: '/dashboard/head-subject'
-      fullPath: '/dashboard/head-subject'
-      preLoaderRoute: typeof AuthDashboardHeadSubjectIndexRouteImport
-      parentRoute: typeof AuthRoute
+    '/_auth/fap-sync/': {
+      id: '/_auth/fap-sync/'
+      path: '/fap-sync'
+      fullPath: '/fap-sync'
+      preLoaderRoute: typeof AuthFapSyncIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/home/': {
+      id: '/_auth/home/'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof AuthHomeIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/loc-ranking/': {
+      id: '/_auth/loc-ranking/'
+      path: '/loc-ranking'
+      fullPath: '/loc-ranking'
+      preLoaderRoute: typeof AuthLocRankingIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/manage-account/': {
+      id: '/_auth/manage-account/'
+      path: '/manage-account'
+      fullPath: '/manage-account'
+      preLoaderRoute: typeof AuthManageAccountIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/my-submit/': {
+      id: '/_auth/my-submit/'
+      path: '/my-submit'
+      fullPath: '/my-submit'
+      preLoaderRoute: typeof AuthMySubmitIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/semester-management/': {
+      id: '/_auth/semester-management/'
+      path: '/semester-management'
+      fullPath: '/semester-management'
+      preLoaderRoute: typeof AuthSemesterManagementIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/student-assignment/': {
+      id: '/_auth/student-assignment/'
+      path: '/student-assignment'
+      fullPath: '/student-assignment'
+      preLoaderRoute: typeof AuthStudentAssignmentIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/student-manage/': {
+      id: '/_auth/student-manage/'
+      path: '/student-manage'
+      fullPath: '/student-manage'
+      preLoaderRoute: typeof AuthStudentManageIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/submitlab/': {
+      id: '/_auth/submitlab/'
+      path: '/submitlab'
+      fullPath: '/submitlab'
+      preLoaderRoute: typeof AuthSubmitlabIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/teacher-grade/': {
+      id: '/_auth/teacher-grade/'
+      path: '/teacher-grade'
+      fullPath: '/teacher-grade'
+      preLoaderRoute: typeof AuthTeacherGradeIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/teacher-submission/': {
+      id: '/_auth/teacher-submission/'
+      path: '/teacher-submission'
+      fullPath: '/teacher-submission'
+      preLoaderRoute: typeof AuthTeacherSubmissionIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/test-auth/': {
+      id: '/_auth/test-auth/'
+      path: '/test-auth'
+      fullPath: '/test-auth'
+      preLoaderRoute: typeof AuthTestAuthIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_public/forbidden/': {
+      id: '/_public/forbidden/'
+      path: '/forbidden'
+      fullPath: '/forbidden'
+      preLoaderRoute: typeof PublicForbiddenIndexImport
+      parentRoute: typeof PublicImport
+    }
+    '/_public/forgot-pass/': {
+      id: '/_public/forgot-pass/'
+      path: '/forgot-pass'
+      fullPath: '/forgot-pass'
+      preLoaderRoute: typeof PublicForgotPassIndexImport
+      parentRoute: typeof PublicImport
+    }
+    '/_public/login/': {
+      id: '/_public/login/'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof PublicLoginIndexImport
+      parentRoute: typeof PublicImport
+    }
+    '/_public/not-found/': {
+      id: '/_public/not-found/'
+      path: '/not-found'
+      fullPath: '/not-found'
+      preLoaderRoute: typeof PublicNotFoundIndexImport
+      parentRoute: typeof PublicImport
+    }
+    '/_public/test/': {
+      id: '/_public/test/'
+      path: '/test'
+      fullPath: '/test'
+      preLoaderRoute: typeof PublicTestIndexImport
+      parentRoute: typeof PublicImport
     }
     '/_auth/dashboard/admin/': {
       id: '/_auth/dashboard/admin/'
       path: '/dashboard/admin'
       fullPath: '/dashboard/admin'
-      preLoaderRoute: typeof AuthDashboardAdminIndexRouteImport
-      parentRoute: typeof AuthRoute
+      preLoaderRoute: typeof AuthDashboardAdminIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/dashboard/head-subject/': {
+      id: '/_auth/dashboard/head-subject/'
+      path: '/dashboard/head-subject'
+      fullPath: '/dashboard/head-subject'
+      preLoaderRoute: typeof AuthDashboardHeadSubjectIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/dashboard/student/': {
+      id: '/_auth/dashboard/student/'
+      path: '/dashboard/student'
+      fullPath: '/dashboard/student'
+      preLoaderRoute: typeof AuthDashboardStudentIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/dashboard/teacher/': {
+      id: '/_auth/dashboard/teacher/'
+      path: '/dashboard/teacher'
+      fullPath: '/dashboard/teacher'
+      preLoaderRoute: typeof AuthDashboardTeacherIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/student-assignment/$assignmentId/': {
+      id: '/_auth/student-assignment/$assignmentId/'
+      path: '/student-assignment/$assignmentId'
+      fullPath: '/student-assignment/$assignmentId'
+      preLoaderRoute: typeof AuthStudentAssignmentAssignmentIdIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/teacher-assignment/$classId/': {
+      id: '/_auth/teacher-assignment/$classId/'
+      path: '/teacher-assignment/$classId'
+      fullPath: '/teacher-assignment/$classId'
+      preLoaderRoute: typeof AuthTeacherAssignmentClassIdIndexImport
+      parentRoute: typeof AuthImport
     }
   }
 }
 
+// Create and export the route tree
+
 interface AuthRouteChildren {
   AuthAboutIndexRoute: typeof AuthAboutIndexRoute
   AuthAcademicOutcomeReportIndexRoute: typeof AuthAcademicOutcomeReportIndexRoute
-  AuthAssignmentBankIndexRoute: typeof AuthAssignmentBankIndexRoute
   AuthAssignmentManageIndexRoute: typeof AuthAssignmentManageIndexRoute
   AuthAssignmentStatisticIndexRoute: typeof AuthAssignmentStatisticIndexRoute
   AuthClassManageIndexRoute: typeof AuthClassManageIndexRoute
@@ -677,7 +494,6 @@ interface AuthRouteChildren {
 const AuthRouteChildren: AuthRouteChildren = {
   AuthAboutIndexRoute: AuthAboutIndexRoute,
   AuthAcademicOutcomeReportIndexRoute: AuthAcademicOutcomeReportIndexRoute,
-  AuthAssignmentBankIndexRoute: AuthAssignmentBankIndexRoute,
   AuthAssignmentManageIndexRoute: AuthAssignmentManageIndexRoute,
   AuthAssignmentStatisticIndexRoute: AuthAssignmentStatisticIndexRoute,
   AuthClassManageIndexRoute: AuthClassManageIndexRoute,
@@ -724,11 +540,388 @@ const PublicRouteChildren: PublicRouteChildren = {
 const PublicRouteWithChildren =
   PublicRoute._addFileChildren(PublicRouteChildren)
 
+export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
+  '': typeof PublicRouteWithChildren
+  '/about': typeof AuthAboutIndexRoute
+  '/academic-outcome-report': typeof AuthAcademicOutcomeReportIndexRoute
+  '/assignment-manage': typeof AuthAssignmentManageIndexRoute
+  '/assignment-statistic': typeof AuthAssignmentStatisticIndexRoute
+  '/class-manage': typeof AuthClassManageIndexRoute
+  '/fap-sync': typeof AuthFapSyncIndexRoute
+  '/home': typeof AuthHomeIndexRoute
+  '/loc-ranking': typeof AuthLocRankingIndexRoute
+  '/manage-account': typeof AuthManageAccountIndexRoute
+  '/my-submit': typeof AuthMySubmitIndexRoute
+  '/semester-management': typeof AuthSemesterManagementIndexRoute
+  '/student-assignment': typeof AuthStudentAssignmentIndexRoute
+  '/student-manage': typeof AuthStudentManageIndexRoute
+  '/submitlab': typeof AuthSubmitlabIndexRoute
+  '/teacher-grade': typeof AuthTeacherGradeIndexRoute
+  '/teacher-submission': typeof AuthTeacherSubmissionIndexRoute
+  '/test-auth': typeof AuthTestAuthIndexRoute
+  '/forbidden': typeof PublicForbiddenIndexRoute
+  '/forgot-pass': typeof PublicForgotPassIndexRoute
+  '/login': typeof PublicLoginIndexRoute
+  '/not-found': typeof PublicNotFoundIndexRoute
+  '/test': typeof PublicTestIndexRoute
+  '/dashboard/admin': typeof AuthDashboardAdminIndexRoute
+  '/dashboard/head-subject': typeof AuthDashboardHeadSubjectIndexRoute
+  '/dashboard/student': typeof AuthDashboardStudentIndexRoute
+  '/dashboard/teacher': typeof AuthDashboardTeacherIndexRoute
+  '/student-assignment/$assignmentId': typeof AuthStudentAssignmentAssignmentIdIndexRoute
+  '/teacher-assignment/$classId': typeof AuthTeacherAssignmentClassIdIndexRoute
+}
+
+export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '': typeof PublicRouteWithChildren
+  '/about': typeof AuthAboutIndexRoute
+  '/academic-outcome-report': typeof AuthAcademicOutcomeReportIndexRoute
+  '/assignment-manage': typeof AuthAssignmentManageIndexRoute
+  '/assignment-statistic': typeof AuthAssignmentStatisticIndexRoute
+  '/class-manage': typeof AuthClassManageIndexRoute
+  '/fap-sync': typeof AuthFapSyncIndexRoute
+  '/home': typeof AuthHomeIndexRoute
+  '/loc-ranking': typeof AuthLocRankingIndexRoute
+  '/manage-account': typeof AuthManageAccountIndexRoute
+  '/my-submit': typeof AuthMySubmitIndexRoute
+  '/semester-management': typeof AuthSemesterManagementIndexRoute
+  '/student-assignment': typeof AuthStudentAssignmentIndexRoute
+  '/student-manage': typeof AuthStudentManageIndexRoute
+  '/submitlab': typeof AuthSubmitlabIndexRoute
+  '/teacher-grade': typeof AuthTeacherGradeIndexRoute
+  '/teacher-submission': typeof AuthTeacherSubmissionIndexRoute
+  '/test-auth': typeof AuthTestAuthIndexRoute
+  '/forbidden': typeof PublicForbiddenIndexRoute
+  '/forgot-pass': typeof PublicForgotPassIndexRoute
+  '/login': typeof PublicLoginIndexRoute
+  '/not-found': typeof PublicNotFoundIndexRoute
+  '/test': typeof PublicTestIndexRoute
+  '/dashboard/admin': typeof AuthDashboardAdminIndexRoute
+  '/dashboard/head-subject': typeof AuthDashboardHeadSubjectIndexRoute
+  '/dashboard/student': typeof AuthDashboardStudentIndexRoute
+  '/dashboard/teacher': typeof AuthDashboardTeacherIndexRoute
+  '/student-assignment/$assignmentId': typeof AuthStudentAssignmentAssignmentIdIndexRoute
+  '/teacher-assignment/$classId': typeof AuthTeacherAssignmentClassIdIndexRoute
+}
+
+export interface FileRoutesById {
+  __root__: typeof rootRoute
+  '/': typeof IndexRoute
+  '/_auth': typeof AuthRouteWithChildren
+  '/_public': typeof PublicRouteWithChildren
+  '/_auth/about/': typeof AuthAboutIndexRoute
+  '/_auth/academic-outcome-report/': typeof AuthAcademicOutcomeReportIndexRoute
+  '/_auth/assignment-manage/': typeof AuthAssignmentManageIndexRoute
+  '/_auth/assignment-statistic/': typeof AuthAssignmentStatisticIndexRoute
+  '/_auth/class-manage/': typeof AuthClassManageIndexRoute
+  '/_auth/fap-sync/': typeof AuthFapSyncIndexRoute
+  '/_auth/home/': typeof AuthHomeIndexRoute
+  '/_auth/loc-ranking/': typeof AuthLocRankingIndexRoute
+  '/_auth/manage-account/': typeof AuthManageAccountIndexRoute
+  '/_auth/my-submit/': typeof AuthMySubmitIndexRoute
+  '/_auth/semester-management/': typeof AuthSemesterManagementIndexRoute
+  '/_auth/student-assignment/': typeof AuthStudentAssignmentIndexRoute
+  '/_auth/student-manage/': typeof AuthStudentManageIndexRoute
+  '/_auth/submitlab/': typeof AuthSubmitlabIndexRoute
+  '/_auth/teacher-grade/': typeof AuthTeacherGradeIndexRoute
+  '/_auth/teacher-submission/': typeof AuthTeacherSubmissionIndexRoute
+  '/_auth/test-auth/': typeof AuthTestAuthIndexRoute
+  '/_public/forbidden/': typeof PublicForbiddenIndexRoute
+  '/_public/forgot-pass/': typeof PublicForgotPassIndexRoute
+  '/_public/login/': typeof PublicLoginIndexRoute
+  '/_public/not-found/': typeof PublicNotFoundIndexRoute
+  '/_public/test/': typeof PublicTestIndexRoute
+  '/_auth/dashboard/admin/': typeof AuthDashboardAdminIndexRoute
+  '/_auth/dashboard/head-subject/': typeof AuthDashboardHeadSubjectIndexRoute
+  '/_auth/dashboard/student/': typeof AuthDashboardStudentIndexRoute
+  '/_auth/dashboard/teacher/': typeof AuthDashboardTeacherIndexRoute
+  '/_auth/student-assignment/$assignmentId/': typeof AuthStudentAssignmentAssignmentIdIndexRoute
+  '/_auth/teacher-assignment/$classId/': typeof AuthTeacherAssignmentClassIdIndexRoute
+}
+
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/'
+    | ''
+    | '/about'
+    | '/academic-outcome-report'
+    | '/assignment-manage'
+    | '/assignment-statistic'
+    | '/class-manage'
+    | '/fap-sync'
+    | '/home'
+    | '/loc-ranking'
+    | '/manage-account'
+    | '/my-submit'
+    | '/semester-management'
+    | '/student-assignment'
+    | '/student-manage'
+    | '/submitlab'
+    | '/teacher-grade'
+    | '/teacher-submission'
+    | '/test-auth'
+    | '/forbidden'
+    | '/forgot-pass'
+    | '/login'
+    | '/not-found'
+    | '/test'
+    | '/dashboard/admin'
+    | '/dashboard/head-subject'
+    | '/dashboard/student'
+    | '/dashboard/teacher'
+    | '/student-assignment/$assignmentId'
+    | '/teacher-assignment/$classId'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | ''
+    | '/about'
+    | '/academic-outcome-report'
+    | '/assignment-manage'
+    | '/assignment-statistic'
+    | '/class-manage'
+    | '/fap-sync'
+    | '/home'
+    | '/loc-ranking'
+    | '/manage-account'
+    | '/my-submit'
+    | '/semester-management'
+    | '/student-assignment'
+    | '/student-manage'
+    | '/submitlab'
+    | '/teacher-grade'
+    | '/teacher-submission'
+    | '/test-auth'
+    | '/forbidden'
+    | '/forgot-pass'
+    | '/login'
+    | '/not-found'
+    | '/test'
+    | '/dashboard/admin'
+    | '/dashboard/head-subject'
+    | '/dashboard/student'
+    | '/dashboard/teacher'
+    | '/student-assignment/$assignmentId'
+    | '/teacher-assignment/$classId'
+  id:
+    | '__root__'
+    | '/'
+    | '/_auth'
+    | '/_public'
+    | '/_auth/about/'
+    | '/_auth/academic-outcome-report/'
+    | '/_auth/assignment-manage/'
+    | '/_auth/assignment-statistic/'
+    | '/_auth/class-manage/'
+    | '/_auth/fap-sync/'
+    | '/_auth/home/'
+    | '/_auth/loc-ranking/'
+    | '/_auth/manage-account/'
+    | '/_auth/my-submit/'
+    | '/_auth/semester-management/'
+    | '/_auth/student-assignment/'
+    | '/_auth/student-manage/'
+    | '/_auth/submitlab/'
+    | '/_auth/teacher-grade/'
+    | '/_auth/teacher-submission/'
+    | '/_auth/test-auth/'
+    | '/_public/forbidden/'
+    | '/_public/forgot-pass/'
+    | '/_public/login/'
+    | '/_public/not-found/'
+    | '/_public/test/'
+    | '/_auth/dashboard/admin/'
+    | '/_auth/dashboard/head-subject/'
+    | '/_auth/dashboard/student/'
+    | '/_auth/dashboard/teacher/'
+    | '/_auth/student-assignment/$assignmentId/'
+    | '/_auth/teacher-assignment/$classId/'
+  fileRoutesById: FileRoutesById
+}
+
+export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRouteWithChildren
+  PublicRoute: typeof PublicRouteWithChildren
+}
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRouteWithChildren,
   PublicRoute: PublicRouteWithChildren,
 }
-export const routeTree = rootRouteImport
+
+export const routeTree = rootRoute
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+/* ROUTE_MANIFEST_START
+{
+  "routes": {
+    "__root__": {
+      "filePath": "__root.tsx",
+      "children": [
+        "/",
+        "/_auth",
+        "/_public"
+      ]
+    },
+    "/": {
+      "filePath": "index.tsx"
+    },
+    "/_auth": {
+      "filePath": "_auth.tsx",
+      "children": [
+        "/_auth/about/",
+        "/_auth/academic-outcome-report/",
+        "/_auth/assignment-manage/",
+        "/_auth/assignment-statistic/",
+        "/_auth/class-manage/",
+        "/_auth/fap-sync/",
+        "/_auth/home/",
+        "/_auth/loc-ranking/",
+        "/_auth/manage-account/",
+        "/_auth/my-submit/",
+        "/_auth/semester-management/",
+        "/_auth/student-assignment/",
+        "/_auth/student-manage/",
+        "/_auth/submitlab/",
+        "/_auth/teacher-grade/",
+        "/_auth/teacher-submission/",
+        "/_auth/test-auth/",
+        "/_auth/dashboard/admin/",
+        "/_auth/dashboard/head-subject/",
+        "/_auth/dashboard/student/",
+        "/_auth/dashboard/teacher/",
+        "/_auth/student-assignment/$assignmentId/",
+        "/_auth/teacher-assignment/$classId/"
+      ]
+    },
+    "/_public": {
+      "filePath": "_public.tsx",
+      "children": [
+        "/_public/forbidden/",
+        "/_public/forgot-pass/",
+        "/_public/login/",
+        "/_public/not-found/",
+        "/_public/test/"
+      ]
+    },
+    "/_auth/about/": {
+      "filePath": "_auth/about/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/academic-outcome-report/": {
+      "filePath": "_auth/academic-outcome-report/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/assignment-manage/": {
+      "filePath": "_auth/assignment-manage/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/assignment-statistic/": {
+      "filePath": "_auth/assignment-statistic/index.ts",
+      "parent": "/_auth"
+    },
+    "/_auth/class-manage/": {
+      "filePath": "_auth/class-manage/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/fap-sync/": {
+      "filePath": "_auth/fap-sync/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/home/": {
+      "filePath": "_auth/home/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/loc-ranking/": {
+      "filePath": "_auth/loc-ranking/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/manage-account/": {
+      "filePath": "_auth/manage-account/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/my-submit/": {
+      "filePath": "_auth/my-submit/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/semester-management/": {
+      "filePath": "_auth/semester-management/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/student-assignment/": {
+      "filePath": "_auth/student-assignment/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/student-manage/": {
+      "filePath": "_auth/student-manage/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/submitlab/": {
+      "filePath": "_auth/submitlab/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/teacher-grade/": {
+      "filePath": "_auth/teacher-grade/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/teacher-submission/": {
+      "filePath": "_auth/teacher-submission/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/test-auth/": {
+      "filePath": "_auth/test-auth/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_public/forbidden/": {
+      "filePath": "_public/forbidden/index.tsx",
+      "parent": "/_public"
+    },
+    "/_public/forgot-pass/": {
+      "filePath": "_public/forgot-pass/index.tsx",
+      "parent": "/_public"
+    },
+    "/_public/login/": {
+      "filePath": "_public/login/index.tsx",
+      "parent": "/_public"
+    },
+    "/_public/not-found/": {
+      "filePath": "_public/not-found/index.tsx",
+      "parent": "/_public"
+    },
+    "/_public/test/": {
+      "filePath": "_public/test/index.tsx",
+      "parent": "/_public"
+    },
+    "/_auth/dashboard/admin/": {
+      "filePath": "_auth/dashboard/admin/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/dashboard/head-subject/": {
+      "filePath": "_auth/dashboard/head-subject/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/dashboard/student/": {
+      "filePath": "_auth/dashboard/student/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/dashboard/teacher/": {
+      "filePath": "_auth/dashboard/teacher/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/student-assignment/$assignmentId/": {
+      "filePath": "_auth/student-assignment/$assignmentId/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/teacher-assignment/$classId/": {
+      "filePath": "_auth/teacher-assignment/$classId/index.tsx",
+      "parent": "/_auth"
+    }
+  }
+}
+ROUTE_MANIFEST_END */
