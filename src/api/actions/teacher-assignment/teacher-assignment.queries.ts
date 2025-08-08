@@ -33,7 +33,7 @@ export const teacherAssignmentQueries = {
     queryFactoryOptions({
       queryKey: [...teacherAssignmentQueries.all(), 'view-java-file'],
       queryFn: getViewJavaFile(params),
-      enabled: !!params,
+      enabled: !!params?.studentId && !!params?.classId && !!params?.assignmentId,
     }),
 }
 
@@ -57,7 +57,7 @@ const getViewSubmission =
   (params?: ViewSubmissionRequest) => (client: AxiosInstance) => async () => {
     return (
       await client.get<string>(
-        `/teacher/assignments/view-submission${objectToQueryString}`
+        `/teacher/assignments/view-submission${objectToQueryString(params || {})}`
       )
     ).data
   }

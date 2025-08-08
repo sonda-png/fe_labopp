@@ -18,7 +18,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Search, User, Code, Calendar, FileText, Eye } from 'lucide-react'
-import CodeFileViewer, { CodeFile } from '@/components/features/code-viewer'
+import CodeFileViewer from '@/components/features/code-viewer'
 import { useSearch } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { useApiClient } from '@/hooks/useApiClient/useApiClient'
@@ -286,69 +286,10 @@ export default function TeacherGradingSystem() {
             {selectedSubmission && (
               <div className="flex-1 overflow-y-auto">
                 <CodeFileViewer
-                  showGradingPanel={true}
-                  currentStatus={
-                    selectedSubmission.status === 'Passed'
-                      ? 'passed'
-                      : selectedSubmission.status === 'Rejected'
-                        ? 'not_passed'
-                        : 'pending'
-                  }
-                  onStatusChange={status =>
-                    console.log('Status changed:', status)
-                  }
-                  onSubmitGrade={(status, feedback) => {
-                    console.log('Grade submitted:', { status, feedback })
-                    // TODO: Implement grade submission API call
-                    // You can integrate with TeacherGradeDetail component's logic here
-                  }}
-                  comments={[
-                    // Sample comments - replace with API data
-                    {
-                      id: '1',
-                      author: 'Teacher',
-                      content:
-                        selectedSubmission.comment || 'No previous comments',
-                      timestamp: new Date().toISOString(),
-                      fileName: 'Main.java',
-                    },
-                  ]}
-                  onAddComment={comment => {
-                    console.log('Comment added:', comment)
-                    // TODO: Implement add comment API call
-                  }}
-                  testResults={[
-                    {
-                      id: '1',
-                      name: 'Test Case 1: Basic functionality',
-                      status:
-                        selectedSubmission.status === 'Passed'
-                          ? 'passed'
-                          : 'failed',
-                      output:
-                        selectedSubmission.status === 'Passed'
-                          ? 'All assertions passed'
-                          : undefined,
-                      error:
-                        selectedSubmission.status === 'Rejected'
-                          ? 'Some test cases failed'
-                          : undefined,
-                    },
-                    {
-                      id: '2',
-                      name: 'Test Case 2: Edge cases',
-                      status: 'passed',
-                      output: 'Edge case tests completed successfully',
-                    },
-                  ]}
-                  onRunTests={() => {
-                    console.log(
-                      'Running tests for submission:',
-                      selectedSubmission.id
-                    )
-                    // TODO: Implement test runner API call
-                  }}
-                  isRunningTests={false}
+                  studentId={selectedSubmission.studentId}
+                  classId={classId}
+                  assignmentId={selectedSubmission.assignmentCode}
+                  submission={selectedSubmission}
                 />
               </div>
             )}

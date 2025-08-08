@@ -29,6 +29,13 @@ const handleDeleteAssignment =
     ).data
   }
 
+// const handleUploadAssignmentPdf =
+//   (client: AxiosInstance) => async (id: string) => {
+//     return (
+//       await client.delete<AssignmentListResponse>(`/head_subject/assignment/delete/${id}`)
+//     ).data
+//   }
+
 // Export mutations object
 export const assignmentManageMutations = {
   addAssignmentMutation: (client: AxiosInstance) => handleAddAssignment(client),

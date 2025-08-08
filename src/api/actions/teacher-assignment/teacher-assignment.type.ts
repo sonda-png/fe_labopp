@@ -1,3 +1,12 @@
+export interface CodeFile {
+  id: string
+  name: string
+  type: 'file' | 'folder'
+  extension?: string
+  content?: string
+  children?: CodeFile[]
+}
+
 export type AuditTeacherAssignmentRequest = {
   title: string
   description: string

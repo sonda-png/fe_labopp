@@ -3,7 +3,6 @@ import {
   BookOpen,
   Calendar,
   Database,
-  FileText,
   GraduationCap,
   Layers,
   ShieldCheck,
@@ -88,13 +87,6 @@ export const allNavigationItems: NavigationItem[] = [
     label: 'Thống kê Assignment',
     icon: TrendingUp,
     path: '/assignment-statistic',
-    roles: ['Head Subject', 'Teacher'],
-  },
-  {
-    id: 'assignment-bank',
-    label: 'Ngân hàng đề',
-    icon: TrendingUp,
-    path: '/assignment-bank',
     roles: ['Head Subject', 'Teacher'],
   },
   {
