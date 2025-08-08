@@ -16,54 +16,18 @@ import {
 } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-
-// Mock data for classes
-const mockClasses = [
-  {
-    classId: 'SE1732',
-    className: 'OOP K17',
-    totalStudents: 45,
-    studentsPassed: 38,
-    passRate: 84.4,
-    semester: '2024.1',
-  },
-  {
-    classId: 'SE1733',
-    className: 'Data Structure K17',
-    totalStudents: 52,
-    studentsPassed: 41,
-    passRate: 78.8,
-    semester: '2024.1',
-  },
-  {
-    classId: 'SE1734',
-    className: 'Database K17',
-    totalStudents: 38,
-    studentsPassed: 15,
-    passRate: 39.5,
-    semester: '2024.1',
-  },
-  {
-    classId: 'SE1735',
-    className: 'Web Development K17',
-    totalStudents: 41,
-    studentsPassed: 35,
-    passRate: 85.4,
-    semester: '2024.1',
-  },
-]
-
-interface ClassData {
-  classId: string
-  className: string
-  totalStudents: number
-  studentsPassed: number
-  passRate: number
-}
+import { AssignmentStatistic } from '@/api/actions/assignment-manage/assignment.types'
+import { assignmentManageQueries } from '@/api/actions/assignment-manage/assignment.query'
+import { useQuery } from '@/hooks'
 
 export default function ClassProgressDashboard() {
-  const [selectedClass, setSelectedClass] = useState<ClassData | null>(null)
+  const [selectedClass, setSelectedClass] =
+    useState<AssignmentStatistic | null>(null)
   const [isExporting, setIsExporting] = useState(false)
+
+  const { data: assignmentStatisticData } = useQuery({
+    ...assignmentManageQueries.getStatistic(),
+  })
 
   const getPassRateStatus = (passRate: number) => {
     if (passRate >= 80)
@@ -87,7 +51,7 @@ export default function ClassProgressDashboard() {
     }, 2000)
   }
 
-  const handleClassClick = (classData: ClassData) => {
+  const handleClassClick = (classData: AssignmentStatistic) => {
     setSelectedClass(classData)
   }
 
@@ -284,7 +248,7 @@ export default function ClassProgressDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-gray-900">
-                {mockClasses.length}
+                {assignmentStatisticData?.length}
               </div>
             </CardContent>
           </Card>
@@ -298,7 +262,11 @@ export default function ClassProgressDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-gray-900">
-                {mockClasses.reduce((sum, cls) => sum + cls.totalStudents, 0)}
+                {assignmentStatisticData?.reduce(
+                  (sum: number, cls: AssignmentStatistic) =>
+                    sum + cls.totalStudents,
+                  0
+                )}
               </div>
             </CardContent>
           </Card>
@@ -313,8 +281,11 @@ export default function ClassProgressDashboard() {
             <CardContent>
               <div className="text-2xl font-bold text-gray-900">
                 {(
-                  mockClasses.reduce((sum, cls) => sum + cls.passRate, 0) /
-                  mockClasses.length
+                  (assignmentStatisticData?.reduce(
+                    (sum: number, cls: AssignmentStatistic) =>
+                      sum + cls.passRate,
+                    0
+                  ) ?? 0) / (assignmentStatisticData?.length ?? 1)
                 ).toFixed(1)}
                 %
               </div>
@@ -324,7 +295,7 @@ export default function ClassProgressDashboard() {
 
         {/* Classes Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {mockClasses.map(classData => {
+          {assignmentStatisticData?.map((classData: AssignmentStatistic) => {
             const status = getPassRateStatus(classData.passRate)
 
             return (

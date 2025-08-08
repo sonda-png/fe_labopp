@@ -1,50 +1,28 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-
 import {
   FileText,
   Folder,
-  Code,
-  FileIcon,
   Play,
-  Save,
-  MessageSquare,
-  Plus,
   CheckCircle,
   XCircle,
   Clock,
-  User,
 } from 'lucide-react'
 import { Highlight, themes } from 'prism-react-renderer'
-
-export interface CodeFile {
-  id: string
-  name: string
-  type: 'file' | 'folder'
-  extension?: string
-  content?: string
-  children?: CodeFile[]
-}
-
-export interface Comment {
-  id: string
-  author: string
-  content: string
-  timestamp: string
-  lineNumber?: number
-  fileName?: string
-}
+import Prism from 'prismjs'
+import { useQuery } from '@/hooks'
+import { teacherAssignmentQueries } from '@/api/actions/teacher-assignment/teacher-assignment.queries'
+import { normalizeJavaFile } from '@/utils/helpers/normalizeJavaFile'
+import 'prismjs/components/prism-java'
+import { GradingCommentPanel } from '../grading-comment-panel'
+import { getLanguageFromExtension } from '@/utils/helpers/get-language-from-extension'
+import { FileIconComponent } from '@/components/common/file-icon'
+import { TeacherSubmissionData } from '@/api/actions/teacher-submit/teacher-submit.type'
+import { convertFileObjectToCodeFiles } from '@/utils/helpers/convert-file-object-to-code-file'
+import { CodeFile } from '@/api/actions/teacher-assignment/teacher-assignment.type'
 
 export interface TestResult {
   id: string
@@ -55,270 +33,111 @@ export interface TestResult {
 }
 
 interface CodeFileViewerProps {
-  files?: CodeFile[]
-  onFileSelect?: (file: CodeFile) => void
-  selectedFile?: CodeFile | null
-  // Grading features
-  showGradingPanel?: boolean
-  currentStatus?: 'passed' | 'not_passed' | 'pending'
-  onStatusChange?: (status: 'passed' | 'not_passed') => void
-  onSubmitGrade?: (status: 'passed' | 'not_passed', feedback: string) => void
-  // Comments features
-  comments?: Comment[]
-  onAddComment?: (comment: Omit<Comment, 'id' | 'timestamp'>) => void
-  // Test features
-  testResults?: TestResult[]
-  onRunTests?: () => void
-  isRunningTests?: boolean
-}
-
-const sampleFiles: CodeFile[] = [
-  {
-    id: '1',
-    name: 'src',
-    type: 'folder',
-    children: [
-      {
-        id: '2',
-        name: 'App.tsx',
-        type: 'file',
-        extension: 'tsx',
-        content: `import React from 'react';
-import './App.css';
-
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Hello React!</h1>
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-      </header>
-    </div>
-  );
-}
-
-export default App;`,
-      },
-      {
-        id: '3',
-        name: 'index.tsx',
-        type: 'file',
-        extension: 'tsx',
-        content: `import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
-
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);`,
-      },
-      {
-        id: '4',
-        name: 'components',
-        type: 'folder',
-        children: [
-          {
-            id: '5',
-            name: 'Button.tsx',
-            type: 'file',
-            extension: 'tsx',
-            content: `import React from 'react';
-
-interface ButtonProps {
-  children: React.ReactNode;
-  onClick?: () => void;
-  variant?: 'primary' | 'secondary';
-  disabled?: boolean;
-}
-
-const Button: React.FC<ButtonProps> = ({ 
-  children, 
-  onClick, 
-  variant = 'primary',
-  disabled = false 
-}) => {
-  const baseClasses = 'px-4 py-2 rounded-md font-medium transition-colors';
-  const variantClasses = {
-    primary: 'bg-blue-500 text-white hover:bg-blue-600',
-    secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300'
-  };
-
-  return (
-    <button
-      className={\`\${baseClasses} \${variantClasses[variant]}\`}
-      onClick={onClick}
-      disabled={disabled}
-    >
-      {children}
-    </button>
-  );
-};
-
-export default Button;`,
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: '6',
-    name: 'package.json',
-    type: 'file',
-    extension: 'json',
-    content: `{
-  "name": "my-react-app",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.16.4",
-    "@testing-library/react": "^13.3.0",
-    "@testing-library/user-event": "^13.5.0",
-    "@types/jest": "^27.5.2",
-    "@types/node": "^16.11.56",
-    "@types/react": "^18.0.17",
-    "@types/react-dom": "^18.0.6",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
-    "typescript": "^4.7.4",
-    "web-vitals": "^2.1.4"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  }
-}`,
-  },
-  {
-    id: '7',
-    name: 'README.md',
-    type: 'file',
-    extension: 'md',
-    content: `# My React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### \`npm start\`
-
-Runs the app in the development mode.
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-### \`npm test\`
-
-Launches the test runner in the interactive watch mode.
-
-### \`npm run build\`
-
-Builds the app for production to the \`build\` folder.`,
-  },
-]
-
-const getFileIcon = (extension?: string) => {
-  switch (extension) {
-    case 'tsx':
-    case 'jsx':
-    case 'ts':
-    case 'js':
-      return <Code className="w-4 h-4 text-blue-500" />
-    case 'json':
-      return <FileText className="w-4 h-4 text-yellow-500" />
-    case 'md':
-      return <FileText className="w-4 h-4 text-green-500" />
-    default:
-      return <FileIcon className="w-4 h-4 text-gray-500" />
-  }
-}
-
-const getLanguageFromExtension = (extension?: string) => {
-  switch (extension) {
-    case 'tsx':
-    case 'jsx':
-      return 'jsx'
-    case 'ts':
-      return 'typescript'
-    case 'js':
-      return 'javascript'
-    case 'json':
-      return 'json'
-    case 'md':
-      return 'markdown'
-    default:
-      return 'text'
-  }
+  studentId: string
+  classId: string
+  assignmentId: string
+  submission: TeacherSubmissionData
 }
 
 export default function CodeFileViewer({
-  files = sampleFiles,
-  onFileSelect,
-  selectedFile: externalSelectedFile,
-  showGradingPanel = false,
-  currentStatus = 'pending',
-  onStatusChange,
-  onSubmitGrade,
-  comments = [],
-  onAddComment,
-  testResults = [],
-  onRunTests,
-  isRunningTests = false,
-}: CodeFileViewerProps = {}) {
+  studentId,
+  classId,
+  assignmentId,
+  submission,
+}: CodeFileViewerProps) {
   const [internalSelectedFile, setInternalSelectedFile] =
     useState<CodeFile | null>(null)
-  const [expandedFolders, setExpandedFolders] = useState<Set<string>>(
-    new Set(['1'])
-  )
+  const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set())
+  // const { data: viewSubmissionData } = useQuery({
+  //   ...teacherAssignmentQueries.viewSubmission({
+  //     zipPath: '',
+  //     javaFileName: '',
+  //   }),
+  // })
 
-  // Grading state
-  const [tempStatus, setTempStatus] = useState(currentStatus)
-  const [gradingFeedback, setGradingFeedback] = useState('')
+  const { data: viewJavaFileData } = useQuery({
+    ...teacherAssignmentQueries.getViewJavaFile({
+      studentId,
+      classId,
+      assignmentId,
+    }),
+  })
 
-  // Comments state
-  const [newComment, setNewComment] = useState('')
-  const [showComments, setShowComments] = useState(false)
+  const [isRunningTests, setIsRunningTests] = useState(false)
 
-  // Use external selectedFile if provided, otherwise use internal state
-  const selectedFile =
-    externalSelectedFile !== undefined
-      ? externalSelectedFile
-      : internalSelectedFile
+  // Test results state
+  const [testResults, setTestResults] = useState<TestResult[]>([
+    {
+      id: '1',
+      name: 'Test Case 1: Basic functionality',
+      status: 'passed',
+      output: 'All assertions passed successfully',
+    },
+    {
+      id: '2',
+      name: 'Test Case 2: Edge cases',
+      status: 'passed',
+      output: 'Edge case tests completed successfully',
+    },
+    {
+      id: '3',
+      name: 'Test Case 3: Error handling',
+      status: 'failed',
+      error: 'Expected exception not thrown when input is null',
+    },
+    {
+      id: '4',
+      name: 'Test Case 4: Performance test',
+      status: 'running',
+    },
+  ])
+
+  // Auto-expand first folder and select first file when data loads
+  useEffect(() => {
+    if (viewJavaFileData && Object.keys(viewJavaFileData).length > 0) {
+      const files = convertFileObjectToCodeFiles(viewJavaFileData)
+
+      // Auto-expand all folders
+      const foldersToExpand = new Set<string>()
+      const collectFolders = (items: CodeFile[]) => {
+        items.forEach(item => {
+          if (item.type === 'folder') {
+            foldersToExpand.add(item.id)
+            if (item.children) {
+              collectFolders(item.children)
+            }
+          }
+        })
+      }
+      collectFolders(files)
+      setExpandedFolders(foldersToExpand)
+
+      // Auto-select first file
+      const findFirstFile = (items: CodeFile[]): CodeFile | null => {
+        for (const item of items) {
+          if (item.type === 'file') {
+            return item
+          }
+          if (item.type === 'folder' && item.children) {
+            const found = findFirstFile(item.children)
+            if (found) return found
+          }
+        }
+        return null
+      }
+
+      const firstFile = findFirstFile(files)
+      if (firstFile && !internalSelectedFile) {
+        setInternalSelectedFile(firstFile)
+      }
+    }
+  }, [viewJavaFileData, internalSelectedFile])
+
+  // Use internal selectedFile state
+  const selectedFile = internalSelectedFile
 
   const handleFileSelect = (file: CodeFile) => {
-    if (onFileSelect) {
-      onFileSelect(file)
-    } else {
-      setInternalSelectedFile(file)
-    }
-  }
-
-  const handleSubmitGrade = () => {
-    if (onSubmitGrade && tempStatus !== 'pending') {
-      onSubmitGrade(tempStatus, gradingFeedback)
-    }
-  }
-
-  const handleAddComment = () => {
-    if (onAddComment && newComment.trim()) {
-      onAddComment({
-        author: 'Teacher', // This should come from user context
-        content: newComment.trim(),
-        fileName: selectedFile?.name,
-      })
-      setNewComment('')
-    }
+    setInternalSelectedFile(file)
   }
 
   const getTestIcon = (status: string) => {
@@ -345,6 +164,7 @@ export default function CodeFileViewer({
   }
 
   const renderFileTree = (files: CodeFile[], level = 0) => {
+    console.log(files)
     return files.map(file => (
       <div key={file.id}>
         <div
@@ -365,7 +185,7 @@ export default function CodeFileViewer({
               className={`w-4 h-4 text-blue-600 ${expandedFolders.has(file.id) ? 'rotate-0' : ''}`}
             />
           ) : (
-            getFileIcon(file.extension)
+            <FileIconComponent extension={file.extension} />
           )}
           <span className="text-sm font-medium">{file.name}</span>
           {file.extension && (
@@ -396,7 +216,12 @@ export default function CodeFileViewer({
           </CardHeader>
           <CardContent className="p-0 flex-1 overflow-hidden">
             <ScrollArea className="h-full">
-              <div className="p-2">{renderFileTree(files)}</div>
+              <div className="p-2">
+                {viewJavaFileData &&
+                  renderFileTree(
+                    convertFileObjectToCodeFiles(viewJavaFileData)
+                  )}
+              </div>
             </ScrollArea>
           </CardContent>
         </Card>
@@ -410,7 +235,7 @@ export default function CodeFileViewer({
             <div className="flex items-center gap-2">
               {selectedFile ? (
                 <>
-                  {getFileIcon(selectedFile.extension)}
+                  <FileIconComponent extension={selectedFile.extension} />
                   <span className="font-medium">{selectedFile.name}</span>
                   {selectedFile.extension && (
                     <Badge variant="outline" className="text-xs">
@@ -426,30 +251,43 @@ export default function CodeFileViewer({
             </div>
 
             <div className="flex items-center gap-2">
-              {onRunTests && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={onRunTests}
-                  disabled={isRunningTests}
-                  className="flex items-center gap-2"
-                >
-                  <Play className="w-4 h-4" />
-                  {isRunningTests ? 'Running...' : 'Run Tests'}
-                </Button>
-              )}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setIsRunningTests(true)
+                  // Set all tests to running status
+                  setTestResults(prev =>
+                    prev.map(test => ({ ...test, status: 'running' as const }))
+                  )
 
-              {showGradingPanel && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowComments(!showComments)}
-                  className="flex items-center gap-2"
-                >
-                  <MessageSquare className="w-4 h-4" />
-                  Comments ({comments.length})
-                </Button>
-              )}
+                  // Simulate test execution
+                  setTimeout(() => {
+                    setTestResults(prev =>
+                      prev.map(test => ({
+                        ...test,
+                        status: Math.random() > 0.3 ? 'passed' : 'failed',
+                        output:
+                          Math.random() > 0.3
+                            ? 'Test completed successfully'
+                            : undefined,
+                        error:
+                          Math.random() <= 0.3
+                            ? 'Test failed with assertion error'
+                            : undefined,
+                      }))
+                    )
+                    setIsRunningTests(false)
+                  }, 2000)
+
+                  console.log('Running tests for student:', studentId)
+                }}
+                disabled={isRunningTests}
+                className="flex items-center gap-2"
+              >
+                <Play className="w-4 h-4" />
+                {isRunningTests ? 'Running...' : 'Run Tests'}
+              </Button>
             </div>
           </div>
         </div>
@@ -462,9 +300,10 @@ export default function CodeFileViewer({
               {selectedFile ? (
                 <div className="p-4 text-sm font-mono bg-muted/20 h-full">
                   <Highlight
+                    prism={Prism}
                     theme={themes.oneLight}
-                    code={selectedFile.content || ''}
-                    language="tsx"
+                    code={normalizeJavaFile(selectedFile.content || '')}
+                    language={'java'}
                   >
                     {({ style, tokens, getLineProps, getTokenProps }) => (
                       <pre style={style} className="h-full">
@@ -495,7 +334,7 @@ export default function CodeFileViewer({
           </div>
 
           {/* Bottom Panel - Test Results & Grading */}
-          {(testResults.length > 0 || showGradingPanel) && (
+          {testResults.length > 0 && (
             <div className="h-80 border-t bg-muted/30 flex flex-shrink-0">
               {/* Test Results Panel */}
               {testResults.length > 0 && (
@@ -533,123 +372,12 @@ export default function CodeFileViewer({
                 </div>
               )}
 
-              {/* Grading & Comments Panel */}
-              {showGradingPanel && (
-                <div className="flex-1 flex flex-col">
-                  {/* Grading Section */}
-                  <div className="p-4 border-b flex-shrink-0">
-                    <h4 className="font-semibold mb-3">Grading</h4>
-
-                    <div className="space-y-3">
-                      <div>
-                        <label className="text-sm font-medium">Status</label>
-                        <Select
-                          value={tempStatus}
-                          onValueChange={(value: 'passed' | 'not_passed') => {
-                            setTempStatus(value)
-                            onStatusChange?.(value)
-                          }}
-                        >
-                          <SelectTrigger className="mt-1">
-                            <SelectValue placeholder="Select status" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="passed">✅ Passed</SelectItem>
-                            <SelectItem value="not_passed">
-                              ❌ Not Passed
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div>
-                        <label className="text-sm font-medium">Feedback</label>
-                        <Textarea
-                          placeholder="Enter feedback..."
-                          value={gradingFeedback}
-                          onChange={e => setGradingFeedback(e.target.value)}
-                          className="mt-1 h-16 resize-none text-xs"
-                        />
-                      </div>
-
-                      <Button
-                        onClick={handleSubmitGrade}
-                        size="sm"
-                        className="w-full flex items-center gap-2"
-                        disabled={tempStatus === 'pending'}
-                      >
-                        <Save className="w-3 h-3" />
-                        Submit Grade
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* Comments Section */}
-                  <div className="flex-1 flex flex-col min-h-0">
-                    <div className="p-3 border-b flex-shrink-0">
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-semibold">Comments</h4>
-                        <Badge variant="secondary" className="text-xs">
-                          {comments.length}
-                        </Badge>
-                      </div>
-
-                      {/* Add Comment */}
-                      <div className="space-y-2">
-                        <Textarea
-                          placeholder="Add a comment..."
-                          value={newComment}
-                          onChange={e => setNewComment(e.target.value)}
-                          className="h-12 resize-none text-xs"
-                        />
-                        <Button
-                          size="sm"
-                          onClick={handleAddComment}
-                          disabled={!newComment.trim()}
-                          className="flex items-center gap-1 text-xs"
-                        >
-                          <Plus className="w-3 h-3" />
-                          Add Comment
-                        </Button>
-                      </div>
-                    </div>
-
-                    {/* Comments List */}
-                    <ScrollArea className="flex-1">
-                      <div className="p-3 space-y-2">
-                        {comments.length === 0 ? (
-                          <p className="text-xs text-muted-foreground text-center py-2">
-                            No comments yet
-                          </p>
-                        ) : (
-                          comments.map(comment => (
-                            <div
-                              key={comment.id}
-                              className="p-2 rounded-md border bg-background"
-                            >
-                              <div className="flex items-center gap-1 mb-1">
-                                <User className="w-3 h-3" />
-                                <span className="text-xs font-medium">
-                                  {comment.author}
-                                </span>
-                                <span className="text-xs text-muted-foreground">
-                                  {new Date(comment.timestamp).toLocaleString()}
-                                </span>
-                              </div>
-                              {comment.fileName && (
-                                <div className="text-xs text-muted-foreground mb-1">
-                                  On file: {comment.fileName}
-                                </div>
-                              )}
-                              <p className="text-xs">{comment.content}</p>
-                            </div>
-                          ))
-                        )}
-                      </div>
-                    </ScrollArea>
-                  </div>
-                </div>
-              )}
+              <GradingCommentPanel
+                submissionId={submission.id}
+                grade={submission.status}
+                comment={submission.comment}
+                classId={classId}
+              />
             </div>
           )}
         </div>

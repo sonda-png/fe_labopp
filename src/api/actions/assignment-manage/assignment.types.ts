@@ -20,3 +20,13 @@ export interface AssignmentRequest {
   locTotal: number
   teacherId: string
 }
+
+export type AssignmentStatistic = {
+  classId: string
+  className: string
+  totalStudents: number
+  studentsPassed: number
+  passRate: number
+}
+
+export type AssignmentStatisticResponse = AssignmentStatistic[]
