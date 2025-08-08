@@ -56,96 +56,6 @@ export default function TeacherGradingSystem() {
     useState<TeacherSubmissionData | null>(null)
   const [isCodeViewerOpen, setIsCodeViewerOpen] = useState(false)
 
-  // Sample code files - Replace with actual API call
-  const generateSampleFiles = (
-    submission: TeacherSubmissionData
-  ): CodeFile[] => {
-    return [
-      {
-        id: '1',
-        name: 'src',
-        type: 'folder',
-        children: [
-          {
-            id: '2',
-            name: 'Main.java',
-            type: 'file',
-            extension: 'java',
-            content: `public class Main {
-    public static void main(String[] args) {
-        System.out.println("Hello World!");
-        
-        // Student: ${submission.studentName}
-        // Assignment: ${submission.assignmentCode}
-        
-        // Calculate fibonacci numbers
-        int n = 10;
-        for (int i = 0; i < n; i++) {
-            System.out.println("F(" + i + ") = " + fibonacci(i));
-        }
-    }
-    
-    public static int fibonacci(int n) {
-        if (n <= 1) {
-            return n;
-        }
-        return fibonacci(n - 1) + fibonacci(n - 2);
-    }
-}`,
-          },
-          {
-            id: '3',
-            name: 'Utils.java',
-            type: 'file',
-            extension: 'java',
-            content: `public class Utils {
-    public static boolean isPrime(int num) {
-        if (num <= 1) return false;
-        for (int i = 2; i <= Math.sqrt(num); i++) {
-            if (num % i == 0) return false;
-        }
-        return true;
-    }
-    
-    public static int gcd(int a, int b) {
-        while (b != 0) {
-            int temp = b;
-            b = a % b;
-            a = temp;
-        }
-        return a;
-    }
-}`,
-          },
-        ],
-      },
-      {
-        id: '4',
-        name: 'README.md',
-        type: 'file',
-        extension: 'md',
-        content: `# ${submission.assignmentCode} Solution
-
-## Author: ${submission.studentName}
-
-### Implementation Details
-- Implemented fibonacci calculation using recursion
-- Added utility functions for mathematical operations
-- Total LOC: ${submission.loc}
-- Status: ${submission.status}
-
-### How to run
-\`\`\`bash
-javac src/*.java
-java -cp src Main
-\`\`\`
-
-### Comments
-${submission.comment || 'No comments provided'}`,
-      },
-    ]
-  }
-
   const openCodeViewer = (submission: TeacherSubmissionData) => {
     setSelectedSubmission(submission)
     setIsCodeViewerOpen(true)
@@ -164,6 +74,7 @@ ${submission.comment || 'No comments provided'}`,
     }
   )
 
+  console.log(filteredSubmissions)
   if (isLoading) {
     return <div>Loading...</div>
   }
@@ -375,7 +286,6 @@ ${submission.comment || 'No comments provided'}`,
             {selectedSubmission && (
               <div className="flex-1 overflow-y-auto">
                 <CodeFileViewer
-                  files={generateSampleFiles(selectedSubmission)}
                   showGradingPanel={true}
                   currentStatus={
                     selectedSubmission.status === 'Passed'

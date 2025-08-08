@@ -27,6 +27,9 @@ import {
   User,
 } from 'lucide-react'
 import { Highlight, themes } from 'prism-react-renderer'
+import { useQuery } from '@/hooks'
+import { teacherAssignmentQueries } from '@/api/actions/teacher-assignment/teacher-assignment.queries'
+import { ViewJavaFileResponse } from '@/api/actions/teacher-assignment/teacher-assignment.type'
 
 export interface CodeFile {
   id: string
@@ -72,161 +75,74 @@ interface CodeFileViewerProps {
   isRunningTests?: boolean
 }
 
-const sampleFiles: CodeFile[] = [
-  {
-    id: '1',
-    name: 'src',
-    type: 'folder',
-    children: [
-      {
-        id: '2',
-        name: 'App.tsx',
-        type: 'file',
-        extension: 'tsx',
-        content: `import React from 'react';
-import './App.css';
+// Utility function to convert file object to CodeFile structure
+export const convertFileObjectToCodeFiles = (
+  fileObject: Record<string, string>
+): CodeFile[] => {
+  const fileMap = new Map<string, CodeFile>()
+  const rootFiles: CodeFile[] = []
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Hello React!</h1>
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-      </header>
-    </div>
-  );
+  // Process each file path
+  Object.entries(fileObject).forEach(([path, content]) => {
+    const pathParts = path.split('/')
+    const fileName = pathParts[pathParts.length - 1]
+    const extension = fileName.includes('.')
+      ? fileName.split('.').pop()
+      : undefined
+
+    // Create file object
+    const file: CodeFile = {
+      id: path,
+      name: fileName,
+      type: 'file',
+      extension,
+      content,
+    }
+
+    fileMap.set(path, file)
+
+    // Build folder structure
+    let currentPath = ''
+    for (let i = 0; i < pathParts.length - 1; i++) {
+      const folderName = pathParts[i]
+      currentPath = currentPath ? `${currentPath}/${folderName}` : folderName
+
+      if (!fileMap.has(currentPath)) {
+        const folder: CodeFile = {
+          id: currentPath,
+          name: folderName,
+          type: 'folder',
+          children: [],
+        }
+        fileMap.set(currentPath, folder)
+
+        // Add to parent or root
+        if (i === 0) {
+          rootFiles.push(folder)
+        } else {
+          const parentPath = pathParts.slice(0, i).join('/')
+          const parent = fileMap.get(parentPath)
+          if (parent && parent.children) {
+            parent.children.push(folder)
+          }
+        }
+      }
+    }
+
+    // Add file to its parent folder or root
+    if (pathParts.length === 1) {
+      rootFiles.push(file)
+    } else {
+      const parentPath = pathParts.slice(0, -1).join('/')
+      const parent = fileMap.get(parentPath)
+      if (parent && parent.children) {
+        parent.children.push(file)
+      }
+    }
+  })
+
+  return rootFiles
 }
-
-export default App;`,
-      },
-      {
-        id: '3',
-        name: 'index.tsx',
-        type: 'file',
-        extension: 'tsx',
-        content: `import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
-
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);`,
-      },
-      {
-        id: '4',
-        name: 'components',
-        type: 'folder',
-        children: [
-          {
-            id: '5',
-            name: 'Button.tsx',
-            type: 'file',
-            extension: 'tsx',
-            content: `import React from 'react';
-
-interface ButtonProps {
-  children: React.ReactNode;
-  onClick?: () => void;
-  variant?: 'primary' | 'secondary';
-  disabled?: boolean;
-}
-
-const Button: React.FC<ButtonProps> = ({ 
-  children, 
-  onClick, 
-  variant = 'primary',
-  disabled = false 
-}) => {
-  const baseClasses = 'px-4 py-2 rounded-md font-medium transition-colors';
-  const variantClasses = {
-    primary: 'bg-blue-500 text-white hover:bg-blue-600',
-    secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300'
-  };
-
-  return (
-    <button
-      className={\`\${baseClasses} \${variantClasses[variant]}\`}
-      onClick={onClick}
-      disabled={disabled}
-    >
-      {children}
-    </button>
-  );
-};
-
-export default Button;`,
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: '6',
-    name: 'package.json',
-    type: 'file',
-    extension: 'json',
-    content: `{
-  "name": "my-react-app",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.16.4",
-    "@testing-library/react": "^13.3.0",
-    "@testing-library/user-event": "^13.5.0",
-    "@types/jest": "^27.5.2",
-    "@types/node": "^16.11.56",
-    "@types/react": "^18.0.17",
-    "@types/react-dom": "^18.0.6",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
-    "typescript": "^4.7.4",
-    "web-vitals": "^2.1.4"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  }
-}`,
-  },
-  {
-    id: '7',
-    name: 'README.md',
-    type: 'file',
-    extension: 'md',
-    content: `# My React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### \`npm start\`
-
-Runs the app in the development mode.
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-### \`npm test\`
-
-Launches the test runner in the interactive watch mode.
-
-### \`npm run build\`
-
-Builds the app for production to the \`build\` folder.`,
-  },
-]
 
 const getFileIcon = (extension?: string) => {
   switch (extension) {
@@ -263,7 +179,6 @@ const getLanguageFromExtension = (extension?: string) => {
 }
 
 export default function CodeFileViewer({
-  files = sampleFiles,
   onFileSelect,
   selectedFile: externalSelectedFile,
   showGradingPanel = false,
@@ -281,6 +196,21 @@ export default function CodeFileViewer({
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(
     new Set(['1'])
   )
+
+  const { data: viewSubmissionData } = useQuery({
+    ...teacherAssignmentQueries.viewSubmission({
+      zipPath: '',
+      javaFileName: '',
+    }),
+  })
+
+  const { data: viewJavaFileData } = useQuery({
+    ...teacherAssignmentQueries.getViewJavaFile({
+      studentId: '',
+      classId: '',
+      assignmentId: '',
+    }),
+  })
 
   // Grading state
   const [tempStatus, setTempStatus] = useState(currentStatus)
@@ -344,7 +274,7 @@ export default function CodeFileViewer({
     setExpandedFolders(newExpanded)
   }
 
-  const renderFileTree = (files: CodeFile[], level = 0) => {
+  const renderFileTree = (files: ViewJavaFileResponse, level = 0) => {
     return files.map(file => (
       <div key={file.id}>
         <div
@@ -396,7 +326,11 @@ export default function CodeFileViewer({
           </CardHeader>
           <CardContent className="p-0 flex-1 overflow-hidden">
             <ScrollArea className="h-full">
-              <div className="p-2">{renderFileTree(files)}</div>
+              <div className="p-2">
+                {renderFileTree(
+                  convertFileObjectToCodeFiles(viewJavaFileData || {})
+                )}
+              </div>
             </ScrollArea>
           </CardContent>
         </Card>

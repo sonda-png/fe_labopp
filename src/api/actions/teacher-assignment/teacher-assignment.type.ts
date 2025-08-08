@@ -19,3 +19,18 @@ export type TeacherAssignment = {
   totalSubmissions: number
   passedCount: number
 }
+
+export type ViewSubmissionRequest = {
+  zipPath: string
+  javaFileName: string
+}
+
+export type ViewJavaFileResponse = {
+  [filePath: string]: string
+}
+
+export type ViewJavaFileRequest = {
+  studentId: string
+  classId: string
+  assignmentId: string
+}
