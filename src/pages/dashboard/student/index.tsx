@@ -1,7 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Progress } from '@/components/ui/progress'
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
 import {
   Code,
   FileText,
@@ -10,103 +10,41 @@ import {
   TrendingUp,
   Calendar,
   BookOpen,
-  Award,
   GraduationCap,
   CheckCircle,
-  Star,
   Users,
   BarChart3,
-} from 'lucide-react'
+} from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { dashboardStudentQueries } from '@/api/actions/dashboard-student/dashboard-student.queries';
+import { useQuery } from '@/hooks/useQuery/useQuery';
 
-const studentData = {
-  name: 'John Smith',
-  studentId: 'HE173456',
-  semester: 'Fall 2024',
-  totalLOC: 12450,
-  targetLOC: 15000,
-  completedAssignments: 8,
-  totalAssignments: 12,
-  rank: 15,
-  totalStudents: 245,
-  gpa: 3.2,
-  passRate: 83,
-}
 
-const subjects = [
-  {
-    id: 1,
-    name: 'PRF192 - Programming Fundamentals',
-    currentLOC: 3200,
-    targetLOC: 4000,
-    progress: 80,
-    assignments: { completed: 3, total: 4 },
-    grade: 'A',
-    status: 'active',
-  },
-  {
-    id: 2,
-    name: 'PRO192 - Object-Oriented Programming',
-    currentLOC: 4500,
-    targetLOC: 5000,
-    progress: 90,
-    assignments: { completed: 3, total: 3 },
-    grade: 'A+',
-    status: 'completed',
-  },
-  {
-    id: 3,
-    name: 'LAB211 - OOP Lab',
-    currentLOC: 2800,
-    targetLOC: 3500,
-    progress: 80,
-    assignments: { completed: 2, total: 3 },
-    grade: 'B+',
-    status: 'active',
-  },
-  {
-    id: 4,
-    name: 'DBI202 - Database',
-    currentLOC: 1950,
-    targetLOC: 2500,
-    progress: 78,
-    assignments: { completed: 1, total: 2 },
-    grade: 'B',
-    status: 'active',
-  },
-]
-
-const achievements = [
-  {
-    icon: Trophy,
-    title: 'Top 20',
-    description: 'Ranked in top 20 of class',
-    earned: true,
-  },
-  {
-    icon: Code,
-    title: '10k LOC',
-    description: 'Achieved 10,000 lines of code',
-    earned: true,
-  },
-  {
-    icon: Star,
-    title: 'Perfect Score',
-    description: 'Achieved perfect score',
-    earned: false,
-  },
-  {
-    icon: Target,
-    title: 'Goal Achiever',
-    description: 'Completed target goals',
-    earned: false,
-  },
-]
 
 export const StudentDashboard = () => {
-  const progressPercentage =
-    (studentData.totalLOC / studentData.targetLOC) * 100
-  const assignmentProgress =
-    (studentData.completedAssignments / studentData.totalAssignments) * 100
+  // Lấy dữ liệu từ 2 API
+  const { data: progressRes, isLoading: loadingProgress, isError: errorProgress } = useQuery(dashboardStudentQueries.getProgress());
+  const { data: profileRes, isLoading: loadingProfile, isError: errorProfile } = useQuery(dashboardStudentQueries.getProfile());
+
+  const progressData = progressRes;
+  const profile = profileRes;
+
+  if (loadingProgress || loadingProfile) {
+    return <div className="p-8 text-center text-lg">Loading dashboard...</div>;
+  }
+  if (errorProgress || errorProfile || !progressData || !profile) {
+    return <div className="p-8 text-center text-red-500">Failed to load dashboard data.</div>;
+  }
+
+  // Parse dữ liệu từ API progress
+  // "Total LOC": "2160/750", "Assignment": "1/3", "Ranking": "1/1"
+  const [totalLOC, targetLOC] = progressData["Total LOC"].split('/').map(Number);
+  const [completedAssignments, totalAssignments] = progressData["Assignment"].split('/').map(Number);
+  const [rank, totalStudents] = progressData["Ranking"].split('/').map(Number);
+  const progressPercentage = targetLOC ? (totalLOC / targetLOC) * 100 : 0;
+  const assignmentProgress = totalAssignments ? (completedAssignments / totalAssignments) * 100 : 0;
 
   return (
     <div className="space-y-6">
@@ -118,20 +56,15 @@ export const StudentDashboard = () => {
           </div>
           <div>
             <h1 className="text-3xl font-bold text-gray-900">
-              Hello, {studentData.name}!
+              Hello, {profile.name}!
             </h1>
             <p className="text-gray-600">
-              {studentData.studentId} • {studentData.semester}
+              {profile.studentCode}
             </p>
           </div>
         </div>
         <div className="text-right">
-          <p className="text-2xl font-bold text-orange-600">
-            GPA: {studentData.gpa}
-          </p>
-          <p className="text-sm text-gray-600">
-            Pass Rate: {studentData.passRate}%
-          </p>
+          {/* GPA và Pass Rate không có trong API, có thể bỏ hoặc lấy từ API khác nếu có */}
         </div>
       </div>
 
@@ -143,10 +76,10 @@ export const StudentDashboard = () => {
               <div>
                 <p className="text-sm font-medium text-gray-600">Total LOC</p>
                 <p className="text-3xl font-bold text-gray-900">
-                  {studentData.totalLOC.toLocaleString()}
+                  {totalLOC.toLocaleString()}
                 </p>
                 <p className="text-sm text-gray-500">
-                  / {studentData.targetLOC.toLocaleString()}
+                  / {targetLOC.toLocaleString()}
                 </p>
               </div>
               <div className="p-3 bg-orange-100 rounded-lg">
@@ -173,10 +106,10 @@ export const StudentDashboard = () => {
               <div>
                 <p className="text-sm font-medium text-gray-600">Assignments</p>
                 <p className="text-3xl font-bold text-gray-900">
-                  {studentData.completedAssignments}
+                  {completedAssignments}
                 </p>
                 <p className="text-sm text-gray-500">
-                  / {studentData.totalAssignments}
+                  / {totalAssignments}
                 </p>
               </div>
               <div className="p-3 bg-blue-100 rounded-lg">
@@ -203,10 +136,10 @@ export const StudentDashboard = () => {
               <div>
                 <p className="text-sm font-medium text-gray-600">Ranking</p>
                 <p className="text-3xl font-bold text-gray-900">
-                  #{studentData.rank}
+                  #{rank}
                 </p>
                 <p className="text-sm text-gray-500">
-                  / {studentData.totalStudents}
+                  / {totalStudents}
                 </p>
               </div>
               <div className="p-3 bg-green-100 rounded-lg">
@@ -228,7 +161,8 @@ export const StudentDashboard = () => {
               <div>
                 <p className="text-sm font-medium text-gray-600">Subjects</p>
                 <p className="text-3xl font-bold text-gray-900">
-                  {subjects.length}
+                  {/* Không có subjects trong API, có thể bỏ hoặc lấy từ API khác nếu cần */}
+                  0
                 </p>
                 <p className="text-sm text-gray-500">subjects enrolled</p>
               </div>
@@ -239,7 +173,7 @@ export const StudentDashboard = () => {
             <div className="mt-4 flex items-center">
               <CheckCircle className="h-4 w-4 text-green-500 mr-1" />
               <span className="text-sm text-green-600">
-                1 subject completed
+                {/* Không có dữ liệu subject completed */}
               </span>
             </div>
           </CardContent>
@@ -249,121 +183,123 @@ export const StudentDashboard = () => {
       {/* Main Content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Subjects Progress */}
-        <Card className="lg:col-span-2 shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <BookOpen className="h-5 w-5 text-orange-500" />
-              <span>Subject Progress</span>
-            </CardTitle>
+        
+        {/* Profile (view-only) */}
+        <Card className="border-amber-100 lg:col-span-2">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-orange-600">Student Profile</CardTitle>
+            <CardDescription>View your personal information (read-only)</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {subjects.map(subject => (
-                <div
-                  key={subject.id}
-                  className="p-4 border rounded-lg hover:bg-gray-50"
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-gray-900">
-                        {subject.name}
-                      </h4>
-                      <div className="flex items-center space-x-4 mt-1">
-                        <span className="text-sm text-gray-600">
-                          {subject.currentLOC.toLocaleString()} /{' '}
-                          {subject.targetLOC.toLocaleString()} LOC
-                        </span>
-                        <Badge
-                          variant={
-                            subject.status === 'completed'
-                              ? 'default'
-                              : 'secondary'
-                          }
-                          className={
-                            subject.status === 'completed'
-                              ? 'bg-green-500'
-                              : 'bg-orange-500'
-                          }
-                        >
-                          {subject.status === 'completed'
-                            ? 'Completed'
-                            : 'In Progress'}
-                        </Badge>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-2xl font-bold text-orange-600">
-                        {subject.grade}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        {subject.assignments.completed}/
-                        {subject.assignments.total} assignments
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mb-2">
-                    <div className="flex justify-between text-sm mb-1">
-                      <span>LOC Progress</span>
-                      <span>{subject.progress}%</span>
-                    </div>
-                    <Progress
-                      value={subject.progress}
-                      className="h-2 bg-gray-200"
-                    >
-                      <div
-                        className="h-full bg-orange-500 rounded-full"
-                        style={{ width: `${subject.progress}%` }}
-                      />
-                    </Progress>
-                  </div>
-                </div>
-              ))}
+           
+
+            <Separator className="my-6 bg-amber-100" />
+
+            {/* Read-only fields */}
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-2">
+                <Label htmlFor="name">Full name</Label>
+                <Input id="name" value={profile.name} disabled readOnly />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="studentCode">Student code</Label>
+                <Input id="studentCode" value={profile.studentCode} disabled readOnly />
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="email">Email</Label>
+                <Input id="email" type="email" value={profile.email} disabled readOnly />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="phone">Phone</Label>
+                <Input id="phone" value={profile.phone} disabled readOnly />
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="role">Role</Label>
+                <Input id="role" value={profile.role} disabled readOnly />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="major">Major</Label>
+                <Input id="major" value={profile.major} disabled readOnly />
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="dob">Date of birth</Label>
+                <Input id="dob" value={new Date(profile.dateOfBirth).toLocaleDateString("en-GB")} disabled readOnly />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="gender">Gender</Label>
+                <Input id="gender" value={profile.gender} disabled readOnly />
+              </div>
+
+              <div className="md:col-span-2 grid gap-2">
+                <Label htmlFor="address">Address</Label>
+                <Input id="address" value={profile.address} disabled readOnly />
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Side Panel */}
-        <div>
-          {/* Achievements */}
-          <Card className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Award className="h-5 w-5 text-orange-500" />
-                <span>Achievements</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-3">
-                {achievements.map((achievement, index) => (
-                  <div
-                    key={index}
-                    className={`p-3 border rounded-lg text-center ${
-                      achievement.earned
-                        ? 'bg-orange-50 border-orange-200'
-                        : 'bg-gray-50 border-gray-200'
-                    }`}
-                  >
-                    <achievement.icon
-                      className={`h-6 w-6 mx-auto mb-2 ${
-                        achievement.earned ? 'text-orange-500' : 'text-gray-400'
-                      }`}
-                    />
-                    <p
-                      className={`text-sm font-medium ${
-                        achievement.earned ? 'text-orange-700' : 'text-gray-500'
-                      }`}
-                    >
-                      {achievement.title}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {achievement.description}
-                    </p>
+        {/* Quick info */}
+        <Card className="border-amber-100">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-orange-600">Quick info</CardTitle>
+            <CardDescription>Contact & Academics</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-2">
+              <div className="text-xs font-medium uppercase text-muted-foreground">Contact</div>
+              <div className="rounded-lg border border-amber-100 p-3 text-sm">
+                <div className="grid gap-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Email</span>
+                    <span className="font-medium">{profile.email}</span>
                   </div>
-                ))}
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Phone</span>
+                    <span className="font-medium">{profile.phone}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Address</span>
+                    <span className="line-clamp-1 font-medium">{profile.address}</span>
+                  </div>
+                </div>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+            </div>
+
+            <div className="space-y-2">
+              <div className="text-xs font-medium uppercase text-muted-foreground">Academics</div>
+              <div className="rounded-lg border border-amber-100 p-3 text-sm">
+                <div className="grid gap-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Major</span>
+                    <span className="font-medium">{profile.major}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Class</span>
+                    {/* Không có class trong API */}
+                    <span className="font-medium">-</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Cohort</span>
+                    {/* Không có cohort trong API */}
+                    <span className="font-medium">-</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Date of birth</span>
+                    <span className="font-medium">{new Date(profile.dateOfBirth).toLocaleDateString("en-GB")}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            
+               
+              
+            
+          </CardContent>
+        </Card>
       </div>
 
       {/* Quick Actions */}
