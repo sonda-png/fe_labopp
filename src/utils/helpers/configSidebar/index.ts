@@ -5,6 +5,7 @@ import {
   Database,
   GraduationCap,
   Layers,
+  Settings,
   ShieldCheck,
   TrendingUp,
   Users,
@@ -55,6 +56,13 @@ export const allNavigationItems: NavigationItem[] = [
     label: 'Quản lý tài khoản',
     icon: ShieldCheck,
     path: '/manage-account',
+    roles: ['Admin'],
+  },
+  {
+    id: 'worker-management',
+    label: 'Quản lý Worker',
+    icon: Settings,
+    path: '/worker-management',
     roles: ['Admin'],
   },
   {

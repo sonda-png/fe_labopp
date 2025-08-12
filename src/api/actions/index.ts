@@ -5,6 +5,7 @@ import { assignmentManageMutations } from './assignment-manage/assignment.mutati
 import { teacherSubmissionMutations } from './teacher-submit/teacher-submit.mutations'
 import { teacherAssignmentMutations } from './teacher-assignment/teacher-assignment.mutations'
 import { assignmentMutations } from './assignment/assignment.mutations'
+import { adminWorkerMutations } from './worker/worker.mutations'
 
 export const mutations = {
   ...authMutations,
@@ -14,6 +15,7 @@ export const mutations = {
   ...teacherSubmissionMutations,
   ...teacherAssignmentMutations,
   ...assignmentMutations,
+  ...adminWorkerMutations,
   // API_COLLECTION_MUTATIONS
 } as const
 
