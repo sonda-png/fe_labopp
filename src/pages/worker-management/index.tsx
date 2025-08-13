@@ -59,9 +59,6 @@ export const WorkerManagementPage = (): ReactNode => {
     ...workerQueries.getStatus(),
   })
 
-  console.log(statusError)
-  console.log(statusResponse)
-
   // Extract data from API responses
   const systemRunning = statusResponse?.running ?? false
   const workersRunning = workersResponse?.running ?? false
@@ -404,58 +401,9 @@ export const WorkerManagementPage = (): ReactNode => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {/* Display all possible workers - active ones from API + common worker names */}
-                  {['worker-1', 'worker-2', 'worker-3'].map(workerId => {
-                    const isActive = activeWorkers.includes(workerId)
-                    return (
-                      <TableRow key={workerId}>
-                        <TableCell className="font-medium">
-                          {workerId.charAt(0).toUpperCase() +
-                            workerId.slice(1).replace('-', ' ')}
-                        </TableCell>
-                        <TableCell>
-                          <Badge
-                            variant={isActive ? 'default' : 'secondary'}
-                            className={isActive ? 'bg-green-500' : ''}
-                          >
-                            {isActive ? 'Running' : 'Stopped'}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex gap-2">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => handleStartSingleWorker(workerId)}
-                              disabled={isAnyActionPending || isActive}
-                              className="flex items-center gap-1"
-                            >
-                              <Play className="h-3 w-3" />
-                              Start
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => handleStopSingleWorker(workerId)}
-                              disabled={isAnyActionPending || !isActive}
-                              className="flex items-center gap-1"
-                            >
-                              <Square className="h-3 w-3" />
-                              Stop
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    )
-                  })}
-
-                  {/* Display any additional active workers not in the predefined list */}
-                  {activeWorkers
-                    .filter(
-                      (workerId: string) =>
-                        !['worker-1', 'worker-2', 'worker-3'].includes(workerId)
-                    )
-                    .map((workerId: string) => (
+                  {/* Display workers from activeWorkers array */}
+                  {activeWorkers.length > 0 ? (
+                    activeWorkers.map((workerId: string) => (
                       <TableRow key={workerId}>
                         <TableCell className="font-medium">
                           {workerId.charAt(0).toUpperCase() +
@@ -473,7 +421,7 @@ export const WorkerManagementPage = (): ReactNode => {
                               variant="outline"
                               onClick={() => handleStartSingleWorker(workerId)}
                               disabled={true}
-                              className="flex items-center gap-1"
+                              className="flex items-center gap-1 opacity-50"
                             >
                               <Play className="h-3 w-3" />
                               Start
@@ -491,18 +439,25 @@ export const WorkerManagementPage = (): ReactNode => {
                           </div>
                         </TableCell>
                       </TableRow>
-                    ))}
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={3} className="text-center py-8">
+                        <div className="flex flex-col items-center gap-2">
+                          <Users className="h-8 w-8 text-gray-400" />
+                          <p className="text-sm text-muted-foreground">
+                            No workers are currently running
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Use "Start Multiple Workers" to create and start
+                            workers
+                          </p>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
-
-              {activeWorkers.length === 0 && (
-                <div className="text-center py-4 border-t">
-                  <p className="text-sm text-muted-foreground">
-                    No workers are currently active. Use the "Start Multiple
-                    Workers" button above to begin processing.
-                  </p>
-                </div>
-              )}
 
               {activeWorkers.length > 0 && (
                 <div className="text-center py-2 border-t bg-green-50">

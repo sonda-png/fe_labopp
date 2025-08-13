@@ -63,7 +63,7 @@ export const allNavigationItems: NavigationItem[] = [
     label: 'Quản lý Worker',
     icon: Settings,
     path: '/worker-management',
-    roles: ['Admin'],
+    roles: ['Teacher'],
   },
   {
     id: 'fap-sync',
@@ -95,7 +95,7 @@ export const allNavigationItems: NavigationItem[] = [
     label: 'Thống kê Assignment',
     icon: TrendingUp,
     path: '/assignment-statistic',
-    roles: ['Head Subject', 'Teacher'],
+    roles: ['Head Subject'],
   },
   {
     id: 'teacher-submission',

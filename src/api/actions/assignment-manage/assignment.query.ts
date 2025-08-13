@@ -15,7 +15,7 @@ const getAssignment = (client: AxiosInstance) => async () => {
 const getStatistic = (client: AxiosInstance) => async () => {
   return (
     await client.get<AssignmentStatisticResponse>(
-      '/head_subject/assignment/statistic'
+      '/head_subject/assignment/statistics/all'
     )
   ).data
 }

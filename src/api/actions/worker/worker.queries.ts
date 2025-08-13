@@ -17,12 +17,6 @@ export const workerQueries = {
 }
 
 const getAllWorker = (client: AxiosInstance) => async () => {
-    const a = (
-        (await client.get<WorkerResponse>(
-            '/admin/workers'
-        )).data
-    )
-    console.log(a)
     return (
         (await client.get<WorkerResponse>(
             '/admin/workers'
