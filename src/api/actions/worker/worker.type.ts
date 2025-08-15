@@ -1,6 +1,5 @@
 export type StartMultiWorkerArgs = {
     classCode: string
-    count: number
 }
 
 export type WorkerResponse = {

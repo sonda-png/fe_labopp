@@ -27,6 +27,6 @@ export const useRequestSuccessInterceptor = async (
 
   return {
     ...config,
-    withCredentials: true,
+    withCredentials: false,
   }
 }

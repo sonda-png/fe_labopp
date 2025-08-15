@@ -73,7 +73,6 @@ export const allNavigationItems: NavigationItem[] = [
     roles: ['Admin'],
   },
 
-
   // Head Subject specific items
 
   {
@@ -105,8 +104,6 @@ export const allNavigationItems: NavigationItem[] = [
     roles: ['Teacher'],
   },
 
-
-
   // Teacher specific items
 
   {
@@ -117,9 +114,17 @@ export const allNavigationItems: NavigationItem[] = [
     roles: ['Teacher'],
   },
 
+  {
+    id: 'worker-management',
+    label: 'Quản lý Worker',
+    icon: Settings,
+    path: '/worker-management',
+    roles: ['Teacher   '],
+  },
+
   // Student specific items
   {
-    id: 'assignment-list',
+    id: 'student-assignment',
     label: 'Danh sách bài tập',
     icon: BookOpen,
     path: '/student-assignment',

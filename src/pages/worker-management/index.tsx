@@ -138,8 +138,7 @@ export const WorkerManagementPage = (): ReactNode => {
     }
 
     const args: StartMultiWorkerArgs = {
-      classCode: classCode.trim(),
-      count: workerCount,
+      classCode: classCode.trim()
     }
     await startMultiWorker(args)
   }

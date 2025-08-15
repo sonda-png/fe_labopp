@@ -21,8 +21,10 @@ import { toast } from 'react-toastify'
 import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
 import { useSearch } from '@tanstack/react-router'
 import { assignmentQueries } from '@/api/actions/assignment/assignment.queries'
+import { authStore } from '@/stores/authStore'
 
 export default function StudentSubmission() {
+  const { authValues } = authStore()
   const search = useSearch({ strict: false })
 
   const [file, setFile] = useState<File | null>(null)
@@ -41,7 +43,7 @@ export default function StudentSubmission() {
   })
 
   const { mutateAsync: submitAssignmentMutation } = useMutation(
-    'handleSubmitAssignment',
+    'handleSubmitSubmission',
     {
       onSuccess: () => {
         toast.success('Assignment submitted successfully')
@@ -78,10 +80,10 @@ export default function StudentSubmission() {
     ) {
       setFile(selectedFile)
       setErrorMessage('')
-      await submitAssignmentMutation({
-        assignmentId: search.assignmentId,
-        zipFile: selectedFile,
-      })
+      // await submitAssignmentMutation({
+      //   assignmentId: search.assignmentId,
+      //   zipFile: selectedFile,
+      // })
     } else {
       setFile(null)
       setErrorMessage(
@@ -106,14 +108,17 @@ export default function StudentSubmission() {
     }
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!file) {
       setErrorMessage('Please select a file to submit.')
       return
     }
-
-    const action = submissionStatus === 'submit' ? 'submit' : 'save draft'
-    alert(`Successfully ${action}!`)
+    await submitAssignmentMutation({
+      problemId: search.assignmentId,
+      studentId: authValues.userId,
+      zipFile: file,
+      status: submissionStatus === 'submit' ? 'Submit' : 'Draft',
+    })
   }
 
   return (
