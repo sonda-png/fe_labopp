@@ -5,6 +5,7 @@ import {
   Database,
   GraduationCap,
   Layers,
+  Settings,
   ShieldCheck,
   TrendingUp,
   Users,
@@ -58,13 +59,19 @@ export const allNavigationItems: NavigationItem[] = [
     roles: ['Admin'],
   },
   {
+    id: 'worker-management',
+    label: 'Quản lý Worker',
+    icon: Settings,
+    path: '/worker-management',
+    roles: ['Teacher'],
+  },
+  {
     id: 'fap-sync',
     label: 'Đồng bộ FAP',
     icon: Database,
     path: '/fap-sync',
     roles: ['Admin'],
   },
-
 
   // Head Subject specific items
 
@@ -87,7 +94,7 @@ export const allNavigationItems: NavigationItem[] = [
     label: 'Thống kê Assignment',
     icon: TrendingUp,
     path: '/assignment-statistic',
-    roles: ['Head Subject', 'Teacher'],
+    roles: ['Head Subject'],
   },
   {
     id: 'teacher-submission',
@@ -96,8 +103,6 @@ export const allNavigationItems: NavigationItem[] = [
     path: '/teacher-submission',
     roles: ['Teacher'],
   },
-
-
 
   // Teacher specific items
 
@@ -109,9 +114,17 @@ export const allNavigationItems: NavigationItem[] = [
     roles: ['Teacher'],
   },
 
+  {
+    id: 'worker-management',
+    label: 'Quản lý Worker',
+    icon: Settings,
+    path: '/worker-management',
+    roles: ['Teacher   '],
+  },
+
   // Student specific items
   {
-    id: 'assignment-list',
+    id: 'student-assignment',
     label: 'Danh sách bài tập',
     icon: BookOpen,
     path: '/student-assignment',

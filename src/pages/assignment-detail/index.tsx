@@ -57,7 +57,7 @@ export const AssignmentDetailPage = () => {
   })
 
   const handleBack = () => {
-    navigate({ to: '/assignment-list' })
+    navigate({ to: '/student-assignment' })
   }
 
   const handleSubmitAssignment = () => {

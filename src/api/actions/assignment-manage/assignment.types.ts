@@ -4,6 +4,7 @@ export interface Assignment {
   description: string
   locTotal: number
   teacherId: string
+  status: 'Pending' | 'Active' | 'Inactive'
 }
 
 export interface AssignmentListResponse {
@@ -19,6 +20,7 @@ export interface AssignmentRequest {
   description: string
   locTotal: number
   teacherId: string
+  status: 'Pending' | 'Active' | 'Inactive'
 }
 
 export type AssignmentStatistic = {
@@ -30,3 +32,14 @@ export type AssignmentStatistic = {
 }
 
 export type AssignmentStatisticResponse = AssignmentStatistic[]
+
+export type UploadAssignmentPdfRequest = {
+  file: File
+  uploadBy: string
+  assignmentId: string
+}
+
+export type UploadAssignmentPdfResponse = {
+  success: boolean
+  message: string
+}

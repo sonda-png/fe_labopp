@@ -116,7 +116,6 @@ export const SemesterManagement = () => {
     isPending: isCreateSemesterClassPending,
   } = useMutation('createSemesterClass', {
     onSuccess: (res: Semester) => {
-      console.log(res)
       toast.success('Tạo học kỳ thành công')
       setIsCreateModalOpen(false)
       resetCreate()
@@ -251,7 +250,7 @@ export const SemesterManagement = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 p-6">
       <div className="flex items-center gap-3">
         <Calendar className="h-8 w-8 text-orange-500" />
         <div>
@@ -260,7 +259,7 @@ export const SemesterManagement = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto py-8">
+      <div className="">
         <OverviewSemesterClass />
 
         {/* Filters and Actions */}

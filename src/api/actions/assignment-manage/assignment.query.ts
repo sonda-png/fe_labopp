@@ -1,5 +1,6 @@
 import { AxiosInstance } from 'axios'
 import {
+  Assignment,
   AssignmentListResponse,
   AssignmentStatisticResponse,
   // MUTATION_TYPE_IMPORTS
@@ -15,10 +16,15 @@ const getAssignment = (client: AxiosInstance) => async () => {
 const getStatistic = (client: AxiosInstance) => async () => {
   return (
     await client.get<AssignmentStatisticResponse>(
-      '/head_subject/assignment/statistic'
+      '/head_subject/assignment/statistics/all'
     )
   ).data
 }
+
+const getAssignmentById =
+  (id: string | undefined) => (client: AxiosInstance) => async () => {
+    return (await client.get<Assignment>(`/head_subject/assignment/${id}`)).data
+  }
 
 export const assignmentManageQueries = {
   all: () => ['assignments'],
@@ -27,6 +33,12 @@ export const assignmentManageQueries = {
       queryKey: [...assignmentManageQueries.all(), 'get'],
       queryFn: getAssignment,
       enabled: true,
+    }),
+  getDetail: (id: string | undefined) =>
+    queryFactoryOptions({
+      queryKey: [...assignmentManageQueries.all(), 'detail', id],
+      queryFn: getAssignmentById(id),
+      enabled: !!id,
     }),
   getStatistic: () =>
     queryFactoryOptions({
