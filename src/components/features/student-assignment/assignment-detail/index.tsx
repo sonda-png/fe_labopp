@@ -1,9 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -17,27 +12,51 @@ import {
   Upload,
   Clock,
   BookOpen,
+  FileDown,
 } from 'lucide-react'
 import { format } from 'date-fns'
+import { useQuery } from '@/hooks'
+import { assignmentQueries } from '@/api/actions/assignment/assignment.queries'
+import { useParams } from '@tanstack/react-router'
 
 interface AssignmentDetailProps {
   assignment: Assignment
   onBack: () => void
   onSubmit: () => void
-  onDownload: () => void
 }
 
 export const AssignmentDetail = ({
   assignment,
   onBack,
   onSubmit,
-  onDownload,
 }: AssignmentDetailProps) => {
+  const { assignmentId } = useParams({
+    from: '/_auth/student-assignment/$assignmentId/',
+  })
+  const { data: downloadPdfFileData, isLoading: isDownloading } = useQuery({
+    ...assignmentQueries.downloadPdfFile(assignmentId as string),
+  })
+
   const formatDate = (dateString: string) => {
     try {
       return format(new Date(dateString), 'dd/MM/yyyy HH:mm')
     } catch {
       return dateString
+    }
+  }
+
+  const handleDownloadPdf = () => {
+    if (downloadPdfFileData) {
+      // Create a blob from the PDF data and download it
+      const blob = new Blob([downloadPdfFileData], { type: 'application/pdf' })
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `${assignment.title.replace(/\s+/g, '_')}.pdf`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url)
     }
   }
 
@@ -107,6 +126,52 @@ export const AssignmentDetail = ({
             </CardContent>
           </Card>
 
+          {/* Download Materials - MOVED HERE */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <FileDown className="h-5 w-5 mr-2" />
+                Download Materials
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <FileText className="h-10 w-10 text-blue-600 mx-auto mb-2" />
+                <h4 className="font-semibold text-gray-900 mb-2">
+                  Assignment PDF
+                </h4>
+                <p className="text-sm text-gray-600 mb-3">
+                  Download detailed requirements and instructions
+                </p>
+                <Button
+                  onClick={handleDownloadPdf}
+                  disabled={!downloadPdfFileData || isDownloading}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  {isDownloading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Downloading...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="h-4 w-4 mr-2" />
+                      Download PDF
+                    </>
+                  )}
+                </Button>
+              </div>
+
+              {!downloadPdfFileData && !isDownloading && (
+                <div className="text-center p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                  <p className="text-sm text-yellow-800">
+                    No materials available for download
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
           {/* Requirements */}
           <Card>
             <CardHeader>
@@ -160,11 +225,6 @@ export const AssignmentDetail = ({
                 <Upload className="h-4 w-4 mr-2" />
                 Submit Assignment
               </Button>
-
-              <Button variant="outline" onClick={onDownload} className="w-full">
-                <Download className="h-4 w-4 mr-2" />
-                Download Files
-              </Button>
             </CardContent>
           </Card>
 
@@ -195,22 +255,6 @@ export const AssignmentDetail = ({
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-600">Estimated Time</span>
                 <span className="text-sm font-medium">2-3 hours</span>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Submission History */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Submission History</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-4">
-                <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                <p className="text-sm text-gray-500">No submissions yet</p>
-                <p className="text-xs text-gray-400 mt-1">
-                  Submit your first attempt
-                </p>
               </div>
             </CardContent>
           </Card>
