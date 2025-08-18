@@ -71,7 +71,7 @@ export const SubmissionCard = ({
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-600 flex items-center">
                     <Code className="h-4 w-4 mr-2" />
-                    Lines of Code
+                    LOC
                   </span>
                   <span className="font-medium">{submission.locResult}</span>
                 </div>

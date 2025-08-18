@@ -38,5 +38,5 @@ export const getAssignmentById =
 
 const downloadPdfFile =
   (assignmentId: string | undefined) => (client: AxiosInstance) => async () => {
-    return await client.get<Blob>(`/assignment/download-pdf/${assignmentId}`)
+    return await client.get<BlobPart>(`/assignment/download-pdf/${assignmentId}`)
   }

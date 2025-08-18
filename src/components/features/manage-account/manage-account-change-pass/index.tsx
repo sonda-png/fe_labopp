@@ -52,12 +52,12 @@ export const ManageAccountChangePass = ({
 
   const { mutateAsync: changePasswordMutation } = useMutation('changePass', {
     onSuccess: () => {
-      toast.success('Đổi mật khẩu thành công')
+      toast.success('Change password successfully')
       reset()
       setIsOpen(false)
     },
     onError: () => {
-      toast.error('Đổi mật khẩu thất bại. Vui lòng thử lại.')
+      toast.error('Change password failed. Please try again.')
     },
   })
 
@@ -65,7 +65,7 @@ export const ManageAccountChangePass = ({
 
   const handleChangePassword = async (data: ChangePasswordFormData) => {
     if (!userId) {
-      toast.error('Không tìm thấy thông tin người dùng')
+      toast.error('User not found')
       return
     }
 
@@ -102,9 +102,9 @@ export const ManageAccountChangePass = ({
   }
 
   const getStrengthText = (strength: number) => {
-    if (strength < 2) return 'Yếu'
-    if (strength < 4) return 'Trung bình'
-    return 'Mạnh'
+    if (strength < 2) return 'Weak'
+    if (strength < 4) return 'Medium'
+    return 'Strong'
   }
 
   return (
@@ -113,12 +113,12 @@ export const ManageAccountChangePass = ({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Key className="h-5 w-5 text-orange-500" />
-            Đổi mật khẩu
+            Change password
           </DialogTitle>
           <DialogDescription>
             {userName
-              ? `Đổi mật khẩu cho tài khoản: ${userName}`
-              : 'Đổi mật khẩu tài khoản'}
+              ? `Change password for account: ${userName}`
+              : 'Change password account'}
           </DialogDescription>
         </DialogHeader>
 
@@ -128,12 +128,12 @@ export const ManageAccountChangePass = ({
         >
           {/* New Password */}
           <div className="space-y-2">
-            <Label htmlFor="newPassword">Mật khẩu mới *</Label>
+            <Label htmlFor="newPassword">New password *</Label>
             <div className="relative">
               <Input
                 id="newPassword"
                 type={showNewPassword ? 'text' : 'password'}
-                placeholder="Nhập mật khẩu mới"
+                placeholder="Enter new password"
                 {...register('newPassword')}
                 className={`pr-10 ${errors.newPassword ? 'border-red-500' : ''}`}
               />
@@ -185,12 +185,12 @@ export const ManageAccountChangePass = ({
 
           {/* Confirm Password */}
           <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Xác nhận mật khẩu mới *</Label>
+            <Label htmlFor="confirmPassword">Confirm new password *</Label>
             <div className="relative">
               <Input
                 id="confirmPassword"
                 type={showConfirmPassword ? 'text' : 'password'}
-                placeholder="Nhập lại mật khẩu mới"
+                placeholder="Enter new password again"
                 {...register('confirmPassword')}
                 className={`pr-10 ${errors.confirmPassword ? 'border-red-500' : ''}`}
               />
@@ -218,7 +218,7 @@ export const ManageAccountChangePass = ({
           {/* Password Requirements */}
           <div className="bg-gray-50 p-3 rounded-lg">
             <p className="text-sm font-medium text-gray-700 mb-2">
-              Yêu cầu mật khẩu:
+              Password requirements:
             </p>
             <ul className="text-xs text-gray-600 space-y-1">
               <li className="flex items-center gap-2">
@@ -229,7 +229,7 @@ export const ManageAccountChangePass = ({
                       : 'bg-gray-300'
                   }`}
                 />
-                Ít nhất 8 ký tự
+                At least 8 characters
               </li>
               <li className="flex items-center gap-2">
                 <div
@@ -239,7 +239,7 @@ export const ManageAccountChangePass = ({
                       : 'bg-gray-300'
                   }`}
                 />
-                Có ít nhất 1 chữ hoa
+                At least 1 uppercase letter
               </li>
               <li className="flex items-center gap-2">
                 <div
@@ -249,7 +249,7 @@ export const ManageAccountChangePass = ({
                       : 'bg-gray-300'
                   }`}
                 />
-                Có ít nhất 1 chữ thường
+                At least 1 lowercase letter
               </li>
               <li className="flex items-center gap-2">
                 <div
@@ -259,7 +259,7 @@ export const ManageAccountChangePass = ({
                       : 'bg-gray-300'
                   }`}
                 />
-                Có ít nhất 1 số
+                At least 1 number
               </li>
               <li className="flex items-center gap-2">
                 <div
@@ -269,7 +269,7 @@ export const ManageAccountChangePass = ({
                       : 'bg-gray-300'
                   }`}
                 />
-                Có ít nhất 1 ký tự đặc biệt
+                At least 1 special character
               </li>
             </ul>
           </div>
@@ -282,7 +282,7 @@ export const ManageAccountChangePass = ({
               onClick={handleClose}
               disabled={isLoading}
             >
-              Hủy
+              Cancel
             </Button>
             <Button
               type="submit"
@@ -292,12 +292,12 @@ export const ManageAccountChangePass = ({
               {isLoading ? (
                 <div className="flex items-center space-x-2">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  <span>Đang cập nhật...</span>
+                  <span>Updating...</span>
                 </div>
               ) : (
                 <>
                   <Lock className="mr-2 h-4 w-4" />
-                  Đổi mật khẩu
+                  Change password
                 </>
               )}
             </Button>

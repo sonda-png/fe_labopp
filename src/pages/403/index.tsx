@@ -24,13 +24,13 @@ export const ForbiddenPage = () => {
           {/* Error Message */}
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-foreground mb-4">
-              Truy cập bị từ chối
+              Access denied
             </h1>
             <p className="text-lg text-muted-foreground mb-2">
-              Bạn không có quyền truy cập vào trang này.
+              You do not have permission to access this page.
             </p>
             <p className="text-sm text-muted-foreground">
-              Vui lòng liên hệ quản trị viên nếu bạn cho rằng đây là lỗi.
+              Please contact the administrator if you believe this is an error.
             </p>
           </div>
 
@@ -39,7 +39,7 @@ export const ForbiddenPage = () => {
             <div className="flex items-center justify-center gap-2 text-destructive">
               <Lock className="w-5 h-5" />
               <span className="font-medium text-sm">
-                Tài nguyên được bảo vệ - Cần quyền truy cập đặc biệt
+                Protected resource - Special access required
               </span>
             </div>
           </div>
@@ -51,7 +51,7 @@ export const ForbiddenPage = () => {
               className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600"
             >
               <Home className="w-4 h-4" />
-              Về trang chủ
+              Go to home
             </Button>
 
             <Button
@@ -60,24 +60,24 @@ export const ForbiddenPage = () => {
               className="flex items-center gap-2 border-orange-200 text-orange-600 hover:bg-orange-50"
             >
               <ArrowLeft className="w-4 h-4" />
-              Quay lại
+              Go back
             </Button>
           </div>
 
           {/* Additional Help */}
           <div className="mt-8 pt-6 border-t border-border">
-            <p className="text-sm text-muted-foreground mb-4">Cần hỗ trợ?</p>
+            <p className="text-sm text-muted-foreground mb-4">Need help?</p>
             <div className="flex flex-wrap justify-center gap-4 text-sm">
               <Link
                 to="/home"
                 className="text-orange-600 hover:text-orange-700 hover:underline flex items-center gap-1"
               >
                 <Home className="w-3 h-3" />
-                Trang chủ
+                Home
               </Link>
               <span className="text-orange-600 hover:text-orange-700 hover:underline cursor-pointer flex items-center gap-1">
                 <Shield className="w-3 h-3" />
-                Liên hệ hỗ trợ
+                Contact support
               </span>
             </div>
           </div>

@@ -24,28 +24,28 @@ export const allNavigationItems: NavigationItem[] = [
   // Dashboard
   {
     id: 'dashboard/admin',
-    label: 'Bảng điều khiển',
+    label: 'Admin Dashboard',
     icon: ShieldCheck,
     path: '/dashboard/admin',
     roles: ['Admin'],
   },
   {
     id: 'dashboard/student',
-    label: 'Bảng điều khiển',
+    label: 'Student Dashboard',
     icon: BookOpen,
     path: '/dashboard/student',
     roles: ['Student'],
   },
   {
     id: 'dashboard/teacher',
-    label: 'Bảng điều khiển',
+    label: 'Teacher Dashboard',
     icon: GraduationCap,
     path: '/dashboard/teacher',
     roles: ['Teacher'],
   },
   {
     id: 'dashboard/head-subject',
-    label: 'Bảng điều khiển',
+    label: 'Head Subject Dashboard',
     icon: GraduationCap,
     path: '/dashboard/head-subject',
     roles: ['Head Subject'],
@@ -53,21 +53,21 @@ export const allNavigationItems: NavigationItem[] = [
   // Admin specific items
   {
     id: 'users',
-    label: 'Quản lý tài khoản',
+    label: 'Account Management',
     icon: ShieldCheck,
     path: '/manage-account',
     roles: ['Admin'],
   },
   {
     id: 'worker-management',
-    label: 'Quản lý Worker',
+    label: 'Worker Management',
     icon: Settings,
     path: '/worker-management',
     roles: ['Teacher'],
   },
   {
     id: 'fap-sync',
-    label: 'Đồng bộ FAP',
+    label: 'FAP Sync',
     icon: Database,
     path: '/fap-sync',
     roles: ['Admin'],
@@ -77,28 +77,28 @@ export const allNavigationItems: NavigationItem[] = [
 
   {
     id: 'assignment manage',
-    label: 'Quản lý đề',
+    label: 'Assignment Management',
     icon: Layers,
     path: '/assignment-manage',
     roles: ['Head Subject'],
   },
   {
     id: 'semester-management',
-    label: 'Quản lý học kỳ',
+    label: 'Semester Management',
     icon: Calendar,
     path: '/semester-management',
     roles: ['Head Subject'],
   },
   {
     id: 'assignment-statistic',
-    label: 'Thống kê Assignment',
+    label: 'Assignment Statistic',
     icon: TrendingUp,
     path: '/assignment-statistic',
     roles: ['Head Subject'],
   },
   {
     id: 'teacher-submission',
-    label: 'Quản lý bài tập của giáo viên',
+    label: 'Teacher Submission Management',
     icon: TrendingUp,
     path: '/teacher-submission',
     roles: ['Teacher'],
@@ -108,7 +108,7 @@ export const allNavigationItems: NavigationItem[] = [
 
   {
     id: 'classes',
-    label: 'Quản lý lớp học',
+    label: 'Class Management',
     icon: Users,
     path: '/class-manage',
     roles: ['Teacher'],
@@ -116,7 +116,7 @@ export const allNavigationItems: NavigationItem[] = [
 
   {
     id: 'worker-management',
-    label: 'Quản lý Worker',
+    label: 'Worker Management',
     icon: Settings,
     path: '/worker-management',
     roles: ['Teacher   '],
@@ -125,14 +125,14 @@ export const allNavigationItems: NavigationItem[] = [
   // Student specific items
   {
     id: 'student-assignment',
-    label: 'Danh sách bài tập',
+    label: 'Assignment List',
     icon: BookOpen,
     path: '/student-assignment',
     roles: ['Student'],
   },
   {
     id: 'my-submit',
-    label: 'Bài tập đã nộp',
+    label: 'My Submission',
     icon: BookOpen,
     path: '/my-submit',
     roles: ['Student'],
@@ -148,7 +148,7 @@ export const allNavigationItems: NavigationItem[] = [
   // },
   {
     id: 'academic-outcome-report',
-    label: 'Báo cáo kết quả học tập',
+    label: 'Academic Outcome Report',
     icon: BarChart3,
     path: '/academic-outcome-report',
     roles: ['Teacher', 'Head Subject', 'Admin'],

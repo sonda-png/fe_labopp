@@ -31,14 +31,14 @@ export default function ClassProgressDashboard() {
 
   const getPassRateStatus = (passRate: number) => {
     if (passRate >= 80)
-      return { bg: 'bg-green-100', text: 'text-green-800', label: 'Tốt' }
+      return { bg: 'bg-green-100', text: 'text-green-800', label: 'Good' }
     if (passRate >= 60)
       return {
         bg: 'bg-yellow-100',
         text: 'text-yellow-800',
-        label: 'Trung bình',
+        label: 'Average',
       }
-    return { bg: 'bg-red-100', text: 'text-red-800', label: 'Cần cải thiện' }
+    return { bg: 'bg-red-100', text: 'text-red-800', label: 'Need improvement' }
   }
 
   const handleExportExcel = async () => {
@@ -73,7 +73,7 @@ export default function ClassProgressDashboard() {
               className="mb-4 text-black bg-white hover:bg-gray-100"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Quay lại danh sách lớp
+              Go back to class list
             </Button>
 
             <div className="flex items-center justify-between">
@@ -83,10 +83,10 @@ export default function ClassProgressDashboard() {
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold text-gray-900">
-                    Tiến độ lớp {selectedClass.className}
+                    Class progress {selectedClass.className}
                   </h1>
                   <p className="text-gray-600">
-                    Mã lớp: {selectedClass.classId}
+                    Class ID: {selectedClass.classId}
                   </p>
                 </div>
               </div>
@@ -97,7 +97,7 @@ export default function ClassProgressDashboard() {
                 className="text-black bg-white hover:bg-gray-100 border border-gray-200"
               >
                 <Download className="w-4 h-4 mr-2" />
-                {isExporting ? 'Đang xuất...' : 'Xuất Excel'}
+                {isExporting ? 'Exporting...' : 'Export Excel'}
               </Button>
             </div>
           </div>
@@ -107,7 +107,7 @@ export default function ClassProgressDashboard() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-gray-600">
-                  Tổng sinh viên
+                  Total students
                 </CardTitle>
                 <Users className="w-4 h-4 text-blue-600" />
               </CardHeader>
@@ -121,7 +121,7 @@ export default function ClassProgressDashboard() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-gray-600">
-                  Sinh viên đạt
+                  Passed students
                 </CardTitle>
                 <TrendingUp className="w-4 h-4 text-green-600" />
               </CardHeader>
@@ -135,7 +135,7 @@ export default function ClassProgressDashboard() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-gray-600">
-                  Tỷ lệ đạt
+                  Pass rate
                 </CardTitle>
                 <FileText className="w-4 h-4 text-orange-600" />
               </CardHeader>
@@ -149,7 +149,7 @@ export default function ClassProgressDashboard() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-gray-600">
-                  Trạng thái
+                  Status
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -165,9 +165,9 @@ export default function ClassProgressDashboard() {
           {/* Progress Details */}
           <Card>
             <CardHeader>
-              <CardTitle>Chi tiết tiến độ</CardTitle>
+              <CardTitle>Progress details</CardTitle>
               <CardDescription>
-                Thông tin chi tiết về tiến độ học tập của lớp{' '}
+                Detailed information about the progress of the class{' '}
                 {selectedClass.className}
               </CardDescription>
             </CardHeader>
@@ -176,12 +176,12 @@ export default function ClassProgressDashboard() {
                 <div className="flex justify-between items-center p-4 bg-white rounded-lg border">
                   <div>
                     <p className="font-medium text-gray-900">
-                      Sinh viên chưa đạt
+                      Students not passed
                     </p>
                     <p className="text-sm text-gray-600">
                       {selectedClass.totalStudents -
                         selectedClass.studentsPassed}{' '}
-                      sinh viên
+                      students
                     </p>
                   </div>
                   <div className="text-right">
@@ -228,10 +228,10 @@ export default function ClassProgressDashboard() {
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-900">
-                Tiến độ các lớp
+                Class progress
               </h1>
               <p className="text-gray-600">
-                Danh sách các lớp trong kì hiện tại
+                List of classes in the current semester
               </p>
             </div>
           </div>
@@ -242,7 +242,7 @@ export default function ClassProgressDashboard() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-gray-600">
-                Tổng lớp học
+                Total classes
               </CardTitle>
               <BookOpen className="w-4 h-4 text-blue-600" />
             </CardHeader>
@@ -256,7 +256,7 @@ export default function ClassProgressDashboard() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-gray-600">
-                Tổng sinh viên
+                Total students
               </CardTitle>
               <Users className="w-4 h-4 text-green-600" />
             </CardHeader>
@@ -274,7 +274,7 @@ export default function ClassProgressDashboard() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-gray-600">
-                Tỷ lệ đạt trung bình
+                Average pass rate
               </CardTitle>
               <TrendingUp className="w-4 h-4 text-orange-600" />
             </CardHeader>
@@ -315,13 +315,15 @@ export default function ClassProgressDashboard() {
                       {status.label}
                     </Badge>
                   </div>
-                  <CardDescription>Mã lớp: {classData.classId}</CardDescription>
+                  <CardDescription>
+                    Class code: {classData.classId}
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-gray-600">
-                        Tổng sinh viên:
+                        Total students:
                       </span>
                       <span className="font-medium">
                         {classData.totalStudents}
@@ -330,7 +332,7 @@ export default function ClassProgressDashboard() {
 
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-gray-600">
-                        Sinh viên đạt:
+                        Passed students:
                       </span>
                       <span className="font-medium text-green-600">
                         {classData.studentsPassed}
@@ -338,7 +340,7 @@ export default function ClassProgressDashboard() {
                     </div>
 
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Tỷ lệ đạt:</span>
+                      <span className="text-sm text-gray-600">Pass rate:</span>
                       <span className="font-bold text-lg">
                         {classData.passRate}%
                       </span>

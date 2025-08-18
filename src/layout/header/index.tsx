@@ -92,18 +92,18 @@ export const HeaderComponent = () => {
                   align="end"
                   className="w-56 cursor-pointer"
                 >
-                  <DropdownMenuItem>
+                  {/* <DropdownMenuItem>
                     <User className="mr-2 h-4 w-4" />
-                    Thông tin cá nhân
-                  </DropdownMenuItem>
+                    Personal information
+                  </DropdownMenuItem> */}
                   <DropdownMenuItem>
                     <Settings className="mr-2 h-4 w-4" />
-                    Cài đặt hệ thống
+                    System settings
                   </DropdownMenuItem>
                   <Separator />
                   <DropdownMenuItem onClick={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4" />
-                    Đăng xuất
+                    Logout
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -116,7 +116,7 @@ export const HeaderComponent = () => {
               }}
             >
               <LogIn className="h-5 w-5" />
-              Đăng nhập
+              Login
             </Button>
           )}
         </div>

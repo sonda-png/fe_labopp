@@ -24,13 +24,13 @@ export const NotFoundPage = () => {
           {/* Error Message */}
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-foreground mb-4">
-              Không tìm thấy trang
+              Page not found
             </h1>
             <p className="text-lg text-muted-foreground mb-2">
-              Xin lỗi, trang bạn đang tìm kiếm không tồn tại.
+              Sorry, the page you are looking for does not exist.
             </p>
             <p className="text-sm text-muted-foreground">
-              Vui lòng kiểm tra lại đường dẫn hoặc quay về trang chủ.
+              Please check the URL or go back to the home page.
             </p>
           </div>
 
@@ -41,7 +41,7 @@ export const NotFoundPage = () => {
               className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600"
             >
               <Home className="w-4 h-4" />
-              Về trang chủ
+              Go to home
             </Button>
 
             <Button
@@ -50,14 +50,14 @@ export const NotFoundPage = () => {
               className="flex items-center gap-2 border-orange-200 text-orange-600 hover:bg-orange-50"
             >
               <ArrowLeft className="w-4 h-4" />
-              Quay lại
+              Go back
             </Button>
           </div>
 
           {/* Additional Help */}
           <div className="mt-8 pt-6 border-t border-border">
             <p className="text-sm text-muted-foreground mb-4">
-              Bạn có thể thử:
+              You can try:
             </p>
             <div className="flex flex-wrap justify-center gap-4 text-sm">
               <Link
@@ -65,14 +65,14 @@ export const NotFoundPage = () => {
                 className="text-orange-600 hover:text-orange-700 hover:underline flex items-center gap-1"
               >
                 <Home className="w-3 h-3" />
-                Trang chủ
+                Home
               </Link>
               <Link
                 to="/about"
                 className="text-orange-600 hover:text-orange-700 hover:underline flex items-center gap-1"
               >
                 <Search className="w-3 h-3" />
-                Về chúng tôi
+                About us
               </Link>
             </div>
           </div>

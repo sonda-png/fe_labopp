@@ -11,6 +11,6 @@ export const getNavigateByRole = (role: string) => {
     case 'Head Subject':
       return '/dashboard/head-subject'
     default:
-      toast.error('Có lỗi xảy ra, vui lòng liên hệ admin để đăng nhập')
+      toast.error('Something went wrong, please contact admin to login')
   }
 }

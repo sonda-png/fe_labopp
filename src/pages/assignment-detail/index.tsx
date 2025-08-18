@@ -67,11 +67,6 @@ export const AssignmentDetailPage = () => {
     })
   }
 
-  const handleDownload = () => {
-    // Handle download assignment files
-    console.log('Download assignment:', assignment)
-  }
-
   if (isLoading) return <LoadingState />
   if (error) return <ErrorState />
   if (!assignment) return <ErrorState />
@@ -81,7 +76,6 @@ export const AssignmentDetailPage = () => {
       assignment={assignment}
       onBack={handleBack}
       onSubmit={handleSubmitAssignment}
-      onDownload={handleDownload}
     />
   )
 }

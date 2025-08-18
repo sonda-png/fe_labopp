@@ -87,10 +87,10 @@ export default function TeacherGradingSystem() {
           <FileText className="h-8 w-8 text-orange-500" />
           <div>
             <h1 className="text-3xl font-bold text-gray-900">
-              Danh sách bài nộp
+              List of submissions
             </h1>
             <p className="text-gray-600">
-              Quản lý và chấm điểm các bài nộp của sinh viên
+              Manage and grade student submissions
             </p>
           </div>
         </div>
@@ -103,7 +103,7 @@ export default function TeacherGradingSystem() {
                 <div className="relative">
                   <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                   <Input
-                    placeholder="Tìm kiếm theo tên sinh viên, mã bài tập..."
+                    placeholder="Search by student name, assignment code..."
                     className="pl-10"
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
@@ -117,13 +117,13 @@ export default function TeacherGradingSystem() {
                 }
               >
                 <SelectTrigger className="w-48">
-                  <SelectValue placeholder="Lọc theo trạng thái" />
+                  <SelectValue placeholder="Filter by status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Tất cả trạng thái</SelectItem>
-                  <SelectItem value="Drafted">Chờ chấm</SelectItem>
-                  <SelectItem value="Passed">Đạt</SelectItem>
-                  <SelectItem value="Rejected">Không đạt</SelectItem>
+                  <SelectItem value="all">All status</SelectItem>
+                  <SelectItem value="Drafted">Pending</SelectItem>
+                  <SelectItem value="Passed">Passed</SelectItem>
+                  <SelectItem value="Rejected">Rejected</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -137,10 +137,10 @@ export default function TeacherGradingSystem() {
               <div className="text-center py-12">
                 <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  Không tìm thấy bài nộp nào
+                  No submissions found
                 </h3>
                 <p className="text-gray-600">
-                  Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm.
+                  Try changing the filter or search keyword.
                 </p>
               </div>
             ) : (
@@ -149,25 +149,25 @@ export default function TeacherGradingSystem() {
                   <thead className="bg-gray-50 border-b border-gray-200">
                     <tr>
                       <th className="text-left py-4 px-6 font-medium text-gray-900">
-                        Sinh viên
+                        Student
                       </th>
                       <th className="text-left py-4 px-6 font-medium text-gray-900">
-                        Bài tập
+                        Assignment
                       </th>
                       <th className="text-left py-4 px-6 font-medium text-gray-900">
-                        Thời gian nộp
+                        Submission time
                       </th>
                       <th className="text-left py-4 px-6 font-medium text-gray-900">
                         LOC
                       </th>
                       <th className="text-left py-4 px-6 font-medium text-gray-900">
-                        Trạng thái
+                        Status
                       </th>
                       <th className="text-left py-4 px-6 font-medium text-gray-900">
-                        Ghi chú
+                        Note
                       </th>
                       <th className="text-left py-4 px-6 font-medium text-gray-900">
-                        Chấm bài
+                        Grade
                       </th>
                     </tr>
                   </thead>
@@ -222,7 +222,7 @@ export default function TeacherGradingSystem() {
                               className="text-sm text-gray-600 max-w-32 truncate"
                               title={submission.comment}
                             >
-                              {submission.comment || 'Không có ghi chú'}
+                              {submission.comment || 'No comment'}
                             </span>
                           </td>
                           <td className="py-4 px-6 flex gap-2">
@@ -239,7 +239,7 @@ export default function TeacherGradingSystem() {
                               submissionId={submission.id}
                               trigger={
                                 <Button variant="outline" size="sm">
-                                  Chấm bài
+                                  Grade
                                 </Button>
                               }
                               onSuccess={refetch}
@@ -248,7 +248,7 @@ export default function TeacherGradingSystem() {
                               submissionId={submission.id}
                               trigger={
                                 <Button variant="outline" size="sm">
-                                  Chi tiết
+                                  Detail
                                 </Button>
                               }
                             />

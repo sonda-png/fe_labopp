@@ -1,13 +1,13 @@
 export const getStatusText = (status: string) => {
   switch (status) {
     case 'active':
-      return 'Đang hoạt động'
+      return 'Active'
     case 'completed':
-      return 'Đã hoàn thành'
+      return 'Completed'
     case 'draft':
-      return 'Bản nháp'
+      return 'Draft'
     case 'archived':
-      return 'Đã lưu trữ'
+      return 'Archived'
     default:
       return 'Unknown'
   }
