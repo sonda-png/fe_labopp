@@ -76,10 +76,10 @@ export default function TeacherSubmissionClassList() {
           <div className="text-center py-12">
             <GraduationCap className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">
-              Chưa có lớp học nào
+              No class found
             </h3>
             <p className="text-gray-600">
-              Bạn chưa được phân công lớp học nào.
+              You haven't been assigned to any class yet.
             </p>
           </div>
         </div>
@@ -94,11 +94,9 @@ export default function TeacherSubmissionClassList() {
         <div className="flex items-center gap-3 mb-8">
           <GraduationCap className="h-8 w-8 text-orange-500" />
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">
-              Danh sách lớp học
-            </h1>
+            <h1 className="text-3xl font-bold text-gray-900">Class list</h1>
             <p className="text-gray-600">
-              Chọn lớp để xem submissions và quản lý bài tập
+              Select a class to view submissions and manage assignments
             </p>
           </div>
         </div>
@@ -109,7 +107,7 @@ export default function TeacherSubmissionClassList() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Tổng lớp học</p>
+                  <p className="text-sm text-gray-600">Total classes</p>
                   <p className="text-3xl font-bold text-gray-900">
                     {totalClasses}
                   </p>
@@ -123,7 +121,7 @@ export default function TeacherSubmissionClassList() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Lớp đang hoạt động</p>
+                  <p className="text-sm text-gray-600">Active classes</p>
                   <p className="text-3xl font-bold text-green-600">
                     {activeClasses}
                   </p>
@@ -137,7 +135,7 @@ export default function TeacherSubmissionClassList() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Môn học</p>
+                  <p className="text-sm text-gray-600">Subject</p>
                   <p className="text-3xl font-bold text-gray-900">
                     {uniqueSubjects}
                   </p>
@@ -151,7 +149,7 @@ export default function TeacherSubmissionClassList() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Năm học</p>
+                  <p className="text-sm text-gray-600">Academic year</p>
                   <p className="text-3xl font-bold text-gray-900">
                     {uniqueYears.length}
                   </p>
@@ -170,7 +168,7 @@ export default function TeacherSubmissionClassList() {
                 <div className="relative">
                   <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                   <Input
-                    placeholder="Tìm kiếm theo tên lớp, môn học, mã lớp..."
+                    placeholder="Search by class name, subject, class code..."
                     className="pl-10"
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
@@ -182,21 +180,21 @@ export default function TeacherSubmissionClassList() {
                 onValueChange={setSelectedSemester}
               >
                 <SelectTrigger className="w-48">
-                  <SelectValue placeholder="Chọn học kỳ" />
+                  <SelectValue placeholder="Select semester" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Tất cả học kỳ</SelectItem>
-                  <SelectItem value="1">Học kỳ 1</SelectItem>
-                  <SelectItem value="2">Học kỳ 2</SelectItem>
-                  <SelectItem value="3">Học kỳ 3</SelectItem>
+                  <SelectItem value="all">All semesters</SelectItem>
+                  <SelectItem value="1">Semester 1</SelectItem>
+                  <SelectItem value="2">Semester 2</SelectItem>
+                  <SelectItem value="3">Semester 3</SelectItem>
                 </SelectContent>
               </Select>
               <Select value={selectedYear} onValueChange={setSelectedYear}>
                 <SelectTrigger className="w-48">
-                  <SelectValue placeholder="Chọn năm học" />
+                  <SelectValue placeholder="Select academic year" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Tất cả năm học</SelectItem>
+                  <SelectItem value="all">All academic years</SelectItem>
                   {uniqueYears.map(year => (
                     <SelectItem key={year} value={year}>
                       {year}
@@ -209,7 +207,7 @@ export default function TeacherSubmissionClassList() {
                 className="bg-white text-black border-gray-300"
               >
                 <Filter className="h-4 w-4 mr-2" />
-                Bộ lọc
+                Filter
               </Button>
             </div>
           </CardContent>
@@ -234,7 +232,7 @@ export default function TeacherSubmissionClassList() {
                         : 'bg-red-100 text-red-800 hover:bg-red-100'
                     }
                   >
-                    {classItem.isActive ? 'Hoạt động' : 'Không hoạt động'}
+                    {classItem.isActive ? 'Active' : 'Inactive'}
                   </Badge>
                 </div>
               </CardHeader>
@@ -243,7 +241,7 @@ export default function TeacherSubmissionClassList() {
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <BookOpen className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm text-gray-700">Môn học:</span>
+                    <span className="text-sm text-gray-700">Subject:</span>
                     <span className="text-sm font-medium text-gray-900">
                       {classItem.subject}
                     </span>
@@ -251,7 +249,7 @@ export default function TeacherSubmissionClassList() {
 
                   <div className="flex items-center gap-2">
                     <Calendar className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm text-gray-700">Học kỳ:</span>
+                    <span className="text-sm text-gray-700">Semester:</span>
                     <span className="text-sm font-medium text-gray-900">
                       {classItem.semester} - {classItem.academicYear}
                     </span>
@@ -259,7 +257,7 @@ export default function TeacherSubmissionClassList() {
 
                   <div className="flex items-center gap-2">
                     <Code className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm text-gray-700">LOC để đậu:</span>
+                    <span className="text-sm text-gray-700">LOC to pass:</span>
                     <Badge
                       variant="outline"
                       className="text-orange-600 border-orange-200"
@@ -270,7 +268,7 @@ export default function TeacherSubmissionClassList() {
 
                   <div className="flex items-center gap-2">
                     <Clock className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm text-gray-700">Mã lớp:</span>
+                    <span className="text-sm text-gray-700">Class code:</span>
                     <span className="text-sm font-mono text-gray-600">
                       {classItem.id}
                     </span>
@@ -282,7 +280,7 @@ export default function TeacherSubmissionClassList() {
                   onClick={() => handleViewSubmission(classItem.id)}
                 >
                   <Eye className="h-4 w-4 mr-2" />
-                  Xem Submissions
+                  View Submissions
                 </Button>
               </CardContent>
             </Card>
@@ -293,10 +291,10 @@ export default function TeacherSubmissionClassList() {
           <div className="text-center py-12">
             <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">
-              Không tìm thấy lớp học nào
+              No class found
             </h3>
             <p className="text-gray-600">
-              Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm.
+              Try changing the filter or search keyword.
             </p>
           </div>
         )}

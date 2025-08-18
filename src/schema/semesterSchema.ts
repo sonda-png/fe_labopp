@@ -2,18 +2,18 @@ import { z } from 'zod'
 
 // Zod schema for validation
 export const semesterSchema = z.object({
-  name: z.string().min(1, 'Vui lòng nhập tên học kỳ'),
-  subject: z.string().min(1, 'Vui lòng nhập môn học'),
+  name: z.string().min(1, 'Please enter semester name'),
+  subject: z.string().min(1, 'Please enter subject'),
   semester: z
     .number()
-    .min(1, 'Học kỳ phải là số dương')
-    .max(8, 'Học kỳ không được vượt quá 8'),
+    .min(1, 'Semester must be positive')
+    .max(8, 'Semester cannot exceed 8'),
   academicYear: z
     .string()
-    .min(1, 'Vui lòng nhập năm học')
-    .regex(/^\d{4}-\d{4}$/, 'Năm học phải có định dạng YYYY-YYYY'),
-  locToPass: z.number().min(0, 'LOC để pass phải là số không âm'),
-  teacherId: z.string().min(1, 'Vui lòng chọn giảng viên'),
+    .min(1, 'Please enter academic year')
+    .regex(/^\d{4}-\d{4}$/, 'Academic year must be in YYYY-YYYY format'),
+  locToPass: z.number().min(0, 'LOC to pass must be non-negative'),
+  teacherId: z.string().min(1, 'Please select teacher'),
   isActive: z.boolean(),
 })
 

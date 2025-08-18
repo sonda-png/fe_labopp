@@ -20,7 +20,7 @@ const Layout = () => {
                 fallback={
                   <div className="w-full h-full flex justify-center items-center">
                     <Loader2 className="h-8 w-8 animate-spin text-yellow-500 mr-2" />
-                    <span>Đang tải...</span>
+                    <span>Loading...</span>
                   </div>
                 }
               >

@@ -42,7 +42,7 @@ export const OverviewSemesterClass = () => {
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Tổng học kỳ</p>
+              <p className="text-sm font-medium text-gray-600">Total Semester</p>
               <p className="text-2xl font-semibold text-gray-900">
                 {stats.total}
               </p>
@@ -58,7 +58,7 @@ export const OverviewSemesterClass = () => {
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Hiện tại</p>
+              <p className="text-sm font-medium text-gray-600">Current</p>
               <p className="text-2xl font-semibold text-gray-900">
                 {stats.current}
               </p>
@@ -74,7 +74,7 @@ export const OverviewSemesterClass = () => {
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Hoàn thành</p>
+              <p className="text-sm font-medium text-gray-600">Completed</p>
               <p className="text-2xl font-semibold text-gray-900">
                 {stats.completed}
               </p>
@@ -90,7 +90,7 @@ export const OverviewSemesterClass = () => {
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Sắp tới</p>
+              <p className="text-sm font-medium text-gray-600">Upcoming</p>
               <p className="text-2xl font-semibold text-gray-900">
                 {stats.upcoming}
               </p>
@@ -107,7 +107,7 @@ export const OverviewSemesterClass = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">
-                Đang hoạt động
+                Active
               </p>
               <p className="text-2xl font-semibold text-gray-900">
                 {stats.active}

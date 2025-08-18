@@ -71,11 +71,11 @@ export function TeacherGradding({
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Chấm bài nộp</DialogTitle>
+          <DialogTitle>Grade Submission</DialogTitle>
           <DialogDescription>
             {step === 'grade'
-              ? 'Chọn kết quả chấm điểm cho bài nộp này.'
-              : 'Nhập nhận xét/feedback cho sinh viên.'}
+              ? 'Choose the grade result for this submission.'
+              : 'Enter feedback/grade for the student.'}
           </DialogDescription>
         </DialogHeader>
         {step === 'grade' && (
@@ -86,7 +86,7 @@ export function TeacherGradding({
               disabled={isGrading}
               className="w-full"
             >
-              Đạt (Pass)
+              Pass
             </Button>
             <Button
               variant={isPass === false ? 'destructive' : 'outline'}
@@ -94,7 +94,7 @@ export function TeacherGradding({
               disabled={isGrading}
               className="w-full"
             >
-              Không đạt (Fail)
+              Fail
             </Button>
           </div>
         )}
@@ -103,7 +103,7 @@ export function TeacherGradding({
             <Textarea
               value={comment}
               onChange={e => setComment(e.target.value)}
-              placeholder="Nhập nhận xét cho sinh viên..."
+              placeholder="Enter feedback for the student..."
               className="resize-none min-h-[80px]"
               disabled={isFeedbacking}
             />
@@ -112,11 +112,11 @@ export function TeacherGradding({
                 onClick={handleFeedback}
                 disabled={isFeedbacking || !comment.trim()}
               >
-                Gửi nhận xét
+                Send feedback
               </Button>
               <DialogClose asChild>
                 <Button variant="outline" type="button">
-                  Đóng
+                  Close
                 </Button>
               </DialogClose>
             </DialogFooter>

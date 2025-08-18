@@ -1,3 +1,14 @@
+
+// Students progress in a class
+export interface TeacherStudentProgressItem {
+  studentId: string;
+  studentName: string;
+  totalLoc: number;
+  completedAssignments: number;
+  totalAssignments: number;
+}
+
+export type TeacherStudentProgressResponse = TeacherStudentProgressItem[];
 // Dashboard for a specific class
 export interface RecentAssignment {
   title: string

@@ -27,11 +27,11 @@ import { HeaderComponent } from '@/layout/header'
 
 // Mock user data - in real app this would come from auth context
 const currentUser = {
-  name: 'Nguyễn Văn An',
+  name: 'Nguyen Van An',
   role: 'student', // admin, teacher, head_of_department, student
   avatar: '/placeholder.svg?height=40&width=40',
   email: 'an.nguyen@fpt.edu.vn',
-  studentId: 'HE173456', // only for students
+  studentId: 'SE1967', // only for students
 }
 
 const systemStats = {
@@ -46,51 +46,53 @@ const systemStats = {
 const features = [
   {
     icon: Code,
-    title: 'Làm bài tập lập trình',
+    title: 'Do assignment',
     description:
-      'Sinh viên nhận và hoàn thành các bài tập được giao bởi giảng viên',
+      'Students receive and complete assignments assigned by teachers',
     color: 'bg-blue-500',
     roles: ['student'],
   },
   {
     icon: FileText,
-    title: 'Submit & Tính LOC',
-    description: 'Nộp bài và hệ thống tự động tính toán Lines of Code (LOC)',
+    title: 'Submit & Calculate LOC',
+    description:
+      'Submit assignment and the system automatically calculates Lines of Code (LOC)',
     color: 'bg-green-500',
     roles: ['student'],
   },
   {
     icon: Trophy,
-    title: 'Theo dõi tiến độ',
-    description: 'Xem tiến độ LOC và thứ hạng so với các sinh viên khác',
+    title: 'Track progress',
+    description: 'View LOC progress and rank compared to other students',
     color: 'bg-yellow-500',
     roles: ['student'],
   },
   {
     icon: Users,
-    title: 'Quản lý lớp học',
-    description: 'Giảng viên quản lý sinh viên và theo dõi tiến độ học tập',
+    title: 'Manage class',
+    description: 'Teachers manage students and track progress',
     color: 'bg-purple-500',
     roles: ['teacher'],
   },
   {
     icon: CheckCircle,
-    title: 'Chấm bài & Review',
-    description: 'Review code và đánh giá kết quả học tập của sinh viên',
+    title: 'Grade & Review',
+    description: 'Review code and evaluate student learning results',
     color: 'bg-orange-500',
     roles: ['teacher'],
   },
   {
     icon: Award,
-    title: 'Quản lý toàn diện',
-    description: 'Trưởng bộ môn giám sát tất cả lớp học và hoạt động giảng dạy',
+    title: 'Manage everything',
+    description:
+      'Head of department monitors all classes and teaching activities',
     color: 'bg-red-500',
     roles: ['head_of_department'],
   },
   {
     icon: Shield,
-    title: 'Quản trị hệ thống',
-    description: 'Admin quản lý người dùng, phân quyền và cấu hình hệ thống',
+    title: 'System administration',
+    description: 'Admin manages users, permissions, and system configuration',
     color: 'bg-gray-600',
     roles: ['admin'],
   },
@@ -99,26 +101,29 @@ const features = [
 const howItWorks = [
   {
     step: 1,
-    title: 'Nhận bài tập',
-    description: 'Giảng viên tạo và giao bài tập lập trình cho sinh viên',
+    title: 'Receive assignment',
+    description:
+      'Teachers create and assign programming assignments to students',
     icon: BookOpen,
   },
   {
     step: 2,
-    title: 'Viết code',
-    description: 'Sinh viên hoàn thành bài tập theo yêu cầu đã được đưa ra',
+    title: 'Write code',
+    description:
+      'Students complete assignments according to the requirements provided',
     icon: Code,
   },
   {
     step: 3,
-    title: 'Submit bài làm',
-    description: 'Nộp bài lên hệ thống, tự động tính LOC và lưu trữ',
+    title: 'Submit assignment',
+    description:
+      'Submit assignment to the system, automatically calculate LOC and store',
     icon: FileText,
   },
   {
     step: 4,
-    title: 'Đạt mục tiêu LOC',
-    description: 'Tích lũy đủ LOC theo yêu cầu để pass môn học',
+    title: 'Achieve LOC target',
+    description: 'Accumulate enough LOC to pass the subject',
     icon: Target,
   },
 ]
@@ -127,38 +132,38 @@ const getRoleInfo = (role: string) => {
   switch (role) {
     case 'admin':
       return {
-        title: 'Quản trị viên',
+        title: 'Admin',
         icon: Crown,
         color: 'bg-gray-600',
-        description: 'Quản lý toàn bộ hệ thống',
+        description: 'Manage everything',
       }
     case 'teacher':
       return {
-        title: 'Giảng viên',
+        title: 'Teacher',
         icon: UserCheck,
         color: 'bg-blue-600',
-        description: 'Quản lý lớp học và sinh viên',
+        description: 'Manage class and students',
       }
     case 'head_of_department':
       return {
-        title: 'Trưởng bộ môn',
+        title: 'Head of department',
         icon: Briefcase,
         color: 'bg-purple-600',
-        description: 'Giám sát toàn bộ hoạt động giảng dạy',
+        description: 'Monitor all teaching activities',
       }
     case 'student':
       return {
-        title: 'Sinh viên',
+        title: 'Student',
         icon: GraduationCap,
         color: 'bg-green-600',
-        description: 'Học tập và hoàn thành bài tập',
+        description: 'Learn and complete assignments',
       }
     default:
       return {
-        title: 'Người dùng',
+        title: 'User',
         icon: User,
         color: 'bg-gray-600',
-        description: 'Sử dụng hệ thống',
+        description: 'Use the system',
       }
   }
 }
@@ -192,12 +197,12 @@ export default function HomePage() {
             </div>
             <div>
               <h2 className="text-4xl font-bold text-gray-900 mb-2">
-                Chào mừng đến với{' '}
+                Welcome to
                 <span className="text-blue-600">LOC Tracking System</span>
               </h2>
               <p className="text-xl text-gray-600">
-                Hệ thống quản lý và theo dõi Lines of Code cho sinh viên lập
-                trình
+                The system manages and tracks Lines of Code for programming
+                students
               </p>
             </div>
           </div>
@@ -206,12 +211,12 @@ export default function HomePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
               <div className="text-left">
                 <h3 className="text-2xl font-semibold text-gray-900 mb-4">
-                  Mục tiêu của hệ thống
+                  System goal
                 </h3>
                 <p className="text-gray-600 mb-6 leading-relaxed">
-                  Giúp sinh viên hoàn thành các bài tập lập trình, tự động tính
-                  toán Lines of Code (LOC), và theo dõi tiến độ học tập. Khi đạt
-                  đủ LOC yêu cầu, sinh viên sẽ được pass môn học.
+                  Help students complete programming assignments, automatically
+                  calculate LOC, and track progress. When the LOC target is met,
+                  students will pass the subject.
                 </p>
                 <div className="flex items-center space-x-4">
                   <Badge className="bg-blue-100 text-blue-700 px-3 py-1">
@@ -231,28 +236,28 @@ export default function HomePage() {
                   <div className="text-2xl font-bold text-blue-900">
                     {systemStats.totalStudents.toLocaleString()}
                   </div>
-                  <div className="text-sm text-blue-600">Sinh viên</div>
+                  <div className="text-sm text-blue-600">Students</div>
                 </div>
                 <div className="text-center p-4 bg-green-50 rounded-xl">
                   <Code className="h-8 w-8 text-green-600 mx-auto mb-2" />
                   <div className="text-2xl font-bold text-green-900">
                     {systemStats.totalLOC.toLocaleString()}
                   </div>
-                  <div className="text-sm text-green-600">Tổng LOC</div>
+                  <div className="text-sm text-green-600">Total LOC</div>
                 </div>
                 <div className="text-center p-4 bg-purple-50 rounded-xl">
                   <FileText className="h-8 w-8 text-purple-600 mx-auto mb-2" />
                   <div className="text-2xl font-bold text-purple-900">
                     {systemStats.totalAssignments}
                   </div>
-                  <div className="text-sm text-purple-600">Bài tập</div>
+                  <div className="text-sm text-purple-600">Assignments</div>
                 </div>
                 <div className="text-center p-4 bg-orange-50 rounded-xl">
                   <Trophy className="h-8 w-8 text-orange-600 mx-auto mb-2" />
                   <div className="text-2xl font-bold text-orange-900">
                     {systemStats.passRate}%
                   </div>
-                  <div className="text-sm text-orange-600">Tỷ lệ Pass</div>
+                  <div className="text-sm text-orange-600">Pass rate</div>
                 </div>
               </div>
             </div>
@@ -263,10 +268,10 @@ export default function HomePage() {
         <div className="mb-16">
           <div className="text-center mb-12">
             <h3 className="text-3xl font-bold text-gray-900 mb-4">
-              Quy trình hoạt động
+              How it works
             </h3>
             <p className="text-xl text-gray-600">
-              Từ việc nhận bài tập đến khi pass môn học
+              From receiving assignments to passing the subject
             </p>
           </div>
 
@@ -307,10 +312,10 @@ export default function HomePage() {
         <div className="mb-16">
           <div className="text-center mb-12">
             <h3 className="text-3xl font-bold text-gray-900 mb-4">
-              Tính năng dành cho {roleInfo.title}
+              Features for {roleInfo.title}
             </h3>
             <p className="text-xl text-gray-600">
-              Các chức năng chính bạn có thể sử dụng
+              The main features you can use
             </p>
           </div>
 
@@ -348,16 +353,16 @@ export default function HomePage() {
             <CardContent className="p-12">
               <div className="flex items-center justify-center space-x-3 mb-6">
                 <Rocket className="h-10 w-10" />
-                <h3 className="text-3xl font-bold">Sẵn sàng bắt đầu?</h3>
+                <h3 className="text-3xl font-bold">Ready to start?</h3>
               </div>
               <p className="text-blue-100 mb-8 max-w-2xl mx-auto text-lg leading-relaxed">
                 {currentUser.role === 'student'
-                  ? 'Hãy bắt đầu hành trình lập trình của bạn! Hoàn thành các bài tập, tích lũy LOC và đạt được mục tiêu pass môn.'
+                  ? 'Start your programming journey! Complete assignments, accumulate LOC, and achieve the subject pass target.'
                   : currentUser.role === 'teacher'
-                    ? 'Tạo bài tập mới, theo dõi tiến độ sinh viên và hỗ trợ họ đạt được mục tiêu học tập.'
+                    ? 'Create new assignments, track student progress, and support them to achieve their learning goals.'
                     : currentUser.role === 'head_of_department'
-                      ? 'Giám sát toàn bộ hoạt động giảng dạy, phân tích dữ liệu và đưa ra các quyết định chiến lược.'
-                      : 'Quản lý hệ thống, cấu hình các tham số và đảm bảo hoạt động ổn định cho tất cả người dùng.'}
+                      ? 'Monitor all teaching activities, analyze data, and make strategic decisions.'
+                      : 'Manage the system, configure parameters, and ensure stable operation for all users.'}
               </p>
               <div className="flex items-center justify-center space-x-4">
                 <Link to="/dashboard">
@@ -366,7 +371,7 @@ export default function HomePage() {
                     className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-3"
                   >
                     <ArrowRight className="mr-2 h-5 w-5" />
-                    Vào Dashboard
+                    Go to Dashboard
                   </Button>
                 </Link>
                 {currentUser.role === 'student' && (
@@ -377,7 +382,7 @@ export default function HomePage() {
                       className="border-white text-white hover:bg-white/10 px-8 py-3"
                     >
                       <FileText className="mr-2 h-5 w-5" />
-                      Xem bài tập
+                      View assignments
                     </Button>
                   </Link>
                 )}
@@ -392,15 +397,15 @@ export default function HomePage() {
             <div className="flex items-center justify-center space-x-8 text-sm text-gray-600">
               <div className="flex items-center space-x-2">
                 <Clock className="h-4 w-4" />
-                <span>Cập nhật: {currentTime.toLocaleString('vi-VN')}</span>
+                <span>Updated: {currentTime.toLocaleString('vi-VN')}</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Shield className="h-4 w-4" />
-                <span>Hệ thống hoạt động ổn định</span>
+                <span>Stable system operation</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Heart className="h-4 w-4 text-red-500" />
-                <span>Phát triển bởi FPT University</span>
+                <span>Developed by FPT University</span>
               </div>
             </div>
           </div>

@@ -26,7 +26,7 @@ export const FiltersAndActions = ({
             className="pl-10 w-80"
           />
         </div>
-
+{/* 
         <Select>
           <SelectTrigger className="w-40">
             <SelectValue placeholder="All teachers" />
@@ -35,7 +35,7 @@ export const FiltersAndActions = ({
             <SelectItem value="all">All teachers</SelectItem>
             <SelectItem value="HE183210">HE183210</SelectItem>
           </SelectContent>
-        </Select>
+        </Select> */}
 
         <Button variant="outline" className="gap-2">
           <Filter className="w-4 h-4" />
