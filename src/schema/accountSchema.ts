@@ -1,32 +1,32 @@
 import { z } from 'zod'
 
 export const auditAccountSchema = z.object({
-  fullName: z.string().min(1, 'Vui lòng nhập họ và tên'),
+  fullName: z.string().min(1, 'Please enter full name'),
 
-  email: z.string().min(1, 'Vui lòng nhập email').email('Email không hợp lệ'),
+  email: z.string().min(1, 'Please enter email').email('Email is not valid'),
 
   phone: z
     .string()
-    .transform(val => val.trim()) // loại bỏ khoảng trắng đầu/cuối nếu có
+    .transform(val => val.trim())
     .refine(
       val => val === '' || /^\d{9,11}$/.test(val),
-      'Số điện thoại không hợp lệ (phải là 9-11 chữ số hoặc để trống)'
+      'Phone number is not valid (must be 9-11 digits or empty)'
     )
     .optional(),
 
-  roleId: z.string().min(1, 'Vui lòng chọn vai trò'),
+  roleId: z.string().min(1, 'Please select role'),
 
-  userName: z.string().min(1, 'Vui lòng nhập tên đăng nhập').optional(),
+  userName: z.string().min(1, 'Please enter username').optional(),
 
-  password: z.string().min(1, 'Vui lòng nhập mật khẩu').optional(),
+  password: z.string().min(1, 'Please enter password').optional(),
 })
 
 export const suspendAccountSchema = z.object({
   reason: z
     .string()
-    .min(1, 'Vui lòng nhập lý do')
-    .min(5, 'Lý do phải có ít nhất 5 ký tự')
-    .max(500, 'Lý do không được vượt quá 500 ký tự'),
+    .min(1, 'Please enter reason')
+    .min(5, 'Reason must be at least 5 characters')
+    .max(500, 'Reason cannot exceed 500 characters'),
 })
 
 // Zod schema for password validation
@@ -34,15 +34,18 @@ export const changePasswordSchema = z
   .object({
     newPassword: z
       .string()
-      .min(8, 'Mật khẩu phải có ít nhất 8 ký tự')
-      .regex(/[A-Z]/, 'Mật khẩu phải có ít nhất 1 chữ hoa')
-      .regex(/[a-z]/, 'Mật khẩu phải có ít nhất 1 chữ thường')
-      .regex(/[0-9]/, 'Mật khẩu phải có ít nhất 1 số')
-      .regex(/[^A-Za-z0-9]/, 'Mật khẩu phải có ít nhất 1 ký tự đặc biệt'),
-    confirmPassword: z.string().min(1, 'Vui lòng xác nhận mật khẩu mới'),
+      .min(8, 'Password must be at least 8 characters')
+      .regex(/[A-Z]/, 'Password must contain at least 1 uppercase letter')
+      .regex(/[a-z]/, 'Password must contain at least 1 lowercase letter')
+      .regex(/[0-9]/, 'Password must contain at least 1 number')
+      .regex(
+        /[^A-Za-z0-9]/,
+        'Password must contain at least 1 special character'
+      ),
+    confirmPassword: z.string().min(1, 'Please confirm new password'),
   })
   .refine(data => data.newPassword === data.confirmPassword, {
-    message: 'Mật khẩu xác nhận không khớp',
+    message: 'Confirm password does not match',
     path: ['confirmPassword'],
   })
 

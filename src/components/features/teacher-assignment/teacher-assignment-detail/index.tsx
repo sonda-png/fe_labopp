@@ -42,12 +42,12 @@ export const TeacherAssignmentDetail = ({
   })
 
   const deleteAssignmentMutation = () => {
-    toast.error('Chức năng đang phát triển')
+    toast.error('Function is under development')
   }
 
   const handleDeleteAssignment = (assignment: TeacherAssignment) => {
     if (
-      confirm(`Bạn có chắc chắn muốn xóa assignment "${assignment.title}"?`)
+      confirm(`Are you sure you want to delete assignment "${assignment.title}"?`)
     ) {
       deleteAssignmentMutation()
     }
@@ -57,10 +57,10 @@ export const TeacherAssignmentDetail = ({
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-gray-900">
-            Chi tiết Assignment
+            Assignment Detail
           </DialogTitle>
           <DialogDescription>
-            Thông tin chi tiết về assignment "{assignmentDetailData?.title}"
+            Assignment detail "{assignmentDetailData?.title}"
           </DialogDescription>
         </DialogHeader>
 
@@ -91,12 +91,12 @@ export const TeacherAssignmentDetail = ({
                   <CardContent className="p-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                       <BookOpen className="h-5 w-5 mr-2 text-orange-500" />
-                      Thông tin cơ bản
+                      Basic Information
                     </h3>
                     <div className="space-y-4">
                       <div>
                         <Label className="text-sm font-medium text-gray-600">
-                          Tiêu đề
+                          Title
                         </Label>
                         <p className="text-base text-gray-900 mt-1">
                           {assignmentDetailData.title}
@@ -104,7 +104,7 @@ export const TeacherAssignmentDetail = ({
                       </div>
                       <div>
                         <Label className="text-sm font-medium text-gray-600">
-                          Mô tả
+                          Description
                         </Label>
                         <p className="text-base text-gray-900 mt-1 leading-relaxed">
                           {assignmentDetailData.description}
@@ -113,7 +113,7 @@ export const TeacherAssignmentDetail = ({
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <Label className="text-sm font-medium text-gray-600">
-                            LOC yêu cầu
+                            LOC Target
                           </Label>
                           <p className="text-2xl font-bold text-blue-600 mt-1">
                             {assignmentDetailData.locTarget.toLocaleString()}
@@ -121,7 +121,7 @@ export const TeacherAssignmentDetail = ({
                         </div>
                         <div>
                           <Label className="text-sm font-medium text-gray-600">
-                            Lớp học
+                            Class
                           </Label>
                           <p className="text-lg font-semibold text-gray-900 mt-1">
                             {classId}
@@ -136,12 +136,12 @@ export const TeacherAssignmentDetail = ({
                   <CardContent className="p-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                       <Calendar className="h-5 w-5 mr-2 text-orange-500" />
-                      Thời gian
+                      Time
                     </h3>
                     <div className="space-y-4">
                       <div>
                         <Label className="text-sm font-medium text-gray-600">
-                          Hạn nộp bài
+                          Due Date
                         </Label>
                         <p className="text-base text-gray-900 mt-1 font-medium">
                           {new Date(
@@ -156,13 +156,13 @@ export const TeacherAssignmentDetail = ({
                         </p>
                         <p className="text-sm text-gray-500 mt-1">
                           {new Date(assignmentDetailData.dueDate) > new Date()
-                            ? `Còn ${Math.ceil((new Date(assignmentDetailData.dueDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))} ngày`
-                            : 'Đã hết hạn'}
+                            ? `Still ${Math.ceil((new Date(assignmentDetailData.dueDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))} days`
+                            : 'Expired'}
                         </p>
                       </div>
                       <div>
                         <Label className="text-sm font-medium text-gray-600">
-                          Trạng thái assignment
+                          Assignment Status
                         </Label>
                         <div className="flex items-center mt-2">
                           <Badge
@@ -190,7 +190,7 @@ export const TeacherAssignmentDetail = ({
                   <CardContent className="p-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                       <Users className="h-5 w-5 mr-2 text-orange-500" />
-                      Thống kê Submissions
+                      Submissions Stats
                     </h3>
                     <div className="space-y-4">
                       <div className="grid grid-cols-2 gap-4">
@@ -199,7 +199,7 @@ export const TeacherAssignmentDetail = ({
                             {assignmentDetailData.totalSubmissions || 0}
                           </p>
                           <p className="text-sm text-blue-600 font-medium">
-                            Tổng submissions
+                            Total submissions
                           </p>
                         </div>
                         <div className="text-center p-4 bg-green-50 rounded-lg">
@@ -207,7 +207,7 @@ export const TeacherAssignmentDetail = ({
                             {assignmentDetailData.passedCount || 0}
                           </p>
                           <p className="text-sm text-green-600 font-medium">
-                            Đã pass
+                            Passed
                           </p>
                         </div>
                       </div>
@@ -217,13 +217,13 @@ export const TeacherAssignmentDetail = ({
                           {calculatePassRate(assignmentDetailData)}%
                         </p>
                         <p className="text-sm text-orange-600 font-medium">
-                          Tỷ lệ pass
+                          Pass rate
                         </p>
                       </div>
 
                       <div className="space-y-2">
                         <div className="flex justify-between text-sm">
-                          <span>Tỷ lệ hoàn thành</span>
+                          <span>Completion rate</span>
                           <span className="font-medium">
                             {calculatePassRate(assignmentDetailData)}%
                           </span>
@@ -245,7 +245,7 @@ export const TeacherAssignmentDetail = ({
                   <CardContent className="p-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                       <Code className="h-5 w-5 mr-2 text-orange-500" />
-                      Thông tin kỹ thuật
+                      Technical Information
                     </h3>
                     <div className="space-y-4">
                       <div className="grid grid-cols-1 gap-4">
@@ -258,24 +258,24 @@ export const TeacherAssignmentDetail = ({
                             dòng
                           </p>
                           <p className="text-sm text-gray-500 mt-1">
-                            Lines of Code yêu cầu
+                            LOC Target
                           </p>
                         </div>
                         <div className="p-4 bg-gray-50 rounded-lg">
                           <Label className="text-sm font-medium text-gray-600">
-                            Độ khó
+                            Difficulty
                           </Label>
                           <p className="text-lg font-semibold text-gray-900 mt-1">
                             {assignmentDetailData.locTarget < 200
-                              ? 'Dễ'
+                              ? 'Easy'
                               : assignmentDetailData.locTarget < 500
-                                ? 'Trung bình'
+                                ? 'Medium'
                                 : assignmentDetailData.locTarget < 1000
-                                  ? 'Khó'
-                                  : 'Rất khó'}
+                                  ? 'Hard'
+                                  : 'Very Hard'}
                           </p>
                           <p className="text-sm text-gray-500 mt-1">
-                            Dựa trên LOC yêu cầu
+                            Based on LOC Target
                           </p>
                         </div>
                       </div>
@@ -286,7 +286,7 @@ export const TeacherAssignmentDetail = ({
                 <Card>
                   <CardContent className="p-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                      Thao tác nhanh
+                      Quick Actions
                     </h3>
                     <div className="grid grid-cols-1 gap-3">
                       <Button
@@ -298,14 +298,14 @@ export const TeacherAssignmentDetail = ({
                         }}
                       >
                         <Edit className="mr-2 h-4 w-4" />
-                        Chỉnh sửa assignment
+                        Edit assignment
                       </Button>
                       <Button
                         variant="outline"
                         className="w-full justify-start"
                       >
                         <Users className="mr-2 h-4 w-4" />
-                        Xem danh sách submissions
+                        View submissions list
                       </Button>
                       <Button
                         variant="outline"
@@ -316,7 +316,7 @@ export const TeacherAssignmentDetail = ({
                         }}
                       >
                         <Trash2 className="mr-2 h-4 w-4" />
-                        Xóa assignment
+                        Delete assignment
                       </Button>
                     </div>
                   </CardContent>
@@ -328,7 +328,7 @@ export const TeacherAssignmentDetail = ({
 
         <div className="flex justify-end mt-6">
           <Button variant="outline" onClick={() => setIsDetailModalOpen(false)}>
-            Đóng
+            Close
           </Button>
         </div>
       </DialogContent>

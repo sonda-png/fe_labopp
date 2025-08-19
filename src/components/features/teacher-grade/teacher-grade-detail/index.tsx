@@ -44,47 +44,47 @@ export function TeacherSubmissionDetail({
       <DialogContent className="max-w-2xl pt-2 pb-2 px-6">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">
-            Chi tiết bài nộp
+            Submission Detail
           </DialogTitle>
           <DialogDescription>
-            Thông tin đầy đủ về bài làm của sinh viên
+            Full information about the student's submission
           </DialogDescription>
         </DialogHeader>
 
         {isLoading ? (
           <div className="text-center py-10 text-sm text-muted-foreground">
-            Đang tải dữ liệu...
+            Loading data...
           </div>
         ) : isError ? (
           <div className="text-center py-10 text-sm text-destructive">
-            Lỗi khi tải dữ liệu
+            Error loading data
           </div>
         ) : detail ? (
           <div className="space-y-5 pt-4 text-sm">
             <InfoItem
-              label="Sinh viên"
+              label="Student"
               value={`${detail.studentName} (${detail.studentId})`}
             />
             <InfoItem
-              label="Bài tập"
+              label="Assignment"
               value={`${detail.assignmentTitle} (${detail.assignmentId})`}
             />
             <InfoItem
-              label="LOC / Mục tiêu"
+              label="LOC / Target"
               value={`${detail.loc} / ${detail.locTarget}`}
             />
             <InfoItem
-              label="Thời gian nộp"
+              label="Submitted Time"
               value={new Date(detail.submittedAt).toLocaleString('vi-VN')}
             />
             <div>
-              <Label>Trạng thái</Label>
+              <Label>Status</Label>
               <div className="mt-1">
                 <Badge>{detail.status}</Badge>
               </div>
             </div>
             <div>
-              <Label>File nộp</Label>
+              <Label>Submitted File</Label>
               <div className="mt-1">
                 <a
                   href={detail.filePath}
@@ -92,12 +92,12 @@ export function TeacherSubmissionDetail({
                   rel="noopener noreferrer"
                   className="text-blue-600 underline text-sm"
                 >
-                  Tải file
+                  Download file
                 </a>
               </div>
             </div>
             <div>
-              <Label>Feedbacks</Label>
+              <Label>Feedbacks & Grades</Label>
               <div className="mt-1 text-sm text-muted-foreground">
                 {detail.feedbacks.length ? (
                   <ul className="list-disc ml-5 space-y-1">
@@ -106,12 +106,12 @@ export function TeacherSubmissionDetail({
                     ))}
                   </ul>
                 ) : (
-                  <span>Không có feedback</span>
+                  <span>No feedback</span>
                 )}
               </div>
             </div>
             <div>
-              <Label>Kết quả test case</Label>
+              <Label>Test case results</Label>
               <div className="mt-2 overflow-auto">
                 {detail.testCaseResults.length ? (
                   <table className="w-full text-sm border rounded-sm">
@@ -120,7 +120,7 @@ export function TeacherSubmissionDetail({
                         <th className="border px-2 py-1 text-left">ID</th>
                         <th className="border px-2 py-1 text-left">TestCase</th>
                         <th className="border px-2 py-1 text-left">Output</th>
-                        <th className="border px-2 py-1 text-left">Kết quả</th>
+                        <th className="border px-2 py-1 text-left">Result</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -148,21 +148,19 @@ export function TeacherSubmissionDetail({
                   </table>
                 ) : (
                   <span className="text-sm text-muted-foreground">
-                    Không có test case
+                    No test case
                   </span>
                 )}
               </div>
             </div>
           </div>
         ) : (
-          <div className="text-center py-8 text-muted-foreground">
-            Không có dữ liệu
-          </div>
+          <div className="text-center py-8 text-muted-foreground">No data</div>
         )}
 
         <DialogClose asChild>
           <Button variant="outline" className="mt-6 w-full">
-            Đóng
+            Close
           </Button>
         </DialogClose>
       </DialogContent>

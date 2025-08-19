@@ -115,8 +115,8 @@ export const SemesterManagement = () => {
     mutateAsync: createSemesterClassMutation,
     isPending: isCreateSemesterClassPending,
   } = useMutation('createSemesterClass', {
-    onSuccess: (res: Semester) => {
-      toast.success('Tạo học kỳ thành công')
+    onSuccess: () => {
+      toast.success('Create semester successfully')
       setIsCreateModalOpen(false)
       resetCreate()
     },
@@ -126,11 +126,11 @@ export const SemesterManagement = () => {
   })
 
   const updateSemesterMutation = () => {
-    toast.error('Chức năng đang phát triển')
+    toast.error('Function is under development')
   }
 
   const deactivateSemesterMutation = () => {
-    toast.error('Chức năng đang phát triển')
+    toast.error('Function is under development')
   }
 
   const semesters: Semester[] = semestersData || []
@@ -162,15 +162,15 @@ export const SemesterManagement = () => {
   const getStatusText = (status: string) => {
     switch (status) {
       case 'current':
-        return 'Học kỳ hiện tại'
+        return 'Current semester'
       case 'completed':
-        return 'Đã hoàn thành'
+        return 'Completed'
       case 'upcoming':
-        return 'Sắp diễn ra'
+        return 'Upcoming'
       case 'inactive':
-        return 'Không hoạt động'
+        return 'Inactive'
       default:
-        return 'Không xác định'
+        return 'Unknown'
     }
   }
 
@@ -243,7 +243,7 @@ export const SemesterManagement = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Đang tải dữ liệu...</p>
+          <p className="mt-4 text-gray-600">Loading data...</p>
         </div>
       </div>
     )
@@ -254,8 +254,10 @@ export const SemesterManagement = () => {
       <div className="flex items-center gap-3">
         <Calendar className="h-8 w-8 text-orange-500" />
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Quản lý học kỳ</h1>
-          <p className="text-gray-600">Quản lý các học kỳ và lớp học</p>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Semester Management
+          </h1>
+          <p className="text-gray-600">Manage semesters and classes</p>
         </div>
       </div>
 
@@ -268,7 +270,7 @@ export const SemesterManagement = () => {
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
-                placeholder="Tìm kiếm học kỳ..."
+                placeholder="Search semester..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
                 className="pl-10 w-80 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
@@ -277,20 +279,20 @@ export const SemesterManagement = () => {
 
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-48">
-                <SelectValue placeholder="Trạng thái" />
+                <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tất cả trạng thái</SelectItem>
-                <SelectItem value="current">Học kỳ hiện tại</SelectItem>
-                <SelectItem value="completed">Đã hoàn thành</SelectItem>
-                <SelectItem value="upcoming">Sắp diễn ra</SelectItem>
-                <SelectItem value="inactive">Không hoạt động</SelectItem>
+                <SelectItem value="all">All status</SelectItem>
+                <SelectItem value="current">Current semester</SelectItem>
+                <SelectItem value="completed">Completed</SelectItem>
+                <SelectItem value="upcoming">Upcoming</SelectItem>
+                <SelectItem value="inactive">Inactive</SelectItem>
               </SelectContent>
             </Select>
 
             <Button variant="outline">
               <Filter className="mr-2 h-4 w-4" />
-              Bộ lọc nâng cao
+              Advanced filter
             </Button>
           </div>
 
@@ -298,21 +300,21 @@ export const SemesterManagement = () => {
             <DialogTrigger asChild>
               <Button className="bg-orange-500 hover:bg-orange-600">
                 <Plus className="mr-2 h-4 w-4" />
-                Thêm học kỳ mới
+                Add new semester
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-3xl">
               <DialogHeader>
-                <DialogTitle>Tạo học kỳ mới</DialogTitle>
+                <DialogTitle>Add new semester</DialogTitle>
                 <DialogDescription>
-                  Nhập thông tin để tạo học kỳ mới cho hệ thống
+                  Enter information to add a new semester to the system
                 </DialogDescription>
               </DialogHeader>
               <form onSubmit={handleSubmitCreate(handleCreateSemester)}>
                 <div className="grid grid-cols-1 gap-4 py-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="name">Tên học kỳ *</Label>
+                      <Label htmlFor="name">Semester name *</Label>
                       <Input
                         id="name"
                         placeholder="VD: OOP K19"
@@ -327,7 +329,7 @@ export const SemesterManagement = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="subject">Môn học *</Label>
+                      <Label htmlFor="subject">Subject *</Label>
                       <Input
                         id="subject"
                         placeholder="VD: Object-Oriented Programming"
@@ -344,7 +346,7 @@ export const SemesterManagement = () => {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="semester">Học kỳ *</Label>
+                      <Label htmlFor="semester">Semester *</Label>
                       <Input
                         id="semester"
                         type="number"
@@ -363,7 +365,7 @@ export const SemesterManagement = () => {
                       )}
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="academicYear">Năm học *</Label>
+                      <Label htmlFor="academicYear">Academic year *</Label>
                       <Input
                         id="academicYear"
                         placeholder="VD: 2023-2024"
@@ -382,7 +384,7 @@ export const SemesterManagement = () => {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="locToPass">LOC để pass *</Label>
+                      <Label htmlFor="locToPass">LOC to pass *</Label>
                       <Input
                         id="locToPass"
                         type="number"
@@ -403,7 +405,7 @@ export const SemesterManagement = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="teacherId">Giảng viên *</Label>
+                      <Label htmlFor="teacherId">Teacher *</Label>
                       <Controller
                         name="teacherId"
                         control={controlCreate}
@@ -417,7 +419,7 @@ export const SemesterManagement = () => {
                                 errorsCreate.teacherId ? 'border-red-500' : ''
                               }
                             >
-                              <SelectValue placeholder="Chọn giảng viên" />
+                              <SelectValue placeholder="Select teacher" />
                             </SelectTrigger>
                             <SelectContent>
                               {teachersData?.map(teacher => (
@@ -440,7 +442,7 @@ export const SemesterManagement = () => {
                   <div className="flex items-center space-x-2 p-4 bg-orange-50 rounded-lg">
                     <Switch id="isActive" {...registerCreate('isActive')} />
                     <Label htmlFor="isActive" className="text-sm font-medium">
-                      Kích hoạt học kỳ
+                      Activate semester
                     </Label>
                   </div>
                 </div>
@@ -453,7 +455,7 @@ export const SemesterManagement = () => {
                       resetCreate()
                     }}
                   >
-                    Hủy
+                    Cancel
                   </Button>
                   <Button
                     type="submit"
@@ -462,8 +464,8 @@ export const SemesterManagement = () => {
                   >
                     <Save className="mr-2 h-4 w-4" />
                     {isCreateSemesterClassPending
-                      ? 'Đang tạo...'
-                      : 'Tạo học kỳ'}
+                      ? 'Creating...'
+                      : 'Add semester'}
                   </Button>
                 </div>
               </form>
@@ -504,34 +506,30 @@ export const SemesterManagement = () => {
                             variant="outline"
                             className="border-red-200 text-red-700"
                           >
-                            Vô hiệu hóa
+                            Inactive
                           </Badge>
                         )}
                       </div>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600 mb-3">
                         <div>
-                          <span className="font-medium">Mã học kỳ:</span>
+                          <span className="font-medium">Semester code:</span>
                           <div>{semester.academicYear}</div>
                         </div>
                         <div>
-                          <span className="font-medium">Học kỳ:</span>
-                          <div>Học kỳ {semester.semester}</div>
+                          <span className="font-medium">Semester:</span>
+                          <div>Semester {semester.semester}</div>
                         </div>
                         <div>
-                          <span className="font-medium">Năm học:</span>
+                          <span className="font-medium">Academic year:</span>
                           <div>{semester.academicYear}</div>
                         </div>
                         <div>
-                          <span className="font-medium">Trạng thái:</span>
-                          <div>
-                            {semester.isActive
-                              ? 'Hoạt động'
-                              : 'Không hoạt động'}
-                          </div>
+                          <span className="font-medium">Status:</span>
+                          <div>{semester.isActive ? 'Active' : 'Inactive'}</div>
                         </div>
                       </div>
                       <div className="text-xs text-gray-500">
-                        Tạo ngày{' '}
+                        Created on{' '}
                         {new Date(semester.createdAt).toLocaleDateString(
                           'en-US'
                         )}
@@ -551,13 +549,13 @@ export const SemesterManagement = () => {
                           onClick={() => openEditModal(semester)}
                         >
                           <Edit className="mr-2 h-4 w-4" />
-                          Chỉnh sửa
+                          Edit
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => openDetailModal(semester)}
                         >
                           <Eye className="mr-2 h-4 w-4" />
-                          Xem chi tiết
+                          View details
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
@@ -566,18 +564,18 @@ export const SemesterManagement = () => {
                           {semester.isActive ? (
                             <>
                               <XCircle className="mr-2 h-4 w-4" />
-                              Vô hiệu hóa
+                              Inactive
                             </>
                           ) : (
                             <>
                               <CheckCircle className="mr-2 h-4 w-4" />
-                              Kích hoạt
+                              Activate
                             </>
                           )}
                         </DropdownMenuItem>
                         <DropdownMenuItem className="text-red-600">
                           <Trash2 className="mr-2 h-4 w-4" />
-                          Xóa học kỳ
+                          Delete semester
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -592,9 +590,9 @@ export const SemesterManagement = () => {
         <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
           <DialogContent className="max-w-3xl">
             <DialogHeader>
-              <DialogTitle>Chỉnh sửa học kỳ</DialogTitle>
+              <DialogTitle>Edit semester</DialogTitle>
               <DialogDescription>
-                Cập nhật thông tin cho học kỳ {selectedSemester?.name}
+                Update information for semester {selectedSemester?.name}
               </DialogDescription>
             </DialogHeader>
 
@@ -606,11 +604,12 @@ export const SemesterManagement = () => {
                 </div>
                 <div>
                   <p className="text-sm font-medium text-amber-800 mb-1">
-                    Lưu ý khi chỉnh sửa học kỳ
+                    Note when editing semester
                   </p>
                   <p className="text-sm text-amber-700">
-                    Một số thông tin như môn học, LOC để pass và giảng viên cần
-                    được điền lại do chưa có trong dữ liệu hiện tại.
+                    Some information such as subject, LOC to pass and teacher
+                    need to be filled again as they are not available in the
+                    current data.
                   </p>
                 </div>
               </div>
@@ -619,7 +618,7 @@ export const SemesterManagement = () => {
               <div className="grid grid-cols-1 gap-4 py-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="editName">Tên học kỳ *</Label>
+                    <Label htmlFor="editName">Semester name *</Label>
                     <Input
                       id="editName"
                       placeholder="VD: OOP K19"
@@ -634,10 +633,10 @@ export const SemesterManagement = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="editSubject">Môn học *</Label>
+                    <Label htmlFor="editSubject">Subject *</Label>
                     <Input
                       id="editSubject"
-                      placeholder="Vui lòng nhập tên môn học (VD: Object-Oriented Programming)"
+                      placeholder="Please enter subject name (VD: Object-Oriented Programming)"
                       {...registerEdit('subject')}
                       className={errorsEdit.subject ? 'border-red-500' : ''}
                     />
@@ -651,7 +650,7 @@ export const SemesterManagement = () => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="editSemester">Học kỳ *</Label>
+                    <Label htmlFor="editSemester">Semester *</Label>
                     <Input
                       id="editSemester"
                       type="number"
@@ -668,7 +667,7 @@ export const SemesterManagement = () => {
                     )}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="editAcademicYear">Năm học *</Label>
+                    <Label htmlFor="editAcademicYear">Academic year *</Label>
                     <Input
                       id="editAcademicYear"
                       placeholder="VD: 2023-2024"
@@ -687,12 +686,12 @@ export const SemesterManagement = () => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="editLocToPass">LOC để pass *</Label>
+                    <Label htmlFor="editLocToPass">LOC to pass *</Label>
                     <Input
                       id="editLocToPass"
                       type="number"
                       min="0"
-                      placeholder="Nhập số LOC yêu cầu để pass (VD: 1000)"
+                      placeholder="Enter LOC to pass (VD: 1000)"
                       {...registerEdit('locToPass', { valueAsNumber: true })}
                       className={errorsEdit.locToPass ? 'border-red-500' : ''}
                     />
@@ -703,7 +702,7 @@ export const SemesterManagement = () => {
                     )}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="editTeacherId">Giảng viên *</Label>
+                    <Label htmlFor="editTeacherId">Teacher *</Label>
                     <Controller
                       name="teacherId"
                       control={controlEdit}
@@ -717,7 +716,7 @@ export const SemesterManagement = () => {
                               errorsEdit.teacherId ? 'border-red-500' : ''
                             }
                           >
-                            <SelectValue placeholder="Chọn giảng viên" />
+                            <SelectValue placeholder="Select teacher" />
                           </SelectTrigger>
                           <SelectContent>
                             {teachersData?.map(teacher => (
@@ -740,7 +739,7 @@ export const SemesterManagement = () => {
                 <div className="flex items-center space-x-2 p-4 bg-orange-50 rounded-lg">
                   <Switch id="editIsActive" {...registerEdit('isActive')} />
                   <Label htmlFor="editIsActive" className="text-sm font-medium">
-                    Kích hoạt học kỳ
+                    Activate semester
                   </Label>
                 </div>
               </div>
@@ -754,7 +753,7 @@ export const SemesterManagement = () => {
                   }}
                 >
                   <X className="mr-2 h-4 w-4" />
-                  Hủy
+                  Cancel
                 </Button>
                 <Button
                   type="submit"
@@ -762,9 +761,7 @@ export const SemesterManagement = () => {
                   disabled={isCreateSemesterClassPending}
                 >
                   <Save className="mr-2 h-4 w-4" />
-                  {isCreateSemesterClassPending
-                    ? 'Đang cập nhật...'
-                    : 'Cập nhật'}
+                  {isCreateSemesterClassPending ? 'Updating...' : 'Update'}
                 </Button>
               </div>
             </form>
@@ -775,9 +772,9 @@ export const SemesterManagement = () => {
         <Dialog open={isDetailModalOpen} onOpenChange={setIsDetailModalOpen}>
           <DialogContent className="max-w-4xl">
             <DialogHeader>
-              <DialogTitle>Chi tiết học kỳ</DialogTitle>
+              <DialogTitle>Semester details</DialogTitle>
               <DialogDescription>
-                Thông tin chi tiết về học kỳ {selectedSemester?.name}
+                Detailed information about semester {selectedSemester?.name}
               </DialogDescription>
             </DialogHeader>
 
@@ -808,7 +805,7 @@ export const SemesterManagement = () => {
                           variant="outline"
                           className="border-red-200 text-red-700"
                         >
-                          Vô hiệu hóa
+                          Inactive
                         </Badge>
                       )}
                     </div>
@@ -820,41 +817,39 @@ export const SemesterManagement = () => {
                   <Card>
                     <CardContent className="p-6">
                       <h4 className="text-lg font-semibold text-gray-900 mb-4">
-                        Thông tin cơ bản
+                        Basic information
                       </h4>
                       <div className="space-y-3">
                         <div className="flex justify-between">
-                          <span className="text-gray-600">Mã học kỳ:</span>
+                          <span className="text-gray-600">Semester code:</span>
                           <span className="font-medium">
                             {selectedSemester.id}
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-600">Tên học kỳ:</span>
+                          <span className="text-gray-600">Semester name:</span>
                           <span className="font-medium">
                             {selectedSemester.name}
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-600">Học kỳ:</span>
+                          <span className="text-gray-600">Semester:</span>
                           <span className="font-medium">
-                            Học kỳ {selectedSemester.semester}
+                            Semester {selectedSemester.semester}
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-600">Năm học:</span>
+                          <span className="text-gray-600">Academic year:</span>
                           <span className="font-medium">
                             {selectedSemester.academicYear}
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-600">Trạng thái:</span>
+                          <span className="text-gray-600">Status:</span>
                           <span
                             className={`font-medium ${selectedSemester.isActive ? 'text-green-600' : 'text-red-600'}`}
                           >
-                            {selectedSemester.isActive
-                              ? 'Hoạt động'
-                              : 'Không hoạt động'}
+                            {selectedSemester.isActive ? 'Active' : 'Inactive'}
                           </span>
                         </div>
                       </div>
@@ -864,11 +859,11 @@ export const SemesterManagement = () => {
                   <Card>
                     <CardContent className="p-6">
                       <h4 className="text-lg font-semibold text-gray-900 mb-4">
-                        Thông tin thời gian
+                        Time information
                       </h4>
                       <div className="space-y-3">
                         <div className="flex justify-between">
-                          <span className="text-gray-600">Ngày tạo:</span>
+                          <span className="text-gray-600">Created on:</span>
                           <span className="font-medium">
                             {new Date(
                               selectedSemester.createdAt
@@ -883,7 +878,7 @@ export const SemesterManagement = () => {
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-600">
-                            Trạng thái học kỳ:
+                            Semester status:
                           </span>
                           <span className="font-medium">
                             {getStatusText(getSemesterStatus(selectedSemester))}
@@ -900,7 +895,7 @@ export const SemesterManagement = () => {
                     variant="outline"
                     onClick={() => setIsDetailModalOpen(false)}
                   >
-                    Đóng
+                    Close
                   </Button>
                   <Button
                     className="bg-orange-500 hover:bg-orange-600"
@@ -910,7 +905,7 @@ export const SemesterManagement = () => {
                     }}
                   >
                     <Edit className="mr-2 h-4 w-4" />
-                    Chỉnh sửa
+                    Edit
                   </Button>
                 </div>
               </div>
@@ -924,10 +919,10 @@ export const SemesterManagement = () => {
             <CardContent>
               <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Không tìm thấy học kỳ nào
+                No semester found
               </h3>
               <p className="text-gray-600 mb-4">
-                Không có học kỳ nào phù hợp với tiêu chí tìm kiếm.
+                No semester found matching the search criteria.
               </p>
               <Button
                 variant="outline"
@@ -936,7 +931,7 @@ export const SemesterManagement = () => {
                   setStatusFilter('all')
                 }}
               >
-                Xóa bộ lọc
+                Clear filter
               </Button>
             </CardContent>
           </Card>

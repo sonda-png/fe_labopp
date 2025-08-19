@@ -50,7 +50,7 @@ export const SidebarComponent = () => {
       <SidebarContent className="bg-gradient-to-b from-white to-gray-50/50 mt-20">
         <SidebarGroup className="px-4 py-6">
           <SidebarGroupLabel className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">
-            Danh mục
+            Menu
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="space-y-2">
@@ -68,9 +68,9 @@ export const SidebarComponent = () => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-900 truncate">
-                    Màn hình {authValues.role}
+                    Role: {authValues.role}
                   </p>
-                  <p className="text-xs text-orange-600">Đang hoạt động</p>
+                  <p className="text-xs text-orange-600">Active</p>
                 </div>
               </div>
             </CardContent>

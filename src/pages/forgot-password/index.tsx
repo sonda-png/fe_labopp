@@ -56,12 +56,12 @@ export const ForgotPasswordPage = (): ReactNode => {
     setErrors({})
 
     if (!email) {
-      setErrors({ email: 'Vui lòng nhập địa chỉ email' })
+      setErrors({ email: 'Please enter your email address' })
       return
     }
 
     if (!validateEmail(email)) {
-      setErrors({ email: 'Địa chỉ email không hợp lệ' })
+      setErrors({ email: 'Invalid email address' })
       return
     }
 
@@ -91,7 +91,7 @@ export const ForgotPasswordPage = (): ReactNode => {
     setErrors({})
 
     if (!otp || otp.length !== 6) {
-      setErrors({ otp: 'Vui lòng nhập mã OTP 6 số' })
+      setErrors({ otp: 'Please enter a 6-digit OTP' })
       return
     }
 
@@ -104,7 +104,7 @@ export const ForgotPasswordPage = (): ReactNode => {
         // Mock verification
         setStep('reset')
       } else {
-        setErrors({ otp: 'Mã OTP không chính xác' })
+        setErrors({ otp: 'Invalid OTP' })
       }
     }, 1500)
   }
@@ -113,17 +113,17 @@ export const ForgotPasswordPage = (): ReactNode => {
     setErrors({})
 
     if (!newPassword) {
-      setErrors({ newPassword: 'Vui lòng nhập mật khẩu mới' })
+      setErrors({ newPassword: 'Please enter a new password' })
       return
     }
 
     if (!validatePassword(newPassword)) {
-      setErrors({ newPassword: 'Mật khẩu phải có ít nhất 8 ký tự' })
+      setErrors({ newPassword: 'Password must be at least 8 characters' })
       return
     }
 
     if (newPassword !== confirmPassword) {
-      setErrors({ confirmPassword: 'Mật khẩu xác nhận không khớp' })
+      setErrors({ confirmPassword: 'Confirm password does not match' })
       return
     }
 
@@ -155,22 +155,23 @@ export const ForgotPasswordPage = (): ReactNode => {
           <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
             Class Tracking System
           </h1>
-          <p className="text-gray-600 mt-2">Hệ thống quản lý học tập</p>
+          <p className="text-gray-600 mt-2">Class Tracking System</p>
         </div>
 
         <Card className="bg-white/80 backdrop-blur-lg border-orange-200/50 shadow-xl">
           <CardHeader className="text-center">
             <CardTitle className="text-xl font-semibold text-gray-900">
-              {step === 'email' && 'Quên mật khẩu'}
-              {step === 'otp' && 'Xác thực OTP'}
-              {step === 'reset' && 'Đặt lại mật khẩu'}
-              {step === 'success' && 'Thành công'}
+              {step === 'email' && 'Forgot password'}
+              {step === 'otp' && 'OTP verification'}
+              {step === 'reset' && 'Reset password'}
+              {step === 'success' && 'Success'}
             </CardTitle>
             <CardDescription className="text-gray-600">
-              {step === 'email' && 'Nhập email để nhận mã xác thực'}
-              {step === 'otp' && `Mã OTP đã được gửi đến ${email}`}
-              {step === 'reset' && 'Tạo mật khẩu mới cho tài khoản'}
-              {step === 'success' && 'Mật khẩu đã được đặt lại thành công'}
+              {step === 'email' &&
+                'Enter your email to receive the verification code'}
+              {step === 'otp' && `The OTP has been sent to ${email}`}
+              {step === 'reset' && 'Create a new password for your account'}
+              {step === 'success' && 'Password has been reset successfully'}
             </CardDescription>
           </CardHeader>
 
@@ -180,14 +181,14 @@ export const ForgotPasswordPage = (): ReactNode => {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-gray-700 font-medium">
-                    Địa chỉ email
+                    Email address
                   </Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                     <Input
                       id="email"
                       type="email"
-                      placeholder="Nhập địa chỉ email của bạn"
+                      placeholder="Enter your email address"
                       value={email}
                       onChange={e => setEmail(e.target.value)}
                       className={`pl-10 border-gray-300 focus:border-orange-500 focus:ring-orange-500 ${
@@ -208,10 +209,10 @@ export const ForgotPasswordPage = (): ReactNode => {
                   {isLoading ? (
                     <div className="flex items-center space-x-2">
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                      <span>Đang gửi...</span>
+                      <span>Sending...</span>
                     </div>
                   ) : (
-                    'Gửi mã OTP'
+                    'Send OTP'
                   )}
                 </Button>
               </div>
@@ -222,12 +223,12 @@ export const ForgotPasswordPage = (): ReactNode => {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="otp" className="text-gray-700 font-medium">
-                    Mã OTP (6 số)
+                    OTP (6 digits)
                   </Label>
                   <Input
                     id="otp"
                     type="text"
-                    placeholder="Nhập mã OTP"
+                    placeholder="Enter OTP"
                     value={otp}
                     onChange={e => {
                       const value = e.target.value
@@ -246,7 +247,7 @@ export const ForgotPasswordPage = (): ReactNode => {
                 </div>
 
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600">Không nhận được mã?</span>
+                  <span className="text-gray-600">Did not receive OTP?</span>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -258,8 +259,8 @@ export const ForgotPasswordPage = (): ReactNode => {
                       className={`mr-1 h-3 w-3 ${isLoading ? 'animate-spin' : ''}`}
                     />
                     {countdown > 0
-                      ? `Gửi lại (${formatTime(countdown)})`
-                      : 'Gửi lại'}
+                      ? `Resend (${formatTime(countdown)})`
+                      : 'Resend'}
                   </Button>
                 </div>
 
@@ -271,10 +272,10 @@ export const ForgotPasswordPage = (): ReactNode => {
                   {isLoading ? (
                     <div className="flex items-center space-x-2">
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                      <span>Đang xác thực...</span>
+                      <span>Verifying...</span>
                     </div>
                   ) : (
-                    'Xác thực OTP'
+                    'Verify OTP'
                   )}
                 </Button>
               </div>
@@ -288,13 +289,13 @@ export const ForgotPasswordPage = (): ReactNode => {
                     htmlFor="newPassword"
                     className="text-gray-700 font-medium"
                   >
-                    Mật khẩu mới
+                    New password
                   </Label>
                   <div className="relative">
                     <Input
                       id="newPassword"
                       type={showPassword ? 'text' : 'password'}
-                      placeholder="Nhập mật khẩu mới"
+                      placeholder="Enter new password"
                       value={newPassword}
                       onChange={e => setNewPassword(e.target.value)}
                       className={`pr-10 border-gray-300 focus:border-orange-500 focus:ring-orange-500 ${
@@ -325,13 +326,13 @@ export const ForgotPasswordPage = (): ReactNode => {
                     htmlFor="confirmPassword"
                     className="text-gray-700 font-medium"
                   >
-                    Xác nhận mật khẩu
+                    Confirm password
                   </Label>
                   <div className="relative">
                     <Input
                       id="confirmPassword"
                       type={showConfirmPassword ? 'text' : 'password'}
-                      placeholder="Nhập lại mật khẩu mới"
+                      placeholder="Enter new password again"
                       value={confirmPassword}
                       onChange={e => setConfirmPassword(e.target.value)}
                       className={`pr-10 border-gray-300 focus:border-orange-500 focus:ring-orange-500 ${
@@ -362,7 +363,7 @@ export const ForgotPasswordPage = (): ReactNode => {
                 </div>
 
                 <div className="text-xs text-gray-500 bg-gray-50 p-3 rounded-lg">
-                  <p className="font-medium mb-1">Yêu cầu mật khẩu:</p>
+                  <p className="font-medium mb-1">Password requirements:</p>
                   <ul className="space-y-1">
                     <li className="flex items-center space-x-2">
                       <div
@@ -372,7 +373,7 @@ export const ForgotPasswordPage = (): ReactNode => {
                             : 'bg-gray-300'
                         }`}
                       />
-                      <span>Ít nhất 8 ký tự</span>
+                      <span>At least 8 characters</span>
                     </li>
                     <li className="flex items-center space-x-2">
                       <div
@@ -382,7 +383,7 @@ export const ForgotPasswordPage = (): ReactNode => {
                             : 'bg-gray-300'
                         }`}
                       />
-                      <span>Có ít nhất 1 chữ hoa</span>
+                      <span>At least 1 uppercase letter</span>
                     </li>
                     <li className="flex items-center space-x-2">
                       <div
@@ -392,7 +393,7 @@ export const ForgotPasswordPage = (): ReactNode => {
                             : 'bg-gray-300'
                         }`}
                       />
-                      <span>Có ít nhất 1 số</span>
+                      <span>At least 1 number</span>
                     </li>
                   </ul>
                 </div>
@@ -405,10 +406,10 @@ export const ForgotPasswordPage = (): ReactNode => {
                   {isLoading ? (
                     <div className="flex items-center space-x-2">
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                      <span>Đang cập nhật...</span>
+                      <span>Updating...</span>
                     </div>
                   ) : (
-                    'Đặt lại mật khẩu'
+                    'Reset password'
                   )}
                 </Button>
               </div>
@@ -424,16 +425,16 @@ export const ForgotPasswordPage = (): ReactNode => {
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    Đặt lại mật khẩu thành công!
+                    Password reset successfully!
                   </h3>
                   <p className="text-gray-600 text-sm">
-                    Mật khẩu của bạn đã được cập nhật. Bạn có thể đăng nhập bằng
-                    mật khẩu mới.
+                    Your password has been updated. You can login with the new
+                    password.
                   </p>
                 </div>
                 <Link to="/login">
                   <Button className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-medium py-2.5">
-                    Đăng nhập ngay
+                    Login now
                   </Button>
                 </Link>
               </div>
@@ -448,7 +449,7 @@ export const ForgotPasswordPage = (): ReactNode => {
                     className="w-full text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                   >
                     <ArrowLeft className="mr-2 h-4 w-4" />
-                    Quay lại đăng nhập
+                    Go back to login
                   </Button>
                 </Link>
               </div>
@@ -458,8 +459,8 @@ export const ForgotPasswordPage = (): ReactNode => {
 
         {/* Footer */}
         <div className="text-center mt-8 text-sm text-gray-500">
-          <p>© 2024 Class Tracking System. All rights reserved.</p>
-          <p className="mt-1">Trường Đại học Công nghệ</p>
+          <p>© 2025 Class Tracking System. All rights reserved.</p>
+          <p className="mt-1">FPT University</p>
         </div>
       </div>
     </div>

@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
+
 import {
   Users,
   BookOpen,
@@ -16,60 +17,46 @@ import {
   School,
   UserCheck,
   CheckCircle,
-} from 'lucide-react'
+} from 'lucide-react';
+import { useQuery } from '@/hooks/useQuery/useQuery';
+import { headSubjectDashboardQueries } from '@/api/actions/headsubject-dashboard/headsubject-dashboard.queries';
 
-const headData = {
+
+const headDataFake = {
   name: 'PGS.TS. Trần Văn Minh',
   position: 'Head of Software Engineering Department',
   department: 'Faculty of Information Technology',
-  totalTeachers: 12,
-  totalClasses: 28,
-  totalStudents: 856,
-  totalSubjects: 8,
-}
+};
 
-const subjects = [
-  {
-    id: 1,
-    name: 'PRF192 - Programming Fundamentals',
-    teachers: 3,
-    classes: 6,
-    students: 245,
-    avgPassRate: 82,
-    trend: 'up',
-    status: 'active',
-  },
-  {
-    id: 2,
-    name: 'PRO192 - Object-Oriented Programming',
-    teachers: 2,
-    classes: 4,
-    students: 156,
-    avgPassRate: 89,
-    trend: 'up',
-    status: 'active',
-  },
-  {
-    id: 3,
-    name: 'LAB211 - OOP Lab',
-    teachers: 2,
-    classes: 5,
-    students: 195,
-    avgPassRate: 75,
-    trend: 'down',
-    status: 'needs_attention',
-  },
-  {
-    id: 4,
-    name: 'DBI202 - Database Introduction',
-    teachers: 3,
-    classes: 7,
-    students: 260,
-    avgPassRate: 87,
-    trend: 'up',
-    status: 'active',
-  },
-]
+export const HeadSubjectDashboard = () => {
+  // Lấy dữ liệu thật từ API
+  const { data: overviewRes, isLoading: loadingOverview, isError: errorOverview } = useQuery(headSubjectDashboardQueries.getOverview());
+  const { data: statisticsRes, isLoading, isError } = useQuery(headSubjectDashboardQueries.getAssignmentStatisticsAll());
+  const subjects = statisticsRes ?? [];
+
+  if (loadingOverview) {
+    return <div className="p-8 text-center text-lg">Loading overview...</div>;
+  }
+  if (errorOverview || !overviewRes) {
+    return <div className="p-8 text-center text-red-500">Failed to load overview.</div>;
+  }
+
+  if (isLoading) {
+    return <div className="p-8 text-center text-lg">Loading subject statistics...</div>;
+  }
+  if (isError) {
+    return <div className="p-8 text-center text-red-500">Failed to load subject statistics.</div>;
+  }
+
+  const headData = {
+    ...headDataFake,
+    totalTeachers: overviewRes.totalTeachers,
+    totalClasses: overviewRes.totalClasses,
+    totalStudents: overviewRes.totalStudents,
+    totalSubjects: 0, // Nếu API có trường này thì lấy, không thì để 0 hoặc bỏ
+  };
+
+
 
 const teacherPerformance = [
   {
@@ -100,8 +87,6 @@ const teacherPerformance = [
     rating: 'average',
   },
 ]
-
-export const HeadSubjectDashboard = () => {
 
   return (
     <div className="space-y-6">
@@ -219,41 +204,32 @@ export const HeadSubjectDashboard = () => {
             <div className="space-y-4">
               {subjects.map(subject => (
                 <div
-                  key={subject.id}
+                  key={subject.classId}
                   className="p-4 border rounded-lg hover:bg-gray-50"
                 >
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex-1">
                       <h4 className="font-semibold text-gray-900">
-                        {subject.name}
+                        {subject.className}
                       </h4>
                       <div className="flex items-center space-x-4 mt-1">
                         <span className="text-sm text-gray-600">
-                          {subject.teachers} Teachers • {subject.classes}{' '}
-                          Classes • {subject.students} Students
+                          {subject.totalStudents} Students • {subject.studentsPassed} Passed
                         </span>
                         <Badge
-                          variant={
-                            subject.status === 'needs_attention'
-                              ? 'destructive'
-                              : 'default'
-                          }
-                          className={
-                            subject.status === 'active' ? 'bg-green-500' : ''
-                          }
+                          variant={subject.passRate < 50 ? 'destructive' : 'default'}
+                          className={subject.passRate >= 85 ? 'bg-green-500' : subject.passRate >= 75 ? 'bg-orange-500' : ''}
                         >
-                          {subject.status === 'needs_attention'
-                            ? 'Needs Attention'
-                            : 'Normal'}
+                          {subject.passRate < 50 ? 'Needs Attention' : 'Normal'}
                         </Badge>
                       </div>
                     </div>
                     <div className="text-right">
                       <div className="flex items-center">
                         <p className="text-2xl font-bold text-orange-600 mr-2">
-                          {subject.avgPassRate}%
+                          {subject.passRate}%
                         </p>
-                        {subject.trend === 'up' ? (
+                        {subject.passRate >= 75 ? (
                           <TrendingUp className="h-5 w-5 text-green-500" />
                         ) : (
                           <TrendingDown className="h-5 w-5 text-red-500" />
@@ -265,18 +241,18 @@ export const HeadSubjectDashboard = () => {
 
                   <div className="mb-2">
                     <Progress
-                      value={subject.avgPassRate}
+                      value={subject.passRate}
                       className="h-2 bg-gray-200"
                     >
                       <div
                         className={`h-full rounded-full ${
-                          subject.avgPassRate >= 85
+                          subject.passRate >= 85
                             ? 'bg-green-500'
-                            : subject.avgPassRate >= 75
+                            : subject.passRate >= 75
                               ? 'bg-orange-500'
                               : 'bg-red-500'
                         }`}
-                        style={{ width: `${subject.avgPassRate}%` }}
+                        style={{ width: `${subject.passRate}%` }}
                       />
                     </Progress>
                   </div>

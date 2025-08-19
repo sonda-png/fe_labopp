@@ -20,8 +20,8 @@ import { Badge } from "@/components/ui/badge"
 const submissions = [
   {
     id: "SUB001",
-    student_id: "HE194829",
-    student_name: "Nguyễn Tuấn Hùng",
+    student_id: "HE194829", 
+    student_name: "Nguyễn Tuấn Hùng"  ,
     assignment_id: "LAB001",
     assignment_name: "Selection sort algorithm",
     zip_code: "selection_sort.zip",
