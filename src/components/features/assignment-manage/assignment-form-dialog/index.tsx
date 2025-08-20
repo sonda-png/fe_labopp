@@ -36,7 +36,6 @@ import {
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 import { useMutation } from '@/hooks'
-import { assignmentManageQueries } from '@/api/actions/assignment-manage/assignment.query'
 import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
 import { authStore } from '@/stores/authStore'
 
@@ -218,7 +217,7 @@ export const AssignmentFormDialog = ({
         uploadBy: authValues.userId,
         assignmentId: targetAssignmentId,
       })
-    } catch (error) {
+    } catch (error: unknown) {
       toast.error('Failed to upload PDF')
     }
   }

@@ -19,11 +19,13 @@ import { FileArchive, Upload, X, FileCode, Check } from 'lucide-react'
 import { useMutation, useQuery } from '@/hooks'
 import { toast } from 'react-toastify'
 import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
-import { useSearch } from '@tanstack/react-router'
+import { useNavigate, useSearch } from '@tanstack/react-router'
 import { assignmentQueries } from '@/api/actions/assignment/assignment.queries'
 import { authStore } from '@/stores/authStore'
+import { SubmitSubmissionResponse } from '@/api/actions/submissions/submissions.type'
 
 export default function StudentSubmission() {
+  const navigate = useNavigate()
   const { authValues } = authStore()
   const search = useSearch({ strict: false })
 
@@ -47,6 +49,10 @@ export default function StudentSubmission() {
     {
       onSuccess: () => {
         toast.success('Assignment submitted successfully')
+
+        navigate({
+          to: '/my-submit',
+        })
       },
       onError: (error: StandardizedApiError) => {
         toast.error(error.message)

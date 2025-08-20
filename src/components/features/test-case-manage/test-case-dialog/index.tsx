@@ -1,7 +1,5 @@
 import { Assignment } from '@/api/actions/assignment-manage/assignment.types'
 import { problemQueries } from '@/api/actions/problem/problem.queries'
-import { TestCaseArgs } from '@/api/actions/problem/problem.type'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -10,11 +8,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useMutation, useQuery } from '@/hooks'
-import { useQueryClient } from '@tanstack/react-query'
-import { Plus, TestTube, Upload } from 'lucide-react'
+import { useQuery } from '@/hooks'
+import { Plus, TestTube } from 'lucide-react'
 import { toast } from 'react-toastify'
 
 interface TestCaseDialogProps {
@@ -29,13 +25,12 @@ export const TestCaseDialog = ({
   selectedLab,
   setIsAddTestCaseDialogOpen,
 }: TestCaseDialogProps) => {
-  const queryClient = useQueryClient()
 
   const { data: testCases } = useQuery({
     ...problemQueries.getByAssignment(selectedLab?.id || ''),
   })
 
-  const handleDeleteTestCase = (testCaseId: string) => {
+  const handleDeleteTestCase = () => {
     if (!selectedLab) return
 
     toast.success('Test case deleted successfully')

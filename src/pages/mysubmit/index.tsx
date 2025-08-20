@@ -17,6 +17,7 @@ import { MySubmissionStatsCard } from '@/components/features/my-submissions/subm
 import { SubmissionSearchAndFilter } from '@/components/features/my-submissions/submission-search-filter'
 import { SubmissionDetailDialog } from '@/components/features/my-submissions/submission-detail-dialog'
 import { SubmissionCard } from '@/components/features/my-submissions/submission-card'
+import { ENV } from '@/config/env'
 
 // Loading Component
 const LoadingState = () => (
@@ -104,7 +105,7 @@ const StudentResults = () => {
 
   const handleDownload = (fileUrl: string, fileName: string) => {
     const link = document.createElement('a')
-    link.href = fileUrl
+    link.href = `${ENV.BACK_END_STATIC}${fileUrl}`
     link.download = fileName
     document.body.appendChild(link)
     link.click()

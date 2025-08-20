@@ -23,7 +23,6 @@ import {
   Eye,
   Users,
   CheckCircle,
-  Clock,
 } from 'lucide-react'
 import { authStore } from '@/stores/authStore'
 import { useNavigate } from '@tanstack/react-router'
@@ -89,7 +88,7 @@ export default function TeacherSubmissionClassList() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
+      <div className=" mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center gap-3 mb-8">
           <GraduationCap className="h-8 w-8 text-orange-500" />
@@ -264,14 +263,6 @@ export default function TeacherSubmissionClassList() {
                     >
                       {classItem.locToPass?.toLocaleString?.() ?? '-'}
                     </Badge>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm text-gray-700">Class code:</span>
-                    <span className="text-sm font-mono text-gray-600">
-                      {classItem.id}
-                    </span>
                   </div>
                 </div>
 
