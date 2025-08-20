@@ -13,7 +13,6 @@ import {
   LogOut,
   Settings,
   Trophy,
-  User,
   LogIn,
 } from 'lucide-react'
 import { authStore } from '@/stores/authStore'

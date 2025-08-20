@@ -5,7 +5,17 @@ export type SubmitSubmissionArgs = {
   status: 'Draft' | 'Submit'
 }
 
-export type SubmissionResult = {
+export type SubmitSubmissionResponse = {
   submissionId: string
-  result: string
 }
+
+export type SubmissionResult = {
+  testCaseId: string
+  status: 'PASS' | 'FAIL'
+  actualOutput: string
+  expectedOutput: string
+  durationMs: number
+  errorLog: string
+}
+
+export type SubmissionResultResponse = SubmissionResult[]

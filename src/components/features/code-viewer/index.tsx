@@ -1,20 +1,15 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-  FileText,
-  Folder,
-  Play,
-  CheckCircle,
-  XCircle,
-  Clock,
-} from 'lucide-react'
+import { FileText, Folder, CheckCircle, XCircle, Clock } from 'lucide-react'
 import { Highlight, themes } from 'prism-react-renderer'
 import Prism from 'prismjs'
 import { useQuery } from '@/hooks'
 import { teacherAssignmentQueries } from '@/api/actions/teacher-assignment/teacher-assignment.queries'
+import { submissionsQueries } from '@/api/actions/submissions/submissions.queries'
+import { SubmissionResult } from '@/api/actions/submissions/submissions.type'
 import { normalizeJavaFile } from '@/utils/helpers/normalizeJavaFile'
 import 'prismjs/components/prism-java'
 import { GradingCommentPanel } from '../grading-comment-panel'
@@ -27,9 +22,11 @@ import { CodeFile } from '@/api/actions/teacher-assignment/teacher-assignment.ty
 export interface TestResult {
   id: string
   name: string
-  status: 'passed' | 'failed' | 'running'
+  status: 'passed' | 'failed'
   output?: string
   error?: string
+  duration?: number
+  expectedOutput?: string
 }
 
 interface CodeFileViewerProps {
@@ -48,12 +45,6 @@ export default function CodeFileViewer({
   const [internalSelectedFile, setInternalSelectedFile] =
     useState<CodeFile | null>(null)
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set())
-  // const { data: viewSubmissionData } = useQuery({
-  //   ...teacherAssignmentQueries.viewSubmission({
-  //     zipPath: '',
-  //     javaFileName: '',
-  //   }),
-  // })
 
   const { data: viewJavaFileData } = useQuery({
     ...teacherAssignmentQueries.getViewJavaFile({
@@ -63,34 +54,6 @@ export default function CodeFileViewer({
     }),
   })
 
-  const [isRunningTests, setIsRunningTests] = useState(false)
-
-  // Test results state
-  const [testResults, setTestResults] = useState<TestResult[]>([
-    {
-      id: '1',
-      name: 'Test Case 1: Basic functionality',
-      status: 'passed',
-      output: 'All assertions passed successfully',
-    },
-    {
-      id: '2',
-      name: 'Test Case 2: Edge cases',
-      status: 'passed',
-      output: 'Edge case tests completed successfully',
-    },
-    {
-      id: '3',
-      name: 'Test Case 3: Error handling',
-      status: 'failed',
-      error: 'Expected exception not thrown when input is null',
-    },
-    {
-      id: '4',
-      name: 'Test Case 4: Performance test',
-      status: 'running',
-    },
-  ])
 
   // Auto-expand first folder and select first file when data loads
   useEffect(() => {
@@ -255,38 +218,16 @@ export default function CodeFileViewer({
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                  setIsRunningTests(true)
-                  // Set all tests to running status
-                  setTestResults(prev =>
-                    prev.map(test => ({ ...test, status: 'running' as const }))
+                  console.log(
+                    'Viewing submission results for student:',
+                    studentId
                   )
-
-                  // Simulate test execution
-                  setTimeout(() => {
-                    setTestResults(prev =>
-                      prev.map(test => ({
-                        ...test,
-                        status: Math.random() > 0.3 ? 'passed' : 'failed',
-                        output:
-                          Math.random() > 0.3
-                            ? 'Test completed successfully'
-                            : undefined,
-                        error:
-                          Math.random() <= 0.3
-                            ? 'Test failed with assertion error'
-                            : undefined,
-                      }))
-                    )
-                    setIsRunningTests(false)
-                  }, 2000)
-
-                  console.log('Running tests for student:', studentId)
+                  console.log('Submission ID:', submission.id)
                 }}
-                disabled={isRunningTests}
                 className="flex items-center gap-2"
               >
-                <Play className="w-4 h-4" />
-                {isRunningTests ? 'Running...' : 'Run Tests'}
+                <FileText className="w-4 h-4" />
+                View Results
               </Button>
             </div>
           </div>
@@ -333,53 +274,7 @@ export default function CodeFileViewer({
             </ScrollArea>
           </div>
 
-          {/* Bottom Panel - Test Results & Grading */}
-          {testResults.length > 0 && (
-            <div className="h-80 border-t bg-muted/30 flex flex-shrink-0">
-              {/* Test Results Panel */}
-              {testResults.length > 0 && (
-                <div className="flex-1 flex flex-col border-r">
-                  <div className="p-3 border-b flex-shrink-0">
-                    <h4 className="font-semibold">Test Results</h4>
-                  </div>
-                  <ScrollArea className="flex-1">
-                    <div className="p-3 space-y-2">
-                      {testResults.map(test => (
-                        <div
-                          key={test.id}
-                          className="p-2 rounded-md border bg-background"
-                        >
-                          <div className="flex items-center gap-2 mb-1">
-                            {getTestIcon(test.status)}
-                            <span className="text-sm font-medium">
-                              {test.name}
-                            </span>
-                          </div>
-                          {test.output && (
-                            <pre className="text-xs text-muted-foreground bg-muted/50 p-2 rounded mt-1">
-                              {test.output}
-                            </pre>
-                          )}
-                          {test.error && (
-                            <pre className="text-xs text-red-600 bg-red-50 p-2 rounded mt-1">
-                              {test.error}
-                            </pre>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </ScrollArea>
-                </div>
-              )}
-
-              <GradingCommentPanel
-                submissionId={submission.id}
-                grade={submission.status}
-                comment={submission.comment}
-                classId={classId}
-              />
-            </div>
-          )}
+         
         </div>
       </div>
     </div>

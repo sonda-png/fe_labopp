@@ -1,23 +1,31 @@
-import { MySubmissions } from "@/api/actions/my-submissions/my-submissions.type"
-import { statusConfig } from "../submission-status-config"
-import { AlertTriangle, Calendar, Code, Download, Eye } from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { format } from "date-fns"
+import { MySubmissions } from '@/api/actions/my-submissions/my-submissions.type'
+import { statusConfig } from '../submission-status-config'
+import { AlertTriangle, Calendar, Code, Download, Eye } from 'lucide-react'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { format } from 'date-fns'
+import { useNavigate } from '@tanstack/react-router'
 
 // Submission Card Component
 export const SubmissionCard = ({
   submission,
   onCardClick,
   onDownload,
-  onView,
 }: {
   submission: MySubmissions
   onCardClick: (submission: MySubmissions) => void
   onDownload: (fileUrl: string, fileName: string) => void
   onView: (fileUrl: string) => void
 }) => {
+  const navigate = useNavigate()
+
   const statusInfo = statusConfig[
     submission.status as keyof typeof statusConfig
   ] || {
@@ -33,6 +41,13 @@ export const SubmissionCard = ({
     } catch {
       return dateString
     }
+  }
+
+  const handleNavigate = (submissionId: string) => {
+    navigate({
+      to: '/submit-result/$submissionId',
+      params: { submissionId },
+    })
   }
 
   return (
@@ -113,9 +128,8 @@ export const SubmissionCard = ({
             variant="ghost"
             size="sm"
             className="px-3"
-            onClick={e => {
-              e.stopPropagation()
-              onView(submission.fileUrl)
+            onClick={() => {
+              handleNavigate(submission.submissionId)
             }}
           >
             <Eye className="h-4 w-4" />

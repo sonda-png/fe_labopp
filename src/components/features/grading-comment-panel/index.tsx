@@ -148,55 +148,7 @@ export const GradingCommentPanel = ({
 
         {/* Comment Section */}
         <div className="flex-1 flex flex-col min-h-0">
-          <div className="p-3 border-b flex-shrink-0">
-            <div className="flex items-center justify-between mb-3">
-              <h4 className="font-semibold">Comment</h4>
-              {comment && !isEditing && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsEditing(true)}
-                  className="flex items-center gap-1"
-                >
-                  <Edit2 className="w-3 h-3" />
-                  Edit
-                </Button>
-              )}
-            </div>
-
-            {/* Comment Input - Show when editing or no existing comment */}
-            {(isEditing || !comment) && (
-              <div className="space-y-2">
-                <Textarea
-                  placeholder="Add your comment here..."
-                  value={newComment}
-                  onChange={e => setNewComment(e.target.value)}
-                  className="min-h-[100px] resize-none text-sm"
-                />
-                {isEditing && (
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      onClick={handleSubmitFeedback}
-                      disabled={isFeedbacking || newComment === comment}
-                      className="flex items-center gap-1"
-                    >
-                      <Save className="w-3 h-3" />
-                      {isFeedbacking ? 'Saving...' : 'Save Comment'}
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleCancelEdit}
-                      disabled={isFeedbacking}
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+          
 
           {/* Existing Comment Display */}
           {comment && !isEditing && (
