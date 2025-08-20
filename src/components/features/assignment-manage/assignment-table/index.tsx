@@ -63,11 +63,6 @@ export const AssignmentTable = ({
     setIsViewDetailsOpen(true)
   }
 
-  const closeViewDetails = () => {
-    setIsViewDetailsOpen(false)
-    setSelectedLab(null)
-  }
-
   return (
     <>
       <Card className="border-0 shadow-sm">

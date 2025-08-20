@@ -1,5 +1,5 @@
 import { AxiosInstance } from 'axios'
-import { SubmitSubmissionArgs } from './submissions.type'
+import { SubmitSubmissionArgs, SubmitSubmissionResponse } from './submissions.type'
 
 export const submissionsMutations = {
   handleSubmitSubmission: (client: AxiosInstance) =>
@@ -15,5 +15,7 @@ const handleSubmitSubmission =
     formData.append('ZipFile', body.zipFile)
     formData.append('Status', body.status)
 
-    return await client.post<string>(`/submit`, formData)
+    return (
+      await client.post<SubmitSubmissionResponse>(`/submit`, formData)
+    ).data
   }

@@ -45,7 +45,7 @@ export default function ClassManagement() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-8">
+    <div className="p-6 space-y-8">
       {/* Header Section */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">

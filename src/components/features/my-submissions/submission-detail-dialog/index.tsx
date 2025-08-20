@@ -19,6 +19,7 @@ import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
 import { statusConfig } from '../submission-status-config'
+import { useNavigate } from '@tanstack/react-router'
 
 // Submission Detail Dialog Component
 export const SubmissionDetailDialog = ({
@@ -32,6 +33,7 @@ export const SubmissionDetailDialog = ({
   onClose: () => void
   onDownload: (fileUrl: string, fileName: string) => void
 }) => {
+  const navigate = useNavigate()
   const statusInfo = statusConfig[
     submission.status as keyof typeof statusConfig
   ] || {
@@ -47,6 +49,13 @@ export const SubmissionDetailDialog = ({
     } catch {
       return dateString
     }
+  }
+
+  const handleNavigate = () => {
+    navigate({
+      to: '/submit-result/$submissionId',
+      params: { submissionId: submission.submissionId },
+    })
   }
 
   return (
@@ -178,10 +187,10 @@ export const SubmissionDetailDialog = ({
             </Button>
             <Button
               variant="outline"
-              onClick={() => window.open(submission.fileUrl, '_blank')}
+              onClick={handleNavigate}
             >
               <ExternalLink className="h-4 w-4 mr-2" />
-              View file
+              Test Results
             </Button>
           </div>
         </div>

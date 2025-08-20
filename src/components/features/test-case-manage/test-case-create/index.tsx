@@ -65,7 +65,7 @@ export const TestCaseCreate = ({
     }
   )
 
-  const { mutateAsync: createTestCaseFromFile, isPending: isUploading } =
+  const { mutateAsync: createTestCaseFromFile } =
     useMutation('createTestCaseFromFile', {
       onSuccess: () => {
         queryClient.invalidateQueries({
