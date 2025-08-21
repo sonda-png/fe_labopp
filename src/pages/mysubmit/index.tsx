@@ -122,8 +122,7 @@ const StudentResults = () => {
 
     const filtered = mySubmissionsData.filter(submission => {
       const matchesSearch =
-        submission.fileName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        submission.assignmentId.toLowerCase().includes(searchTerm.toLowerCase())
+        submission.fileName?.toLowerCase().includes(searchTerm?.toLowerCase())
       const matchesStatus =
         statusFilter === 'all' || submission.status === statusFilter
 
