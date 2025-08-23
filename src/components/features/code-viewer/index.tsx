@@ -1,18 +1,15 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { FileText, Folder, CheckCircle, XCircle, Clock } from 'lucide-react'
+import { FileText, Folder } from 'lucide-react'
 import { Highlight, themes } from 'prism-react-renderer'
 import Prism from 'prismjs'
 import { useQuery } from '@/hooks'
 import { teacherAssignmentQueries } from '@/api/actions/teacher-assignment/teacher-assignment.queries'
-import { submissionsQueries } from '@/api/actions/submissions/submissions.queries'
-import { SubmissionResult } from '@/api/actions/submissions/submissions.type'
 import { normalizeJavaFile } from '@/utils/helpers/normalizeJavaFile'
 import 'prismjs/components/prism-java'
-import { GradingCommentPanel } from '../grading-comment-panel'
 import { getLanguageFromExtension } from '@/utils/helpers/get-language-from-extension'
 import { FileIconComponent } from '@/components/common/file-icon'
 import { TeacherSubmissionData } from '@/api/actions/teacher-submit/teacher-submit.type'
@@ -31,15 +28,11 @@ export interface TestResult {
 
 interface CodeFileViewerProps {
   studentId: string
-  classId: string
-  assignmentId: string
   submission: TeacherSubmissionData
 }
 
 export default function CodeFileViewer({
   studentId,
-  classId,
-  assignmentId,
   submission,
 }: CodeFileViewerProps) {
   const [internalSelectedFile, setInternalSelectedFile] =
@@ -48,13 +41,9 @@ export default function CodeFileViewer({
 
   const { data: viewJavaFileData } = useQuery({
     ...teacherAssignmentQueries.getViewJavaFile({
-      studentId,
-      classId,
-      assignmentId,
+      submissionId: submission.id,
     }),
   })
-
-
   // Auto-expand first folder and select first file when data loads
   useEffect(() => {
     if (viewJavaFileData && Object.keys(viewJavaFileData).length > 0) {
@@ -103,19 +92,6 @@ export default function CodeFileViewer({
     setInternalSelectedFile(file)
   }
 
-  const getTestIcon = (status: string) => {
-    switch (status) {
-      case 'passed':
-        return <CheckCircle className="w-4 h-4 text-green-500" />
-      case 'failed':
-        return <XCircle className="w-4 h-4 text-red-500" />
-      case 'running':
-        return <Clock className="w-4 h-4 text-yellow-500" />
-      default:
-        return <Clock className="w-4 h-4 text-gray-500" />
-    }
-  }
-
   const toggleFolder = (folderId: string) => {
     const newExpanded = new Set(expandedFolders)
     if (newExpanded.has(folderId)) {
@@ -127,7 +103,6 @@ export default function CodeFileViewer({
   }
 
   const renderFileTree = (files: CodeFile[], level = 0) => {
-    console.log(files)
     return files.map(file => (
       <div key={file.id}>
         <div
@@ -273,8 +248,6 @@ export default function CodeFileViewer({
               )}
             </ScrollArea>
           </div>
-
-         
         </div>
       </div>
     </div>

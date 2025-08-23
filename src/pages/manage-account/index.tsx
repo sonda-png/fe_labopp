@@ -1,5 +1,5 @@
 import { ReactNode, useState } from 'react'
-import { Search, GraduationCap, Plus } from 'lucide-react'
+import { Search, GraduationCap, Plus, FolderSync } from 'lucide-react'
 import {
   Select,
   SelectContent,
@@ -26,6 +26,7 @@ export const ManageAccountPage = (): ReactNode => {
     ...roleQueries.getAll(),
   })
 
+  
   return (
     <div className="min-h-screen bg-gray-50 space-y-6">
       <div className="flex items-center gap-3">
@@ -80,13 +81,17 @@ export const ManageAccountPage = (): ReactNode => {
               </SelectContent>
             </Select>
           </div>
-          <Button
-            className="bg-orange-500 hover:bg-orange-600"
-            onClick={() => setIsCreateModalOpen(true)}
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            Thêm người dùng
-          </Button>
+
+          <div className="flex items-center space-x-4">
+            
+            <Button
+              className="bg-orange-500 hover:bg-orange-600"
+              onClick={() => setIsCreateModalOpen(true)}
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Add Account
+            </Button>
+          </div>
         </div>
         <ManageAccountAudit
           auditMode="create"

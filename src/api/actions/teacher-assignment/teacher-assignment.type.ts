@@ -39,7 +39,5 @@ export type ViewJavaFileResponse = {
 }
 
 export type ViewJavaFileRequest = {
-  studentId: string
-  classId: string
-  assignmentId: string
+  submissionId: string
 }

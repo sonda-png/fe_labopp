@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -34,6 +34,8 @@ import { TestCaseDialog } from '../../test-case-manage/test-case-dialog'
 import { TestCaseCreate } from '../../test-case-manage/test-case-create'
 import { Assignment } from '@/api/actions/assignment-manage/assignment.types'
 import { AssignmentManageDetail } from '../assignment-manage-detail'
+import { useQuery } from '@/hooks'
+import { adminAccountQueries } from '@/api/actions/admin-account/admin-account.queries'
 
 interface AssignmentTableProps {
   labs: Assignment[]
@@ -52,6 +54,18 @@ export const AssignmentTable = ({
   const [isTestCasesDialogOpen, setIsTestCasesDialogOpen] = useState(false)
   const [isAddTestCaseDialogOpen, setIsAddTestCaseDialogOpen] = useState(false)
   const [isViewDetailsOpen, setIsViewDetailsOpen] = useState(false)
+
+  const { data: accounts } = useQuery({
+    ...adminAccountQueries.getAll(),
+  })
+
+  // Helper function to get teacher name by teacherId
+  const getTeacherName = (teacherId: number) => {
+    const teacher = accounts?.find(
+      account => account.id.toString() === teacherId.toString()
+    )
+    return teacher?.fullName || 'Unknown'
+  }
 
   const openTestCasesDialog = (lab: Assignment) => {
     setSelectedLab(lab)
@@ -90,11 +104,7 @@ export const AssignmentTable = ({
                     <TableRow key={lab.id} className="border-b border-gray-100">
                       <TableCell>
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
-                            <span className="text-orange-600 font-medium text-sm">
-                              {lab.id.substring(0, 6).toUpperCase()}
-                            </span>
-                          </div>
+                          <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center"></div>
                           <div>
                             <p className="font-medium text-gray-900">
                               {lab.title}
@@ -121,7 +131,7 @@ export const AssignmentTable = ({
                             <User className="w-4 w-4 text-gray-600" />
                           </div>
                           <span className="text-sm text-gray-900">
-                            {lab?.teacherId || 'Unknown'}
+                            {getTeacherName(lab.teacherId)}
                           </span>
                         </div>
                       </TableCell>

@@ -35,9 +35,10 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
-import { useMutation } from '@/hooks'
+import { useMutation, useQuery } from '@/hooks'
 import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
 import { authStore } from '@/stores/authStore'
+import { adminAccountQueries } from '@/api/actions/admin-account/admin-account.queries'
 
 interface AssignmentFormDialogProps {
   isOpen: boolean
@@ -83,6 +84,10 @@ export const AssignmentFormDialog = ({
 
   const watchedValues = watch()
 
+  const { data: accountData } = useQuery({
+    ...adminAccountQueries.getAll(),
+  })
+
   // Mutations
   const { mutateAsync: addAssignmentMutation } = useMutation(
     'addAssignmentMutation',
@@ -122,7 +127,9 @@ export const AssignmentFormDialog = ({
     'uploadAssignmentPdfMutation',
     {
       onSuccess: () => {
-        toast.success('Assignment PDF uploaded successfully')
+        toast.success(
+          'Assignment updated successfully! Now you can upload the PDF file.'
+        )
         // Close dialog and reset after successful upload
         onOpenChange(false)
         setCurrentStep(1)
@@ -139,12 +146,12 @@ export const AssignmentFormDialog = ({
     }
   )
 
-  const handlePdfFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePdfFileSelect = (event: any) => {
     const file = event.target.files?.[0]
     if (file && file.type === 'application/pdf') {
       setSelectedPdfFile(file)
     } else if (file) {
-      alert('Please select a PDF file')
+      toast.error('Please select a PDF file')
       event.target.value = ''
     }
   }
@@ -167,9 +174,6 @@ export const AssignmentFormDialog = ({
         // Set the current assignment ID for edit mode
         setCurrentAssignmentId(editingAssignment.id)
         setCurrentStep(2)
-        toast.success(
-          'Assignment updated successfully! Now you can upload the PDF file.'
-        )
       } else {
         // Add mode
         const result = await addAssignmentMutation({
@@ -187,8 +191,7 @@ export const AssignmentFormDialog = ({
           setCurrentStep(2)
         }
       }
-    } catch (error) {
-      console.error('Error submitting form:', error)
+    } catch (e: unknown) {
       toast.error('Failed to save assignment')
     } finally {
       setIsSubmitting(false)
@@ -346,12 +349,33 @@ export const AssignmentFormDialog = ({
                 )}
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="teacherId">Teacher ID</Label>
-                <Input
-                  id="teacherId"
-                  {...register('teacherId')}
-                  placeholder="Enter teacher ID"
-                />
+                <Label htmlFor="teacherId">Teacher</Label>
+                <Select
+                  value={watch('teacherId').toString() || ''}
+                  onValueChange={(value: string) =>
+                    setValue('teacherId', Number(value))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a teacher" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {accountData
+                      ?.filter(account => account.roleName === 'Teacher')
+                      .map(account => (
+                        <SelectItem key={account.id} value={account.id}>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">
+                              {account.fullName}
+                            </span>
+                            <span className="text-muted-foreground text-xs">
+                              ({account.email})
+                            </span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
                 {errors.teacherId && (
                   <span className="text-red-500 text-xs">
                     {errors.teacherId.message}

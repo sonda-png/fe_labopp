@@ -8,7 +8,6 @@ export interface TeacherSubmissionData {
   status: string
   filePath: string
   comment: string
-  studentId: string
 }
 
 export interface TeacherSubmissionApiResponse {

@@ -12,5 +12,6 @@ export const getNavigateByRole = (role: string) => {
       return '/dashboard/head-subject'
     default:
       toast.error('Something went wrong, please contact admin to login')
+      return '/'
   }
 }

@@ -12,6 +12,7 @@ const handleSubmitSubmission =
 
     formData.append('ProblemId', body.problemId)
     formData.append('StudentId', body.studentId)
+    formData.append('SemesterId', body.semesterId.toString())
     formData.append('ZipFile', body.zipFile)
     formData.append('Status', body.status)
 

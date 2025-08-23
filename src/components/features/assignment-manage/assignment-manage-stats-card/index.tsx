@@ -6,7 +6,7 @@ interface Lab {
   title: string
   description: string
   locTotal: number
-  teacherId: string
+  teacherId: number
 }
 
 interface StatsCardsProps {
