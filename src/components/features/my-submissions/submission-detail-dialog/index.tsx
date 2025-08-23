@@ -20,20 +20,50 @@ import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
 import { statusConfig } from '../submission-status-config'
 import { useNavigate } from '@tanstack/react-router'
+import axios from 'axios'
+import { authStore } from '@/stores/authStore'
+import { ENV } from '@/config/env'
 
 // Submission Detail Dialog Component
 export const SubmissionDetailDialog = ({
   submission,
   isOpen,
   onClose,
-  onDownload,
 }: {
   submission: MySubmissions
   isOpen: boolean
   onClose: () => void
-  onDownload: (fileUrl: string, fileName: string) => void
 }) => {
   const navigate = useNavigate()
+  const { authValues } = authStore()
+
+  const handleDownload = async (submissionId: string) => {
+    const res = await axios.get(
+      `${ENV.BACK_END_URL}/assignment/download-submission/${submissionId}`,
+      {
+        responseType: 'blob',
+        withCredentials: false,
+        headers: {
+          'Content-Type': 'application/zip',
+          Authorization: `Bearer ${authValues.token}`,
+        },
+      }
+    )
+    // Tạo blob từ dữ liệu ZIP
+    const blob = new Blob([res.data as BlobPart], {
+      type: 'application/zip',
+    })
+
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `submission_${submissionId}.zip` // đặt tên file
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(url)
+  }
+
   const statusInfo = statusConfig[
     submission.status as keyof typeof statusConfig
   ] || {
@@ -178,17 +208,12 @@ export const SubmissionDetailDialog = ({
             <Button
               variant="outline"
               className="flex-1"
-              onClick={() =>
-                onDownload(submission.fileUrl, submission.fileName)
-              }
+              onClick={() => handleDownload(submission.submissionId as string)}
             >
               <Download className="h-4 w-4 mr-2" />
               Download file
             </Button>
-            <Button
-              variant="outline"
-              onClick={handleNavigate}
-            >
+            <Button variant="outline" onClick={handleNavigate}>
               <ExternalLink className="h-4 w-4 mr-2" />
               Test Results
             </Button>

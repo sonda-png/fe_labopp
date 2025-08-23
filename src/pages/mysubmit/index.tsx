@@ -17,7 +17,7 @@ import { MySubmissionStatsCard } from '@/components/features/my-submissions/subm
 import { SubmissionSearchAndFilter } from '@/components/features/my-submissions/submission-search-filter'
 import { SubmissionDetailDialog } from '@/components/features/my-submissions/submission-detail-dialog'
 import { SubmissionCard } from '@/components/features/my-submissions/submission-card'
-import { ENV } from '@/config/env'
+import { assignmentQueries } from '@/api/actions/assignment/assignment.queries'
 
 // Loading Component
 const LoadingState = () => (
@@ -103,14 +103,6 @@ const StudentResults = () => {
   const [sortBy, setSortBy] = useState<string>('submittedAt')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
 
-  const handleDownload = (fileUrl: string, fileName: string) => {
-    const link = document.createElement('a')
-    link.href = `${ENV.BACK_END_STATIC}${fileUrl}`
-    link.download = fileName
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  }
 
   const handleView = (fileUrl: string) => {
     window.open(fileUrl, '_blank')
@@ -121,9 +113,9 @@ const StudentResults = () => {
     if (!mySubmissionsData) return []
 
     const filtered = mySubmissionsData.filter(submission => {
-      const matchesSearch =
-        submission.fileName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        submission.assignmentId.toLowerCase().includes(searchTerm.toLowerCase())
+      const matchesSearch = submission.fileName
+        ?.toLowerCase()
+        .includes(searchTerm?.toLowerCase())
       const matchesStatus =
         statusFilter === 'all' || submission.status === statusFilter
 
@@ -195,25 +187,25 @@ const StudentResults = () => {
           icon={CheckCircle}
           title="Passed"
           value={
-            mySubmissionsData?.filter(s => s.status === 'PASSED').length || 0
+            mySubmissionsData?.filter(s => s.status === 'Passed').length || 0
           }
           bgColor="bg-green-100"
           textColor="text-green-600"
         />
         <MySubmissionStatsCard
           icon={Clock}
-          title="Pending"
+          title="Draft"
           value={
-            mySubmissionsData?.filter(s => s.status === 'PENDING').length || 0
+            mySubmissionsData?.filter(s => s.status === 'Draft').length || 0
           }
           bgColor="bg-yellow-100"
           textColor="text-yellow-600"
         />
         <MySubmissionStatsCard
           icon={XCircle}
-          title="Rejected"
+          title="Reject"
           value={
-            mySubmissionsData?.filter(s => s.status === 'REJECTED').length || 0
+            mySubmissionsData?.filter(s => s.status === 'Reject').length || 0
           }
           bgColor="bg-red-100"
           textColor="text-red-600"
@@ -243,7 +235,6 @@ const StudentResults = () => {
             key={submission.submissionId}
             submission={submission}
             onCardClick={setSelectedSubmission}
-            onDownload={handleDownload}
             onView={handleView}
           />
         ))}
@@ -260,7 +251,6 @@ const StudentResults = () => {
           submission={selectedSubmission}
           isOpen={!!selectedSubmission}
           onClose={() => setSelectedSubmission(null)}
-          onDownload={handleDownload}
         />
       )}
     </div>

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 import {
   Dialog,
   DialogTrigger,
@@ -17,7 +17,7 @@ import { TeacherSubmissionDetailData } from '@/api/actions/teacher-submit/teache
 
 interface TeacherSubmissionDetailProps {
   submissionId: string
-  trigger: React.ReactNode
+  trigger: ReactNode
 }
 
 export function TeacherSubmissionDetail({
@@ -41,7 +41,7 @@ export function TeacherSubmissionDetail({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="max-w-2xl pt-2 pb-2 px-6">
+      <DialogContent className="max-w-2xl h-[70vh] overflow-y-auto pt-2 pb-2 px-6">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">
             Submission Detail
@@ -83,19 +83,7 @@ export function TeacherSubmissionDetail({
                 <Badge>{detail.status}</Badge>
               </div>
             </div>
-            <div>
-              <Label>Submitted File</Label>
-              <div className="mt-1">
-                <a
-                  href={detail.filePath}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 underline text-sm"
-                >
-                  Download file
-                </a>
-              </div>
-            </div>
+
             <div>
               <Label>Feedbacks & Grades</Label>
               <div className="mt-1 text-sm text-muted-foreground">
@@ -177,7 +165,7 @@ function InfoItem({ label, value }: { label: string; value: string }) {
   )
 }
 
-function Label({ children }: { children: React.ReactNode }) {
+function Label({ children }: { children: ReactNode }) {
   return <div className="text-sm font-medium text-foreground">{children}</div>
 }
 

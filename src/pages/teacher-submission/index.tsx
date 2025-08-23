@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { useQuery as useQueryCustom } from '@/hooks'
 import { useApiClient } from '@/hooks/useApiClient/useApiClient'
 import { teacherDashboardQueries } from '@/api/actions/teacher-dashboard/teacher-dashboard.queries'
 import { Button } from '@/components/ui/button'
@@ -19,13 +20,13 @@ import {
   BookOpen,
   Calendar,
   Code,
-  Filter,
   Eye,
   Users,
   CheckCircle,
 } from 'lucide-react'
 import { authStore } from '@/stores/authStore'
 import { useNavigate } from '@tanstack/react-router'
+import { semestersQueries } from '@/api/actions/semesters/semesters.queries'
 
 export default function TeacherSubmissionClassList() {
   const [searchTerm, setSearchTerm] = useState('')
@@ -35,6 +36,11 @@ export default function TeacherSubmissionClassList() {
   const teacherId = authStore.getState().authValues.userId
   const { client } = useApiClient()
   const queryOptions = teacherDashboardQueries.classList(teacherId)
+
+  const { data: semestersData } = useQueryCustom({
+    ...semestersQueries.getAll(),
+  })
+
   const { data: classList = [], isLoading } = useQuery({
     ...queryOptions,
     queryFn: queryOptions.queryFn(client),
@@ -183,9 +189,11 @@ export default function TeacherSubmissionClassList() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All semesters</SelectItem>
-                  <SelectItem value="1">Semester 1</SelectItem>
-                  <SelectItem value="2">Semester 2</SelectItem>
-                  <SelectItem value="3">Semester 3</SelectItem>
+                  {semestersData?.map(semester => (
+                    <SelectItem key={semester.id} value={semester.id}>
+                      {semester.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <Select value={selectedYear} onValueChange={setSelectedYear}>
@@ -201,13 +209,13 @@ export default function TeacherSubmissionClassList() {
                   ))}
                 </SelectContent>
               </Select>
-              <Button
+              {/* <Button
                 variant="outline"
                 className="bg-white text-black border-gray-300"
               >
                 <Filter className="h-4 w-4 mr-2" />
                 Filter
-              </Button>
+              </Button> */}
             </div>
           </CardContent>
         </Card>

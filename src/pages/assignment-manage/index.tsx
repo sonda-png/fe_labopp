@@ -22,7 +22,7 @@ interface Lab {
   title: string
   description: string
   locTotal: number
-  teacherId: string
+  teacherId: number
   status: 'Pending' | 'Active' | 'Inactive'
 }
 
@@ -78,7 +78,7 @@ export default function AssignmentManagement() {
       title: '',
       description: '',
       locTotal: 0,
-      teacherId: '',
+      teacherId: 0,
       status: 'Active' as 'Pending' | 'Active' | 'Inactive',
     },
   })
@@ -92,7 +92,6 @@ export default function AssignmentManagement() {
   }
 
   const handleEdit = (lab: Lab) => {
-    console.log(lab)
     setEditingLab(lab)
     setValue('title', lab.title)
     setValue('description', lab.description)

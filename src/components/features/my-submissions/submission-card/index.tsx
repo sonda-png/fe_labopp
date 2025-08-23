@@ -12,19 +12,51 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { format } from 'date-fns'
 import { useNavigate } from '@tanstack/react-router'
+import { assignmentQueries } from '@/api/actions/assignment/assignment.queries'
+import { useQuery } from '@/hooks'
+import { useEffect, useState } from 'react'
+import { authStore } from '@/stores/authStore'
+import axios from 'axios'
+import { ENV } from '@/config/env'
 
 // Submission Card Component
 export const SubmissionCard = ({
   submission,
   onCardClick,
-  onDownload,
 }: {
   submission: MySubmissions
   onCardClick: (submission: MySubmissions) => void
-  onDownload: (fileUrl: string, fileName: string) => void
   onView: (fileUrl: string) => void
 }) => {
   const navigate = useNavigate()
+  const { authValues } = authStore()
+
+  const handleDownload = async (submissionId: string) => {
+    const res = await axios.get(
+      `${ENV.BACK_END_URL}/assignment/download-submission/${submissionId}`,
+      {
+        responseType: 'blob',
+        withCredentials: false,
+        headers: {
+          'Content-Type': 'application/zip',
+          Authorization: `Bearer ${authValues.token}`,
+        },
+      }
+    )
+    // Tạo blob từ dữ liệu ZIP
+    const blob = new Blob([res.data as BlobPart], {
+      type: 'application/zip',
+    })
+
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `submission_${submissionId}.zip` // đặt tên file
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(url)
+  }
 
   const statusInfo = statusConfig[
     submission.status as keyof typeof statusConfig
@@ -118,7 +150,7 @@ export const SubmissionCard = ({
             className="flex-1"
             onClick={e => {
               e.stopPropagation()
-              onDownload(submission.fileUrl, submission.fileName)
+              handleDownload(submission.submissionId as string)
             }}
           >
             <Download className="h-4 w-4 mr-2" />

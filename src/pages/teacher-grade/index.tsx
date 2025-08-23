@@ -20,7 +20,7 @@ import {
 import { Search, User, Code, Calendar, FileText, Eye } from 'lucide-react'
 import CodeFileViewer from '@/components/features/code-viewer'
 import { useSearch } from '@tanstack/react-router'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery as useQueryTanstack } from '@tanstack/react-query'
 import { useApiClient } from '@/hooks/useApiClient/useApiClient'
 import { teacherSubmissionQueries } from '@/api/actions/teacher-submit/teacher-submit.queries'
 import {
@@ -29,6 +29,8 @@ import {
 } from '@/api/actions/teacher-submit/teacher-submit.type'
 import TeacherGradeDetail from '@/components/features/teacher-grade/teacher-grade-grading'
 import TeacherSubmissionDetail from '@/components/features/teacher-grade/teacher-grade-detail'
+import { teacherAssignmentQueries } from '@/api/actions/teacher-assignment/teacher-assignment.queries'
+import { useQuery } from '@/hooks'
 
 export default function TeacherGradingSystem() {
   const { classId = '' } = useSearch({ from: '/_auth/teacher-grade/' })
@@ -42,10 +44,14 @@ export default function TeacherGradingSystem() {
     classId,
     statusFilter !== 'all' ? statusFilter : undefined
   )
-  const { data, isLoading, refetch } = useQuery({
+  const { data, isLoading, refetch } = useQueryTanstack({
     ...queryOptions,
     queryFn: queryOptions.queryFn(client),
     enabled: !!classId,
+  })
+
+  const { data: assignmentsData } = useQuery({
+    ...teacherAssignmentQueries.getAll(classId),
   })
 
   // API trả về { data: TeacherSubmissionData[] }
@@ -59,6 +65,13 @@ export default function TeacherGradingSystem() {
   const openCodeViewer = (submission: TeacherSubmissionData) => {
     setSelectedSubmission(submission)
     setIsCodeViewerOpen(true)
+  }
+
+  const getAssignmentName = (assignmentId: string) => {
+    const assignment = assignmentsData?.find(
+      assignment => assignment.id === assignmentId
+    )
+    return assignment?.title || 'Unknown'
   }
 
   const filteredSubmissions = submissions.filter(
@@ -187,7 +200,7 @@ export default function TeacherGradingSystem() {
                             <div className="flex items-center gap-2">
                               <Code className="h-4 w-4 text-gray-500" />
                               <span className="text-gray-600">
-                                {submission.assignmentCode}
+                                {getAssignmentName(submission.assignmentCode)}
                               </span>
                             </div>
                           </td>
@@ -233,7 +246,7 @@ export default function TeacherGradingSystem() {
                               className="flex items-center gap-1"
                             >
                               <Eye className="w-4 h-4" />
-                              Xem Code
+                              View Code
                             </Button>
                             <TeacherGradeDetail
                               submissionId={submission.id}
@@ -286,9 +299,7 @@ export default function TeacherGradingSystem() {
             {selectedSubmission && (
               <div className="flex-1 overflow-y-auto">
                 <CodeFileViewer
-                  studentId={selectedSubmission.studentId}
-                  classId={classId}
-                  assignmentId={selectedSubmission.assignmentCode}
+                  studentId={selectedSubmission.id}
                   submission={selectedSubmission}
                 />
               </div>

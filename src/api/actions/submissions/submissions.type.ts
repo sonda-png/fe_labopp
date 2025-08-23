@@ -1,6 +1,7 @@
 export type SubmitSubmissionArgs = {
   problemId: string
   studentId: string
+  semesterId: number
   zipFile: File
   status: 'Draft' | 'Submit'
 }

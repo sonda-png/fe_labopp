@@ -3,7 +3,7 @@ export interface Assignment {
   title: string
   description: string
   locTotal: number
-  teacherId: string
+  teacherId: number
   status: 'Pending' | 'Active' | 'Inactive'
 }
 
@@ -19,7 +19,7 @@ export interface AssignmentRequest {
   title: string
   description: string
   locTotal: number
-  teacherId: string
+  teacherId: number
   status: 'Pending' | 'Active' | 'Inactive'
 }
 
