@@ -1,10 +1,8 @@
 export type Semester = {
   id: string
   name: string
-  semester: number
-  academicYear: string
-  isActive: boolean
-  createdAt: string
+  startDate: string
+  endDate: string
 }
 
 export interface CreateSemesterRequest {

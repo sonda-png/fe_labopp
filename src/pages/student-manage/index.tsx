@@ -198,7 +198,7 @@ export default function StudentManagement() {
             className="bg-blue-500 hover:bg-blue-600 text-white"
           >
             <Award className="h-4 w-4 mr-2" />
-            Quản lý điểm số
+            Grade Management
           </Button>
         </div>
       </div>

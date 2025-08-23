@@ -76,4 +76,9 @@ export default defineConfig({
     setupFiles: ['./src/test/setup.ts'],
     css: true,
   },
+  server: {
+    host: '0.0.0.0',
+    port: 5173,
+    allowedHosts: ['drive.wukongfood.site'], // ✅ thêm dòng này
+  },
 })

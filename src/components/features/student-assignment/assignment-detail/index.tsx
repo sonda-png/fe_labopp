@@ -2,6 +2,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Progress } from '@/components/ui/progress'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Assignment } from '@/api/actions/assignment/assignment.type'
 import {
   FileText,
@@ -13,29 +18,75 @@ import {
   Clock,
   BookOpen,
   FileDown,
+  FileArchive,
+  X,
+  Check,
 } from 'lucide-react'
 import { format } from 'date-fns'
-import { useQuery } from '@/hooks'
+import { useQuery, useMutation } from '@/hooks'
 import { assignmentQueries } from '@/api/actions/assignment/assignment.queries'
-import { useParams } from '@tanstack/react-router'
+import { useNavigate, useParams } from '@tanstack/react-router'
+import { useState, useRef, type DragEvent, type ChangeEvent } from 'react'
+import { toast } from 'react-toastify'
+import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
+import { authStore } from '@/stores/authStore'
+import { studentSemesterQueries } from '@/api/actions/student-semester/student-semester.queries'
+import axios from 'axios'
+import { ENV } from '@/config/env'
 
 interface AssignmentDetailProps {
   assignment: Assignment
   onBack: () => void
-  onSubmit: () => void
 }
 
 export const AssignmentDetail = ({
   assignment,
   onBack,
-  onSubmit,
 }: AssignmentDetailProps) => {
+  const navigate = useNavigate()
   const { assignmentId } = useParams({
     from: '/_auth/student-assignment/$assignmentId/',
   })
+  const { authValues } = authStore()
+
+  // File submission state
+  const [file, setFile] = useState<File | null>(null)
+  const [isDragging, setIsDragging] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState(0)
+  const [uploadStatus, setUploadStatus] = useState<
+    'idle' | 'uploading' | 'success' | 'error'
+  >('idle')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [submissionStatus, setSubmissionStatus] = useState('draft')
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
   const { data: downloadPdfFileData, isLoading: isDownloading } = useQuery({
     ...assignmentQueries.downloadPdfFile(assignmentId as string),
   })
+
+  const { data: currentSemester } = useQuery({
+    ...studentSemesterQueries.getCurrentSemester(),
+  })
+
+  const { mutateAsync: submitAssignmentMutation, isPending: isSubmitting } =
+    useMutation('handleSubmitSubmission', {
+      onSuccess: () => {
+        toast.success('Assignment submitted successfully')
+        setFile(null)
+        setUploadStatus('success')
+        setSubmissionStatus('draft')
+        navigate({
+          to: '/my-submit',
+          params: {
+            assignmentId: assignmentId as string,
+          },
+        })
+      },
+      onError: (error: StandardizedApiError) => {
+        toast.error(error.message)
+        setUploadStatus('error')
+      },
+    })
 
   const formatDate = (dateString: string) => {
     try {
@@ -45,18 +96,115 @@ export const AssignmentDetail = ({
     }
   }
 
-  const handleDownloadPdf = () => {
-    if (downloadPdfFileData) {
-      // Create a blob from the PDF data and download it
-      const blob = new Blob([downloadPdfFileData], { type: 'application/pdf' })
-      const url = window.URL.createObjectURL(blob)
-      const link = document.createElement('a')
-      link.href = url
-      link.download = `${assignment.title.replace(/\s+/g, '_')}.pdf`
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-      window.URL.revokeObjectURL(url)
+  const handleDownloadPdf = async () => {
+    const res = await axios.get(
+      `${ENV.BACK_END_URL}/assignment/download-pdf/by-assignment/${assignmentId}`,
+      {
+        responseType: 'blob',
+        withCredentials: false,
+        headers: {
+          'Content-Type': 'application/pdf',
+          Authorization: `Bearer ${authValues.token}`,
+        },
+      }
+    )
+    const blob = new Blob([res.data], { type: 'application/pdf' })
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `${assignment.title.replace(/\s+/g, '_')}.pdf`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(url)
+  }
+
+  // File handling functions
+  const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    setIsDragging(true)
+  }
+
+  const handleDragLeave = () => {
+    setIsDragging(false)
+  }
+
+  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    setIsDragging(false)
+
+    const droppedFile = e.dataTransfer.files[0]
+    handleFileSelection(droppedFile)
+  }
+
+  const handleFileSelection = async (selectedFile: File) => {
+    if (
+      selectedFile &&
+      (selectedFile.type === 'application/zip' ||
+        selectedFile.type === 'application/x-zip-compressed' ||
+        selectedFile.type === 'application/x-rar-compressed')
+    ) {
+      setFile(selectedFile)
+      setErrorMessage('')
+      setUploadStatus('idle')
+    } else {
+      setFile(null)
+      setErrorMessage(
+        'Only ZIP files are accepted. Please compress your files before uploading.'
+      )
+      setUploadStatus('error')
+    }
+  }
+
+  const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      handleFileSelection(e.target.files[0])
+    }
+  }
+
+  const removeFile = () => {
+    setFile(null)
+    setUploadStatus('idle')
+    setUploadProgress(0)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+  }
+
+  const handleSubmit = async () => {
+    if (!file) {
+      setErrorMessage('Please select a file to submit.')
+      return
+    }
+
+    setUploadStatus('uploading')
+    setUploadProgress(0)
+
+    // Simulate upload progress
+    const progressInterval = setInterval(() => {
+      setUploadProgress(prev => {
+        if (prev >= 90) {
+          clearInterval(progressInterval)
+          return 90
+        }
+        return prev + 10
+      })
+    }, 200)
+
+    try {
+      await submitAssignmentMutation({
+        problemId: assignmentId as string,
+        studentId: authValues.userId,
+        semesterId: currentSemester?.id ?? 0,
+        zipFile: file,
+        status: submissionStatus === 'submit' ? 'Submit' : 'Draft',
+      })
+
+      setUploadProgress(100)
+      clearInterval(progressInterval)
+    } catch (error) {
+      clearInterval(progressInterval)
+      setUploadStatus('error')
     }
   }
 
@@ -212,18 +360,145 @@ export const AssignmentDetail = ({
 
         {/* Sidebar */}
         <div className="space-y-6">
-          {/* Quick Actions */}
+          {/* File Submission Form */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Quick Actions</CardTitle>
+              <CardTitle className="text-lg">Submit Assignment</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="space-y-4">
+              {/* File Upload */}
+              <div>
+                <Label htmlFor="submission-files">Submission File</Label>
+
+                {!file && (
+                  <div
+                    className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-colors mt-2 ${
+                      isDragging
+                        ? 'border-orange-500 bg-orange-50'
+                        : 'border-gray-300 hover:border-orange-500 hover:bg-orange-50'
+                    }`}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="p-2 bg-orange-100 text-orange-600 rounded-full">
+                        <FileArchive size={20} />
+                      </div>
+                      <div className="space-y-1">
+                        <p className="font-medium text-sm">
+                          Drag and drop ZIP file or click to select
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          Only ZIP files accepted
+                        </p>
+                      </div>
+                    </div>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept=".zip"
+                      className="hidden"
+                      onChange={handleFileInputChange}
+                    />
+                  </div>
+                )}
+
+                {errorMessage && (
+                  <Alert variant="destructive" className="mt-2">
+                    <AlertDescription>{errorMessage}</AlertDescription>
+                  </Alert>
+                )}
+
+                {file && (
+                  <div className="border rounded-lg p-3 mt-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="p-1 bg-orange-100 text-orange-600 rounded">
+                          <FileArchive size={16} />
+                        </div>
+                        <div>
+                          <p className="font-medium text-sm">{file.name}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {(file.size / (1024 * 1024)).toFixed(2)} MB
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={removeFile}
+                        className="h-6 w-6"
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
+
+                    {uploadStatus === 'uploading' && (
+                      <div className="mt-3 space-y-1">
+                        <div className="flex justify-between text-xs">
+                          <span>Uploading...</span>
+                          <span>{uploadProgress}%</span>
+                        </div>
+                        <Progress value={uploadProgress} className="h-1" />
+                      </div>
+                    )}
+
+                    {uploadStatus === 'success' && (
+                      <div className="mt-3 flex items-center gap-2 text-xs text-green-600">
+                        <Check className="h-3 w-3" />
+                        <span>Upload successful</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Status Selection */}
+              <div>
+                <Label htmlFor="status">Status</Label>
+                <RadioGroup
+                  value={submissionStatus}
+                  onValueChange={setSubmissionStatus}
+                  className="flex gap-3 mt-2"
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="draft" id="draft" />
+                    <Label htmlFor="draft" className="text-sm">
+                      Draft
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="submit" id="submit" />
+                    <Label htmlFor="submit" className="text-sm">
+                      Submit
+                    </Label>
+                  </div>
+                </RadioGroup>
+              </div>
+
+              {/* Submit Button */}
               <Button
-                onClick={onSubmit}
-                className="w-full bg-orange-500 hover:bg-green-700"
+                onClick={handleSubmit}
+                disabled={!file || isSubmitting}
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white"
               >
-                <Upload className="h-4 w-4 mr-2" />
-                Submit Assignment
+                {isSubmitting ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    {submissionStatus === 'submit'
+                      ? 'Submitting...'
+                      : 'Saving...'}
+                  </>
+                ) : (
+                  <>
+                    <Upload className="h-4 w-4 mr-2" />
+                    {submissionStatus === 'submit'
+                      ? 'Submit Assignment'
+                      : 'Save Draft'}
+                  </>
+                )}
               </Button>
             </CardContent>
           </Card>

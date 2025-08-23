@@ -5,6 +5,7 @@ import {
   Database,
   GraduationCap,
   Layers,
+  LucideIcon,
   Settings,
   ShieldCheck,
   TrendingUp,
@@ -14,7 +15,7 @@ import {
 interface NavigationItem {
   id: string
   label: string
-  icon: React.ComponentType<{ className?: string }>
+  icon: LucideIcon
   path: string
   roles: string[]
 }
@@ -65,14 +66,6 @@ export const allNavigationItems: NavigationItem[] = [
     path: '/worker-management',
     roles: ['Teacher'],
   },
-  {
-    id: 'fap-sync',
-    label: 'FAP Sync',
-    icon: Database,
-    path: '/fap-sync',
-    roles: ['Admin'],
-  },
-
   // Head Subject specific items
 
   {
@@ -146,11 +139,11 @@ export const allNavigationItems: NavigationItem[] = [
   //   path: '/ranking',
   //   roles: ['Teacher', 'Student', 'Head Subject'],
   // },
-  {
-    id: 'academic-outcome-report',
-    label: 'Academic Outcome Report',
-    icon: BarChart3,
-    path: '/academic-outcome-report',
-    roles: ['Teacher', 'Head Subject', 'Admin'],
-  },
+  // {
+  //   id: 'academic-outcome-report',
+  //   label: 'Academic Outcome Report',
+  //   icon: BarChart3,
+  //   path: '/academic-outcome-report',
+  //   roles: ['Teacher', 'Head Subject', 'Admin'],
+  // },
 ]

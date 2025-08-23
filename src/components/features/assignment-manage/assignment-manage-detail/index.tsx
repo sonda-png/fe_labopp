@@ -18,6 +18,9 @@ import {
   Download,
 } from 'lucide-react'
 import { Assignment } from '@/api/actions/assignment-manage/assignment.types'
+import { ENV } from '@/config/env'
+import axios from 'axios'
+import { authStore } from '@/stores/authStore'
 import { assignmentQueries } from '@/api/actions/assignment/assignment.queries'
 import { useQuery } from '@/hooks'
 
@@ -32,6 +35,7 @@ export const AssignmentManageDetail = ({
   setIsViewDetailsOpen,
   assignmentData,
 }: AssignmentManageDetailProps) => {
+  const { authValues } = authStore()
   const statusStyles = {
     Active: 'bg-green-100 text-green-800',
     Pending: 'bg-yellow-100 text-yellow-800',
@@ -43,16 +47,31 @@ export const AssignmentManageDetail = ({
     Pending: <Clock className="w-3 h-3" />,
     Inactive: <XCircle className="w-3 h-3" />,
   }
-
   const { data: downloadPdfFileData, isLoading: isDownloading } = useQuery({
     ...assignmentQueries.downloadPdfFile(assignmentData?.id as string),
   })
 
-  const handleDownloadPdf = () => {
-    if (downloadPdfFileData) {
-      const url = URL.createObjectURL(downloadPdfFileData)
-      window.open(url, '_blank')
-    }
+  const handleDownloadPdf = async () => {
+    const res = await axios.get(
+      `${ENV.BACK_END_URL}/assignment/download-pdf/by-assignment/${assignmentData?.id}`,
+      {
+        responseType: 'blob',
+        withCredentials: false,
+        headers: {
+          'Content-Type': 'application/pdf',
+          Authorization: `Bearer ${authValues.token}`,
+        },
+      }
+    )
+    const blob = new Blob([res.data], { type: 'application/pdf' })
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `${assignmentData?.title.replace(/\s+/g, '_')}.pdf`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(url)
   }
 
   return (
@@ -74,7 +93,7 @@ export const AssignmentManageDetail = ({
             <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg">
               <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center">
                 <span className="text-orange-600 font-bold text-lg">
-                  {assignmentData.id.substring(0, 6).toUpperCase()}
+                  {assignmentData.id}
                 </span>
               </div>
               <div className="flex-1">

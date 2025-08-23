@@ -8,6 +8,8 @@ import { assignmentMutations } from './assignment/assignment.mutations'
 import { adminWorkerMutations } from './worker/worker.mutations'
 import { submissionsMutations } from './submissions/submissions.mutations'
 import { problemMutations } from './problem/problem.mutations'
+import { syncFapMutations } from './sync-fap/sync-fap.mutations'
+import { classMutations } from './class/class.mutations'
 
 export const mutations = {
   ...authMutations,
@@ -20,6 +22,8 @@ export const mutations = {
   ...adminWorkerMutations,
   ...submissionsMutations,
   ...problemMutations,
+  ...syncFapMutations,
+  ...classMutations,
   // API_COLLECTION_MUTATIONS
 } as const
 
