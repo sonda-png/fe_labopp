@@ -14,17 +14,16 @@ export const studentAssignmentQueries = {
       queryFn: (client: AxiosInstance) => getAll(client),
       enabled: true,
     }),
-  delete: (studentId: number, params: DeleteStudentLabRequest) =>
+  delete: (assignmentId: number, params: DeleteStudentLabRequest) =>
     queryFactoryOptions({
       queryKey: [
         ...studentAssignmentQueries.all(),
         'delete',
-        studentId,
-        params.assignmentId,
+        assignmentId,
         params.semesterId,
       ],
-      queryFn: (client: AxiosInstance) => deleteLab(studentId, params)(client),
-      enabled: !!studentId && !!params.assignmentId && !!params.semesterId,
+      queryFn: (client: AxiosInstance) => deleteLab(assignmentId, params)(client),
+      enabled: !!assignmentId && !!params.semesterId,
     }),
 }
 
@@ -37,13 +36,12 @@ const getAll = (client: AxiosInstance) => async () => {
 }
 
 const deleteLab =
-  (studentId: number, params: DeleteStudentLabRequest) =>
+  (assignmentId: number, params: DeleteStudentLabRequest) =>
   (client: AxiosInstance) =>
   async () => {
     return (
       await client.delete<DeleteStudentLabResponse>(
-        `/student/my-lab-list/${studentId}?semesterId=${params.semesterId}`,
-        { data: { assignmentId: params.assignmentId } }
+        `/student/my-lab-list/${assignmentId}?semesterId=${params.semesterId}`
       )
     ).data
   }

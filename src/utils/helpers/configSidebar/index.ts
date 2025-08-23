@@ -130,6 +130,14 @@ export const allNavigationItems: NavigationItem[] = [
     path: '/my-submit',
     roles: ['Student'],
   },
+{
+    id: 'my-selected-assignment',
+    label: 'My Selected Assignment',
+    icon: BookOpen,
+    path: '/my-selected-assignment',
+    roles: ['Student'],
+  },
+// thêm sidebar ở đây là được
 
   // Shared items (Teacher, Student, Head Subject)
   // {

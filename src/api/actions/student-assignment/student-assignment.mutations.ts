@@ -7,12 +7,12 @@ export const studentAssignmentMutations = {
 
 const addStudentLab =
   (client: AxiosInstance) => async (
-    studentId: number,
+    assignmentId: number,
     params: AddStudentLabRequest
   ): Promise<AddStudentLabResponse> => {
     const res = await client.post<AddStudentLabResponse>(
-      `/student/my-lab-list/${studentId}?semesterId=${params.semesterId}`,
-      { assignmentId: params.assignmentId }
+      `/student/my-lab-list/${assignmentId}?semesterId=${params.semesterId}`,
+      { assignmentId }
     )
-   return res.data
+    return res.data
   }
