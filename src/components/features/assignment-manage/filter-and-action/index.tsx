@@ -19,7 +19,7 @@ export const FiltersAndActions = ({
             className="pl-10 w-80"
           />
         </div>
-{/* 
+        {/* 
         <Select>
           <SelectTrigger className="w-40">
             <SelectValue placeholder="All teachers" />
@@ -30,21 +30,13 @@ export const FiltersAndActions = ({
           </SelectContent>
         </Select> */}
 
-        <Button variant="outline" className="gap-2">
+        {/* <Button variant="outline" className="gap-2">
           <Filter className="w-4 h-4" />
           Advanced Filters
-        </Button>
+        </Button> */}
       </div>
 
       <div className="flex items-center gap-2">
-        <Button variant="outline" className="gap-2">
-          <Download className="w-4 h-4" />
-          Import
-        </Button>
-        <Button variant="outline" className="gap-2">
-          <Upload className="w-4 h-4" />
-          Export
-        </Button>
         <Button
           className="gap-2 bg-orange-500 hover:bg-orange-600"
           onClick={onAddAssignment}

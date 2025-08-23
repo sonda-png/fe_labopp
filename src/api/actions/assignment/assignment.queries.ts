@@ -23,6 +23,16 @@ export const assignmentQueries = {
       queryFn: downloadPdfFile(assignmentId),
       enabled: !!assignmentId,
     }),
+  downloadSubmission: (assignmentId: string | undefined) =>
+    queryFactoryOptions({
+      queryKey: [
+        ...assignmentQueries.all(),
+        'downloadSubmission',
+        assignmentId,
+      ],
+      queryFn: downloadSubmissionFile(assignmentId),
+      enabled: !!assignmentId,
+    }),
 }
 
 /* Get all my submissions */
@@ -38,5 +48,14 @@ export const getAssignmentById =
 
 const downloadPdfFile =
   (assignmentId: string | undefined) => (client: AxiosInstance) => async () => {
-    return await client.get<BlobPart>(`/assignment/download-pdf/${assignmentId}`)
+    return await client.get<BlobPart>(
+      `/assignment/download-pdf/by-assignment/${assignmentId}`
+    )
+  }
+
+const downloadSubmissionFile =
+  (submissionId: string | undefined) => (client: AxiosInstance) => async () => {
+    return await client.get<BlobPart>(
+      `/assignment/download-submission/${submissionId}`
+    )
   }

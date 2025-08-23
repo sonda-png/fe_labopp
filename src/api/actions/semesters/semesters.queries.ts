@@ -19,7 +19,7 @@ export const semestersQueries = {
 }
 
 const getAllSemesters = (client: AxiosInstance) => async () => {
-  return (await client.get<Semester[]>('/head_subject/semester/semester')).data
+  return (await client.get<Semester[]>('/head_subject/semester/list')).data
 }
 
 const getSemesterByClass =

@@ -122,6 +122,7 @@ export default function StudentSubmission() {
     await submitAssignmentMutation({
       problemId: search.assignmentId,
       studentId: authValues.userId,
+      semesterId: 1,
       zipFile: file,
       status: submissionStatus === 'submit' ? 'Submit' : 'Draft',
     })

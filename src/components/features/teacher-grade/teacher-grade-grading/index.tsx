@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { useMutation } from '@/hooks'
+import { toast } from 'react-toastify'
 
 interface TeacherGradeDetailProps {
   submissionId: string
@@ -34,6 +35,7 @@ export function TeacherGradding({
         setStep('grade')
         setIsPass(null)
         onSuccess?.()
+        toast.success('Grade submitted successfully')
       },
     }
   )
@@ -77,7 +79,7 @@ export function TeacherGradding({
               disabled={isGrading}
               className="w-full"
             >
-              Fail
+              Reject
             </Button>
           </div>
         )}
