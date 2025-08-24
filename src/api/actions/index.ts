@@ -10,6 +10,7 @@ import { submissionsMutations } from './submissions/submissions.mutations'
 import { problemMutations } from './problem/problem.mutations'
 import { syncFapMutations } from './sync-fap/sync-fap.mutations'
 import { classMutations } from './class/class.mutations'
+import { aiManageMutations } from './ai-manage/ai-manage.mutations'
 
 export const mutations = {
   ...authMutations,
@@ -24,6 +25,7 @@ export const mutations = {
   ...problemMutations,
   ...syncFapMutations,
   ...classMutations,
+  ...aiManageMutations,
   // API_COLLECTION_MUTATIONS
 } as const
 
