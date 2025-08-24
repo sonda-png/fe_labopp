@@ -59,9 +59,10 @@ export const SubmissionSearchAndFilter = ({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All statuses</SelectItem>
-              <SelectItem value="PENDING">Pending</SelectItem>
-              <SelectItem value="PASSED">Passed</SelectItem>
-              <SelectItem value="REJECTED">Rejected</SelectItem>
+              <SelectItem value="Draft">Draft</SelectItem>
+              <SelectItem value="Passed">Passed</SelectItem>
+              <SelectItem value="Reject">Reject</SelectItem>
+              <SelectItem value="Submit">Submit</SelectItem>
             </SelectContent>
           </Select>
         </div>
