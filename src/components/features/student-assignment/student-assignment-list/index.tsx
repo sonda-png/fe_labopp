@@ -31,8 +31,9 @@ import {
   SortDesc,
   Eye,
   Clock,
+  CheckCircle,
 } from 'lucide-react'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { format } from 'date-fns'
 import { useNavigate } from '@tanstack/react-router'
 
@@ -40,9 +41,13 @@ import { useNavigate } from '@tanstack/react-router'
 const AssignmentCard = ({
   assignment,
   onView,
+  isSelected,
+  onSelect,
 }: {
   assignment: Assignment
   onView: (assignment: Assignment) => void
+  isSelected?: boolean
+  onSelect?: (assignment: Assignment) => void
 }) => {
   const formatDate = (dateString: string) => {
     try {
@@ -54,9 +59,21 @@ const AssignmentCard = ({
 
   return (
     <Card
-      className="hover:shadow-lg transition-shadow duration-200 cursor-pointer h-full flex flex-col"
+      className={`transition-shadow duration-200 cursor-pointer h-full flex flex-col relative
+        ${isSelected
+          ? 'border-2 border-blue-400 bg-blue-50 shadow-2xl scale-[1.03]'
+          : 'hover:shadow-lg'
+        }`}
       onClick={() => onView(assignment)}
     >
+      {/* Selected badge */}
+      {isSelected && (
+        <div className="absolute top-3 right-3 flex items-center gap-1 px-3 py-1 bg-blue-500 text-white rounded-full shadow-lg text-xs font-semibold z-10">
+          <CheckCircle className="h-4 w-4 mr-1" />
+          Selected
+        </div>
+      )}
+
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex-1">
@@ -107,6 +124,23 @@ const AssignmentCard = ({
             <Eye className="h-4 w-4 mr-2" />
             View Details
           </Button>
+          {onSelect && (
+            <Button
+              variant={isSelected ? "default" : "secondary"}
+              size="sm"
+              className={`flex-1 font-semibold rounded-full transition-all
+                ${isSelected
+                  ? "bg-blue-500 text-white hover:bg-blue-600 shadow"
+                  : "bg-gray-100 text-blue-600 hover:bg-blue-100"
+                }`}
+              onClick={e => {
+                e.stopPropagation()
+                onSelect(assignment)
+              }}
+            >
+              {isSelected ? "Unselect" : "Select"}
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>
@@ -339,16 +373,42 @@ export const StudentAssignmentList = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [sortBy, setSortBy] = useState<string>('createdAt')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
+  const [selectedAssignments, setSelectedAssignments] = useState<Assignment[]>([])
+
+  // Đọc selected từ localStorage khi vào trang
+  useEffect(() => {
+    const saved = localStorage.getItem('selectedAssignments')
+    if (saved && assignments) {
+      try {
+        const ids: string[] = JSON.parse(saved)
+        const selected = assignments.filter(a => ids.includes(a.id))
+        setSelectedAssignments(selected)
+      } catch {}
+    }
+  }, [assignments])
+
+  // Lưu selected vào localStorage mỗi khi thay đổi
+  useEffect(() => {
+    const ids = selectedAssignments.map(a => a.id)
+    localStorage.setItem('selectedAssignments', JSON.stringify(ids))
+  }, [selectedAssignments])
 
   const handleView = (assignment: Assignment) => {
-    // Navigate to assignment detail page
     navigate({ to: `/student-assignment/${assignment.id}` })
+  }
+
+  const handleSelect = (assignment: Assignment) => {
+    const isSelected = selectedAssignments.some(a => a.id === assignment.id)
+    if (isSelected) {
+      setSelectedAssignments(selectedAssignments.filter(a => a.id !== assignment.id))
+    } else {
+      setSelectedAssignments([...selectedAssignments, assignment])
+    }
   }
 
   // Filtered and sorted data
   const filteredAndSortedData = useMemo(() => {
     if (!assignments) return []
-    console.log(assignments)
     const filtered = assignments.filter(assignment => {
       const matchesSearch =
         assignment.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -394,6 +454,10 @@ export const StudentAssignmentList = () => {
   if (error) return <ErrorState />
   if (!assignments || assignments.length === 0) return <EmptyState />
 
+  // Loại bỏ các assignment đã chọn khỏi danh sách còn lại
+  const selectedIds = selectedAssignments.map(a => a.id)
+  const remainingAssignments = filteredAndSortedData.filter(a => !selectedIds.includes(a.id))
+
   return (
     <div className="p-6">
       {/* Header */}
@@ -423,13 +487,30 @@ export const StudentAssignmentList = () => {
         />
       </div>
 
+      {/* Các assignment đã chọn nổi bật */}
+      {selectedAssignments.length > 0 && (
+        <div className="mb-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
+          {selectedAssignments.map((assignment: Assignment) => (
+            <AssignmentCard
+              key={assignment.id}
+              assignment={assignment}
+              onView={handleView}
+              isSelected={true}
+              onSelect={handleSelect}
+            />
+          ))}
+        </div>
+      )}
+
       {/* Assignments Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
-        {filteredAndSortedData.map((assignment: Assignment) => (
+        {remainingAssignments.map((assignment: Assignment) => (
           <AssignmentCard
             key={assignment.id}
             assignment={assignment}
             onView={handleView}
+            isSelected={false}
+            onSelect={handleSelect}
           />
         ))}
       </div>
