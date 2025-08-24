@@ -39,6 +39,8 @@ import { useMutation, useQuery } from '@/hooks'
 import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
 import { authStore } from '@/stores/authStore'
 import { adminAccountQueries } from '@/api/actions/admin-account/admin-account.queries'
+import { useQueryClient } from '@tanstack/react-query'
+import { assignmentQueries } from '@/api/actions/assignment/assignment.queries'
 
 interface AssignmentFormDialogProps {
   isOpen: boolean
@@ -73,7 +75,7 @@ export const AssignmentFormDialog = ({
   onCancel,
 }: AssignmentFormDialogProps) => {
   const { authValues } = authStore()
-
+  const queryClient = useQueryClient()
   const { register, handleSubmit, errors, setValue, watch, reset } = form
   const [currentStep, setCurrentStep] = useState(1)
   const [selectedPdfFile, setSelectedPdfFile] = useState<File | null>(null)
@@ -110,6 +112,10 @@ export const AssignmentFormDialog = ({
     'updateAssignmentMutation',
     {
       onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: assignmentQueries.downloadPdfFile(editingAssignment?.id)
+            .queryKey,
+        })
         toast.success('Assignment updated successfully')
       },
       onError: (error: StandardizedApiError) => {
