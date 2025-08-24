@@ -18,7 +18,8 @@ const createTestCaseFromFile =
     body.files.forEach(file => {
       formData.append('files', file)
     })
-    formData.append('problemId', body.assignmentId)
+    formData.append('description', body.description)
+    formData.append('assignmentId', body.assignmentId)
 
     return await client.post<string>(`/test-case/load-from-files`, formData)
   }

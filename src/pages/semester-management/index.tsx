@@ -50,7 +50,7 @@ export const SemesterManagement = () => {
     'handleSyncFap',
     {
       onSuccess: data => {
-        toast.success(data.data.message || 'Sync FAP completed successfully')
+        toast.success(data.message || 'Sync FAP completed successfully')
       },
       onError: error => {
         toast.error('Failed to sync FAP. Please try again.')
