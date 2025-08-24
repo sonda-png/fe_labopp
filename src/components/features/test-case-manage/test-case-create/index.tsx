@@ -23,6 +23,7 @@ import {
   AlertCircle,
   Eye,
   EyeClosed,
+  X,
 } from 'lucide-react'
 import { useState, type ChangeEvent } from 'react'
 import { TestCaseArgs } from '@/api/actions/problem/problem.type'
@@ -74,6 +75,7 @@ export const TestCaseCreate = ({
           queryKey: problemQueries.getByAssignment(selectedLab?.id).queryKey,
         })
         toast.success('Test cases uploaded successfully')
+        onOpenChange(false)
       },
       onError: () => {
         toast.error('Failed to upload test cases')
@@ -121,8 +123,6 @@ export const TestCaseCreate = ({
 
   const handleFileUpload = async (event: ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files
-    console.log(files)
-    console.log(files?.length)
     if (!files || !selectedLab) return
 
     const fileArray = Array.from(files) as File[] // tất cả file trong folder
@@ -257,6 +257,49 @@ export const TestCaseCreate = ({
                       Provide a description to identify these test cases
                     </p>
                   </div>
+
+                  {/* Selected Files Display */}
+                  {selectedFiles.length > 0 && (
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">
+                        Selected Files ({selectedFiles.length}):
+                      </Label>
+                      <div className="border rounded-lg p-3 bg-gray-50 space-y-2">
+                        {selectedFiles.map((file, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center justify-between p-2 bg-white rounded border border-gray-200"
+                          >
+                            <div className="flex items-center space-x-2">
+                              <FileText className="h-4 w-4 text-orange-600" />
+                              <span className="text-sm font-medium text-gray-900">
+                                {file.name}
+                              </span>
+                              <span className="text-xs text-gray-500">
+                                ({(file.size / 1024).toFixed(1)} KB)
+                              </span>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                const newFiles = selectedFiles.filter(
+                                  (_, i) => i !== index
+                                )
+                                setSelectedFiles(newFiles)
+                              }}
+                              className="h-6 w-6 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-xs text-gray-500">
+                        Click the X button to remove individual files
+                      </p>
+                    </div>
+                  )}
 
                   <div className="text-sm text-gray-600">
                     <p>Supported formats: .txt</p>
