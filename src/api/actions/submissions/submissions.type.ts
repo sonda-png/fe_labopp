@@ -17,6 +17,7 @@ export type SubmissionResult = {
   expectedOutput: string
   durationMs: number
   errorLog: string
+  description: string
 }
 
 export type SubmissionResultResponse = SubmissionResult[]
