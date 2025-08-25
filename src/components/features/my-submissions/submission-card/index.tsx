@@ -122,7 +122,7 @@ export const SubmissionCard = ({
     try {
       await reviewCodeMutation.mutateAsync({
         assignmentId: submission.assignmentId.toString(),
-        studentCode: authValues.userId.toString(),
+        submissionId: submission.submissionId.toString(),
       })
     } catch (error) {
       console.error('Error in review code:', error)
@@ -264,47 +264,6 @@ export const SubmissionCard = ({
 
           {reviewResult && (
             <div className="space-y-6 py-4">
-              {/* Status Banner */}
-              <div
-                className={`p-4 rounded-xl border-2 ${
-                  reviewResult.reviewAllowed
-                    ? 'bg-green-50 border-green-200'
-                    : 'bg-red-50 border-red-200'
-                }`}
-              >
-                <div className="flex items-center space-x-3">
-                  {reviewResult.reviewAllowed ? (
-                    <CheckCircle className="h-6 w-6 text-green-600" />
-                  ) : (
-                    <AlertCircle className="h-6 w-6 text-red-600" />
-                  )}
-                  <div>
-                    <h3
-                      className={`font-semibold text-lg ${
-                        reviewResult.reviewAllowed
-                          ? 'text-green-800'
-                          : 'text-red-800'
-                      }`}
-                    >
-                      {reviewResult.reviewAllowed
-                        ? 'Review Allowed'
-                        : 'Review Blocked'}
-                    </h3>
-                    <p
-                      className={`text-sm ${
-                        reviewResult.reviewAllowed
-                          ? 'text-green-700'
-                          : 'text-red-700'
-                      }`}
-                    >
-                      {reviewResult.reviewAllowed
-                        ? 'Your code has been successfully reviewed by AI'
-                        : 'Code review is not available for this submission'}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
               {/* Summary Section */}
               {reviewResult.summary && (
                 <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
@@ -362,25 +321,6 @@ export const SubmissionCard = ({
                   <div className="bg-white rounded-lg p-4 border border-green-100">
                     <pre className="text-sm text-gray-800 whitespace-pre-wrap leading-relaxed font-mono overflow-x-auto">
                       {reviewResult.review}
-                    </pre>
-                  </div>
-                </div>
-              )}
-
-              {/* Raw Response */}
-              {reviewResult.rawResponse && (
-                <div className="bg-gray-900 rounded-xl p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-white">
-                      Raw API Response
-                    </h3>
-                    <Badge variant="secondary" className="text-xs">
-                      Technical Details
-                    </Badge>
-                  </div>
-                  <div className="bg-black rounded-lg p-4 border border-gray-700">
-                    <pre className="text-sm text-green-400 overflow-x-auto font-mono">
-                      <code>{reviewResult.rawResponse}</code>
                     </pre>
                   </div>
                 </div>

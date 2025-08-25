@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import ReactMarkdown from "react-markdown";
+import ReactMarkdown from 'react-markdown'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Progress } from '@/components/ui/progress'
@@ -30,7 +30,7 @@ import {
 import { format } from 'date-fns'
 import { useQuery, useMutation } from '@/hooks'
 import { assignmentQueries } from '@/api/actions/assignment/assignment.queries'
-import { useNavigate, useParams } from '@tanstack/react-router'
+import { useNavigate, useParams, useSearch } from '@tanstack/react-router'
 import { useState, useRef, type DragEvent, type ChangeEvent } from 'react'
 import { toast } from 'react-toastify'
 import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
@@ -60,6 +60,12 @@ export const AssignmentDetail = ({
   const { assignmentId } = useParams({
     from: '/_auth/student-assignment/$assignmentId/',
   })
+
+  const canSubmit =
+    useSearch({
+      from: '/_auth/student-assignment/$assignmentId/',
+    })?.canSubmit ?? false
+
   const { authValues } = authStore()
 
   // File submission state
@@ -413,9 +419,9 @@ export const AssignmentDetail = ({
         </div>
 
         {/* Sidebar */}
-        <div className="space-y-6">
+        <div className={'space-y-6'}>
           {/* File Submission Form */}
-          <Card>
+          <Card className={`${canSubmit ? 'block' : 'hidden'}`}>
             <CardHeader>
               <CardTitle className="text-lg">Submit Assignment</CardTitle>
             </CardHeader>
@@ -558,7 +564,7 @@ export const AssignmentDetail = ({
           </Card>
 
           {/* Assignment Info */}
-          <Card>
+          <Card className={`${canSubmit ? '' : '!mt-0'}`}>
             <CardHeader>
               <CardTitle className="text-lg">Assignment Info</CardTitle>
             </CardHeader>
