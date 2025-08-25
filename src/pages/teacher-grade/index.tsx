@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -17,7 +17,18 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { Search, User, Code, Calendar, FileText, Eye } from 'lucide-react'
+import {
+  Search,
+  User,
+  Code,
+  Calendar,
+  FileText,
+  Eye,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+} from 'lucide-react'
 import CodeFileViewer from '@/components/features/code-viewer'
 import { useSearch } from '@tanstack/react-router'
 import { useQuery as useQueryTanstack } from '@tanstack/react-query'
@@ -31,6 +42,127 @@ import TeacherGradeDetail from '@/components/features/teacher-grade/teacher-grad
 import TeacherSubmissionDetail from '@/components/features/teacher-grade/teacher-grade-detail'
 import { teacherAssignmentQueries } from '@/api/actions/teacher-assignment/teacher-assignment.queries'
 import { useQuery } from '@/hooks'
+
+// Pagination Component
+const Pagination = ({
+  currentPage,
+  totalPages,
+  onPageChange,
+  totalItems,
+  itemsPerPage,
+  startItem,
+  endItem,
+}: {
+  currentPage: number
+  totalPages: number
+  onPageChange: (page: number) => void
+  totalItems: number
+  itemsPerPage: number
+  startItem: number
+  endItem: number
+}) => {
+  const getPageNumbers = () => {
+    const pages = []
+    const maxVisiblePages = 5
+
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i)
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) {
+          pages.push(i)
+        }
+        pages.push('...')
+        pages.push(totalPages)
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1)
+        pages.push('...')
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pages.push(i)
+        }
+      } else {
+        pages.push(1)
+        pages.push('...')
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          pages.push(i)
+        }
+        pages.push('...')
+        pages.push(totalPages)
+      }
+    }
+
+    return pages
+  }
+
+  if (totalPages <= 1) return null
+
+  return (
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 mx-6 mb-6">
+      <div className="text-sm text-gray-700">
+        Showing {startItem + 1} to {endItem} of {totalItems} results
+      </div>
+
+      <div className="flex items-center gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onPageChange(1)}
+          disabled={currentPage === 1}
+        >
+          <ChevronsLeft className="h-4 w-4" />
+        </Button>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </Button>
+
+        <div className="flex items-center gap-1">
+          {getPageNumbers().map((page, index) => (
+            <div key={index}>
+              {page === '...' ? (
+                <span className="px-3 py-2 text-gray-500">...</span>
+              ) : (
+                <Button
+                  variant={currentPage === page ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => onPageChange(page as number)}
+                  className="min-w-[40px]"
+                >
+                  {page}
+                </Button>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onPageChange(totalPages)}
+          disabled={currentPage === totalPages}
+        >
+          <ChevronsRight className="h-4 w-4" />
+        </Button>
+      </div>
+    </div>
+  )
+}
 
 export default function TeacherGradingSystem() {
   const { classId = '' } = useSearch({ from: '/_auth/teacher-grade/' })
@@ -62,6 +194,10 @@ export default function TeacherGradingSystem() {
     useState<TeacherSubmissionData | null>(null)
   const [isCodeViewerOpen, setIsCodeViewerOpen] = useState(false)
 
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(10)
+
   const openCodeViewer = (submission: TeacherSubmissionData) => {
     setSelectedSubmission(submission)
     setIsCodeViewerOpen(true)
@@ -86,6 +222,23 @@ export default function TeacherGradingSystem() {
       return matchesSearch
     }
   )
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredSubmissions.length / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const paginatedSubmissions = filteredSubmissions.slice(startIndex, endIndex)
+
+  // Reset to first page when search or filters change
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchTerm, statusFilter])
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+    // Scroll to top of the list
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 
   console.log(filteredSubmissions)
   if (isLoading) {
@@ -140,6 +293,34 @@ export default function TeacherGradingSystem() {
                 </SelectContent>
               </Select>
             </div>
+
+            {/* Items per page selector */}
+            <div className="mt-4 flex items-center justify-between">
+              <p className="text-sm text-gray-600">
+                Showing {filteredSubmissions.length} submissions
+              </p>
+
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-600">Items per page:</span>
+                <Select
+                  value={String(itemsPerPage)}
+                  onValueChange={value => {
+                    setItemsPerPage(Number(value))
+                    setCurrentPage(1)
+                  }}
+                >
+                  <SelectTrigger className="w-20">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="5">5</SelectItem>
+                    <SelectItem value="10">10</SelectItem>
+                    <SelectItem value="20">20</SelectItem>
+                    <SelectItem value="50">50</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
           </CardContent>
         </Card>
 
@@ -185,7 +366,7 @@ export default function TeacherGradingSystem() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
-                    {filteredSubmissions.map(
+                    {paginatedSubmissions.map(
                       (submission: TeacherSubmissionData) => (
                         <tr key={submission.id} className="hover:bg-gray-50">
                           <td className="py-4 px-6">
@@ -273,6 +454,17 @@ export default function TeacherGradingSystem() {
                 </table>
               </div>
             )}
+
+            {/* Pagination */}
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+              totalItems={filteredSubmissions.length}
+              itemsPerPage={itemsPerPage}
+              startItem={startIndex}
+              endItem={Math.min(endIndex, filteredSubmissions.length)}
+            />
           </CardContent>
         </Card>
 
