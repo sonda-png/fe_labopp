@@ -30,7 +30,7 @@ export const studentAssignmentQueries = {
 const getAll = (client: AxiosInstance) => async () => {
   return (
     await client.get<StudentLabAssignmentList>(
-      'http://188.166.212.41:5000/api-labopp/api/student/my-lab-list'
+      '/student/my-lab-list'
     )
   ).data
 }
