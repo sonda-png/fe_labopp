@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { Input } from '@/components/ui/input'
+import ReactMarkdown from "react-markdown";
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Progress } from '@/components/ui/progress'
@@ -648,64 +648,6 @@ export const AssignmentDetail = ({
 
           {testCasesResult && (
             <div className="space-y-6 py-4">
-              {/* Status Banner */}
-              <div
-                className={`p-4 rounded-xl border-2 ${
-                  testCasesResult.success
-                    ? 'bg-green-50 border-green-200'
-                    : 'bg-red-50 border-red-200'
-                }`}
-              >
-                <div className="flex items-center space-x-3">
-                  {testCasesResult.success ? (
-                    <CheckCircle className="h-6 w-6 text-green-600" />
-                  ) : (
-                    <AlertCircle className="h-6 w-6 text-red-600" />
-                  )}
-                  <div>
-                    <h3
-                      className={`font-semibold text-lg ${
-                        testCasesResult.success
-                          ? 'text-green-800'
-                          : 'text-red-800'
-                      }`}
-                    >
-                      {testCasesResult.success
-                        ? 'Test Cases Generated Successfully'
-                        : 'Failed to Generate Test Cases'}
-                    </h3>
-                    <p
-                      className={`text-sm ${
-                        testCasesResult.success
-                          ? 'text-green-700'
-                          : 'text-red-700'
-                      }`}
-                    >
-                      {testCasesResult.success
-                        ? `Generated ${testCasesResult.testCases.length} test cases for your assignment`
-                        : 'Unable to generate test cases at this time'}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Suggestions */}
-              {testCasesResult.suggestions && (
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
-                  <div className="flex items-center space-x-3 mb-4">
-                    <div className="p-2 bg-blue-100 rounded-lg">
-                      <Info className="h-5 w-5 text-blue-600" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-blue-900">
-                      AI Suggestions
-                    </h3>
-                  </div>
-                  <p className="text-gray-700 text-base leading-relaxed">
-                    {testCasesResult.suggestions}
-                  </p>
-                </div>
-              )}
-
               {/* Test Cases */}
               {testCasesResult.testCases &&
                 testCasesResult.testCases.length > 0 && (
@@ -767,6 +709,23 @@ export const AssignmentDetail = ({
                   </div>
                 )}
 
+              {/* Suggestions */}
+              {testCasesResult.suggestions && (
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+                  <div className="flex items-center space-x-3 mb-4">
+                    <div className="p-2 bg-blue-100 rounded-lg">
+                      <Info className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-blue-900">
+                      AI Suggestions
+                    </h3>
+                  </div>
+                  <div className="prose prose-sm max-w-none text-gray-700">
+                    <ReactMarkdown>{testCasesResult.suggestions}</ReactMarkdown>
+                  </div>
+                </div>
+              )}
+
               {/* Error Details */}
               {testCasesResult.error && (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-4">
@@ -779,25 +738,6 @@ export const AssignmentDetail = ({
                   <p className="text-red-700 text-sm bg-red-100 p-3 rounded border-l-4 border-red-400">
                     {testCasesResult.error}
                   </p>
-                </div>
-              )}
-
-              {/* Raw Response */}
-              {testCasesResult.rawResponse && (
-                <div className="bg-gray-900 rounded-xl p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-white">
-                      Raw API Response
-                    </h3>
-                    <Badge variant="secondary" className="text-xs">
-                      Technical Details
-                    </Badge>
-                  </div>
-                  <div className="bg-black rounded-lg p-4 border border-gray-700">
-                    <pre className="text-sm text-green-400 overflow-x-auto font-mono">
-                      <code>{testCasesResult.rawResponse}</code>
-                    </pre>
-                  </div>
                 </div>
               )}
 
