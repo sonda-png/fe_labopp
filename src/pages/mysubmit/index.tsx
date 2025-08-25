@@ -4,6 +4,14 @@ import { MySubmissions } from '@/api/actions/my-submissions/my-submissions.type'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import {
   FileText,
   CheckCircle,
@@ -11,8 +19,12 @@ import {
   Clock,
   AlertTriangle,
   Search,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
 } from 'lucide-react'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { MySubmissionStatsCard } from '@/components/features/my-submissions/submission-stat-card'
 import { SubmissionSearchAndFilter } from '@/components/features/my-submissions/submission-search-filter'
 import { SubmissionDetailDialog } from '@/components/features/my-submissions/submission-detail-dialog'
@@ -85,6 +97,127 @@ const NoResultsState = () => (
   </div>
 )
 
+// Pagination Component
+const Pagination = ({
+  currentPage,
+  totalPages,
+  onPageChange,
+  totalItems,
+  itemsPerPage,
+  startItem,
+  endItem,
+}: {
+  currentPage: number
+  totalPages: number
+  onPageChange: (page: number) => void
+  totalItems: number
+  itemsPerPage: number
+  startItem: number
+  endItem: number
+}) => {
+  const getPageNumbers = () => {
+    const pages = []
+    const maxVisiblePages = 5
+
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i)
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) {
+          pages.push(i)
+        }
+        pages.push('...')
+        pages.push(totalPages)
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1)
+        pages.push('...')
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pages.push(i)
+        }
+      } else {
+        pages.push(1)
+        pages.push('...')
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          pages.push(i)
+        }
+        pages.push('...')
+        pages.push(totalPages)
+      }
+    }
+
+    return pages
+  }
+
+  if (totalPages <= 1) return null
+
+  return (
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 m-6">
+      <div className="text-sm text-gray-700">
+        Showing {startItem + 1} to {endItem} of {totalItems} results
+      </div>
+
+      <div className="flex items-center gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onPageChange(1)}
+          disabled={currentPage === 1}
+        >
+          <ChevronsLeft className="h-4 w-4" />
+        </Button>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </Button>
+
+        <div className="flex items-center gap-1">
+          {getPageNumbers().map((page, index) => (
+            <div key={index}>
+              {page === '...' ? (
+                <span className="px-3 py-2 text-gray-500">...</span>
+              ) : (
+                <Button
+                  variant={currentPage === page ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => onPageChange(page as number)}
+                  className="min-w-[40px]"
+                >
+                  {page}
+                </Button>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onPageChange(totalPages)}
+          disabled={currentPage === totalPages}
+        >
+          <ChevronsRight className="h-4 w-4" />
+        </Button>
+      </div>
+    </div>
+  )
+}
+
 // Main Component
 const StudentResults = () => {
   const {
@@ -103,6 +236,9 @@ const StudentResults = () => {
   const [sortBy, setSortBy] = useState<string>('submittedAt')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
 
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(6)
 
   const handleView = (fileUrl: string) => {
     window.open(fileUrl, '_blank')
@@ -158,6 +294,23 @@ const StudentResults = () => {
 
     return filtered
   }, [mySubmissionsData, searchTerm, statusFilter, sortBy, sortOrder])
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredAndSortedData.length / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const paginatedSubmissions = filteredAndSortedData.slice(startIndex, endIndex)
+
+  // Reset to first page when search or filters change
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchTerm, statusFilter, sortBy, sortOrder])
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+    // Scroll to top of the list
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 
   if (isLoading) return <LoadingState />
   if (error) return <ErrorState />
@@ -226,11 +379,33 @@ const StudentResults = () => {
           filteredCount={filteredAndSortedData.length}
           totalCount={mySubmissionsData?.length || 0}
         />
+
+        {/* Items per page selector */}
+        <div className="mt-4 flex items-center gap-2">
+          <span className="text-sm text-gray-600">Items per page:</span>
+          <Select
+            value={String(itemsPerPage)}
+            onValueChange={value => {
+              setItemsPerPage(Number(value))
+              setCurrentPage(1)
+            }}
+          >
+            <SelectTrigger className="w-20">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="6">6</SelectItem>
+              <SelectItem value="9">9</SelectItem>
+              <SelectItem value="12">12</SelectItem>
+              <SelectItem value="18">18</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {/* Submissions Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
-        {filteredAndSortedData.map((submission: MySubmissions) => (
+        {paginatedSubmissions.map((submission: MySubmissions) => (
           <SubmissionCard
             key={submission.submissionId}
             submission={submission}
@@ -239,6 +414,17 @@ const StudentResults = () => {
           />
         ))}
       </div>
+
+      {/* Pagination */}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        totalItems={filteredAndSortedData.length}
+        itemsPerPage={itemsPerPage}
+        startItem={startIndex}
+        endItem={Math.min(endIndex, filteredAndSortedData.length)}
+      />
 
       {/* Empty state for filtered results */}
       {filteredAndSortedData.length === 0 &&
