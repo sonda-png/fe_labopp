@@ -33,6 +33,10 @@ import {
   Clock,
   CheckCircle,
   X,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
 } from 'lucide-react'
 import { useState, useMemo, useEffect } from 'react'
 import { format } from 'date-fns'
@@ -230,6 +234,8 @@ const SearchAndFilter = ({
   setSortOrder,
   filteredCount,
   totalCount,
+  currentPage,
+  itemsPerPage,
 }: {
   searchTerm: string
   setSearchTerm: (value: string) => void
@@ -239,6 +245,8 @@ const SearchAndFilter = ({
   setSortOrder: (value: 'asc' | 'desc') => void
   filteredCount: number
   totalCount: number
+  currentPage: number
+  itemsPerPage: number
 }) => (
   <Card>
     <CardContent className="p-4">
@@ -292,6 +300,13 @@ const SearchAndFilter = ({
       {/* Results count */}
       <div className="mt-4 text-sm text-gray-600">
         Showing {filteredCount} of {totalCount} assignments
+        {filteredCount > 0 && (
+          <span className="ml-2 text-gray-500">
+            (Page{' '}
+            {Math.ceil(((currentPage - 1) * itemsPerPage) / filteredCount) + 1}{' '}
+            of {Math.ceil(filteredCount / itemsPerPage)})
+          </span>
+        )}
       </div>
     </CardContent>
   </Card>
@@ -366,6 +381,127 @@ const AssignmentStats = ({ assignments }: { assignments: Assignment[] }) => (
   </div>
 )
 
+// Pagination Component
+const Pagination = ({
+  currentPage,
+  totalPages,
+  onPageChange,
+  totalItems,
+  itemsPerPage,
+  startItem,
+  endItem,
+}: {
+  currentPage: number
+  totalPages: number
+  onPageChange: (page: number) => void
+  totalItems: number
+  itemsPerPage: number
+  startItem: number
+  endItem: number
+}) => {
+  const getPageNumbers = () => {
+    const pages = []
+    const maxVisiblePages = 5
+
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i)
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) {
+          pages.push(i)
+        }
+        pages.push('...')
+        pages.push(totalPages)
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1)
+        pages.push('...')
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pages.push(i)
+        }
+      } else {
+        pages.push(1)
+        pages.push('...')
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          pages.push(i)
+        }
+        pages.push('...')
+        pages.push(totalPages)
+      }
+    }
+
+    return pages
+  }
+
+  if (totalPages <= 1) return null
+
+  return (
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 m-6">
+      <div className="text-sm text-gray-700">
+        Showing {startItem + 1} to {endItem} of {totalItems} results
+      </div>
+
+      <div className="flex items-center gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onPageChange(1)}
+          disabled={currentPage === 1}
+        >
+          <ChevronsLeft className="h-4 w-4" />
+        </Button>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </Button>
+
+        <div className="flex items-center gap-1">
+          {getPageNumbers().map((page, index) => (
+            <div key={index}>
+              {page === '...' ? (
+                <span className="px-3 py-2 text-gray-500">...</span>
+              ) : (
+                <Button
+                  variant={currentPage === page ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => onPageChange(page as number)}
+                  className="min-w-[40px]"
+                >
+                  {page}
+                </Button>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onPageChange(totalPages)}
+          disabled={currentPage === totalPages}
+        >
+          <ChevronsRight className="h-4 w-4" />
+        </Button>
+      </div>
+    </div>
+  )
+}
+
 // Main Component
 export const StudentAssignmentList = () => {
   const navigate = useNavigate()
@@ -407,6 +543,10 @@ export const StudentAssignmentList = () => {
   const [selectedAssignments, setSelectedAssignments] = useState<Assignment[]>(
     []
   )
+
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(5)
 
   // Initialize selected from server
   useEffect(() => {
@@ -501,6 +641,20 @@ export const StudentAssignmentList = () => {
     a => !selectedIds.includes(a.id)
   )
 
+  // Pagination logic
+  const totalPages = Math.ceil(remainingAssignments.length / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const paginatedAssignments = remainingAssignments.slice(startIndex, endIndex)
+
+
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+    // Scroll to top of the list
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   return (
     <div className="p-6">
       {/* Header */}
@@ -527,7 +681,31 @@ export const StudentAssignmentList = () => {
           setSortOrder={setSortOrder}
           filteredCount={filteredAndSortedData.length}
           totalCount={assignments.length}
+          currentPage={currentPage}
+          itemsPerPage={itemsPerPage}
         />
+
+        {/* Items per page selector */}
+        <div className="mt-4 flex items-center gap-2">
+          <span className="text-sm text-gray-600">Items per page:</span>
+          <Select
+            value={String(itemsPerPage)}
+            onValueChange={value => {
+              setItemsPerPage(Number(value))
+              setCurrentPage(1)
+            }}
+          >
+            <SelectTrigger className="w-20">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="5">5</SelectItem>
+              <SelectItem value="10">10</SelectItem>
+              <SelectItem value="20">20</SelectItem>
+              <SelectItem value="50">50</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {/* Các assignment đã chọn nổi bật */}
@@ -605,7 +783,7 @@ export const StudentAssignmentList = () => {
         </CardHeader>
         <CardContent className="p-0">
           <div className="divide-y">
-            {remainingAssignments.map((assignment: Assignment) => (
+            {paginatedAssignments.map((assignment: Assignment) => (
               <div
                 key={assignment.id}
                 className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 p-4"
@@ -660,6 +838,17 @@ export const StudentAssignmentList = () => {
               </div>
             ))}
           </div>
+
+          {/* Pagination */}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            totalItems={remainingAssignments.length}
+            itemsPerPage={itemsPerPage}
+            startItem={startIndex}
+            endItem={Math.min(endIndex, remainingAssignments.length)}
+          />
         </CardContent>
       </Card>
 
