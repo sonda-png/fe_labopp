@@ -101,7 +101,7 @@ export default function SubmissionResultPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground">
@@ -132,18 +132,7 @@ export default function SubmissionResultPage() {
             <div className="text-2xl font-bold text-red-600">{failCount}</div>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground flex items-center gap-2">
-              <Clock className="h-4 w-4 text-orange-600" /> Note
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-sm text-muted-foreground">
-              Details per test case are listed below
-            </div>
-          </CardContent>
-        </Card>
+        
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -176,6 +165,14 @@ export default function SubmissionResultPage() {
                   </span>
                 </div>
                 <Separator />
+                <div>
+                  <div className="text-sm font-medium text-orange-700 mb-1">
+                    Description
+                  </div>
+                  <pre className="whitespace-pre-wrap text-sm bg-gray-50 border border-gray-200 rounded p-3 overflow-auto max-h-40">
+                    {result.description || 'No description'}
+                  </pre>
+                </div>
                 <div>
                   <div className="text-sm font-medium text-orange-700 mb-1">
                     Expected Output

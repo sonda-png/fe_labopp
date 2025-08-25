@@ -12,7 +12,7 @@ const axiosClient = axios.create({
   // interceptor (e.g., 'application/json' or appropriate multipart
   // headers when dealing with FormData).
   baseURL: ENV.BACK_END_URL,
-  timeout: 10000,
+  timeout: 1000000,
   withCredentials: true,
 })
 

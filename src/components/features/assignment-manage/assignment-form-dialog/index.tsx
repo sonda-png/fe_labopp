@@ -39,6 +39,9 @@ import { useMutation, useQuery } from '@/hooks'
 import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
 import { authStore } from '@/stores/authStore'
 import { adminAccountQueries } from '@/api/actions/admin-account/admin-account.queries'
+import { useQueryClient } from '@tanstack/react-query'
+import { assignmentQueries } from '@/api/actions/assignment/assignment.queries'
+import { assignmentManageQueries } from '@/api/actions/assignment-manage/assignment.query'
 
 interface AssignmentFormDialogProps {
   isOpen: boolean
@@ -73,7 +76,7 @@ export const AssignmentFormDialog = ({
   onCancel,
 }: AssignmentFormDialogProps) => {
   const { authValues } = authStore()
-
+  const queryClient = useQueryClient()
   const { register, handleSubmit, errors, setValue, watch, reset } = form
   const [currentStep, setCurrentStep] = useState(1)
   const [selectedPdfFile, setSelectedPdfFile] = useState<File | null>(null)
@@ -93,6 +96,9 @@ export const AssignmentFormDialog = ({
     'addAssignmentMutation',
     {
       onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: assignmentManageQueries.get().queryKey,
+        })
         toast.success(
           'Assignment created successfully! Now you can upload the PDF file.'
         )
@@ -110,7 +116,17 @@ export const AssignmentFormDialog = ({
     'updateAssignmentMutation',
     {
       onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: assignmentQueries.downloadPdfFile(editingAssignment?.id)
+            .queryKey,
+        })
+        queryClient.invalidateQueries({
+          queryKey: assignmentManageQueries.get().queryKey,
+        })
         toast.success('Assignment updated successfully')
+        onSuccess?.()
+        reset()
+        setCurrentStep(1)
       },
       onError: (error: StandardizedApiError) => {
         toast.error(
@@ -351,7 +367,7 @@ export const AssignmentFormDialog = ({
               <div className="grid gap-2">
                 <Label htmlFor="teacherId">Teacher</Label>
                 <Select
-                  value={watch('teacherId').toString() || ''}
+                  value={watchedValues.teacherId.toString() || '2'}
                   onValueChange={(value: string) =>
                     setValue('teacherId', Number(value))
                   }
@@ -363,7 +379,7 @@ export const AssignmentFormDialog = ({
                     {accountData
                       ?.filter(account => account.roleName === 'Teacher')
                       .map(account => (
-                        <SelectItem key={account.id} value={account.id}>
+                        <SelectItem key={account.id} value={account.id.toString()}>
                           <div className="flex items-center gap-2">
                             <span className="font-medium">
                               {account.fullName}

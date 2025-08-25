@@ -6,6 +6,7 @@ export type CreateTestCaseArgs = {
 
 export type CreateTestCaseFromFileArgs = {
   assignmentId: string
+  description: string
   files: File[]
 }
 
