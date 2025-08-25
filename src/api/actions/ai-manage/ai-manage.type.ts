@@ -15,7 +15,7 @@ export type IngestPdfResponse = {
 
 export type ReviewCodeRequest = {
   assignmentId: string
-  studentCode: string
+  submissionId: string
 }
 
 export type ReviewCodeResponse = {

@@ -242,7 +242,7 @@ const SelectedAssignments = () => {
                         className="flex-1 md:flex-none"
                         onClick={() =>
                           navigate({
-                            to: `/student-assignment/${assignment.assignmentId}`,
+                            to: `/student-assignment/${assignment.assignmentId}?canSubmit=true`,
                           })
                         }
                       >
