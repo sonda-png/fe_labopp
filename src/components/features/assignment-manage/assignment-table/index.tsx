@@ -166,7 +166,7 @@ export const AssignmentTable = ({
             <TableHeader>
               <TableRow className="border-b border-gray-200">
                 <TableHead>Assignment Information</TableHead>
-                <TableHead>Description</TableHead>
+                <TableHead>Status</TableHead>
                 <TableHead>LOC</TableHead>
                 <TableHead>Teacher</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
@@ -198,7 +198,7 @@ export const AssignmentTable = ({
                       </TableCell>
                       <TableCell>
                         <p className="text-sm text-gray-600 max-w-xs truncate">
-                          {lab.description}
+                          {lab.status}
                         </p>
                       </TableCell>
                       <TableCell>
