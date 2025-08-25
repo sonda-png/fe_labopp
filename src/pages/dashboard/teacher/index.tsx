@@ -175,7 +175,7 @@ export const TeacherDashboard = () => {
           </div>
 
           {/* Quick Actions */}
-          <Card className="shadow-lg bg-white">
+          {/* <Card className="shadow-lg bg-white">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <Target className="h-5 w-5 text-orange-500" />
@@ -211,7 +211,7 @@ export const TeacherDashboard = () => {
                 </Button>
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
         </>
       )}
     </div>
