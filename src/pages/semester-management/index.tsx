@@ -20,13 +20,6 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { useQuery, useMutation } from '@/hooks'
 import { semestersQueries } from '@/api/actions/semesters/semesters.queries'
 import { Semester } from '@/api/actions/semesters/semesters.types'
@@ -36,10 +29,8 @@ import { OverviewSemesterClass } from '@/components/features/semester-class/over
 export const SemesterManagement = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
-  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
-  const [selectedSemester, setSelectedSemester] = useState<Semester | null>(
-    null
-  )
+  const [, setIsDetailModalOpen] = useState(false)
+  const [, setSelectedSemester] = useState<Semester | null>(null)
 
   const { data: semestersData, isLoading } = useQuery({
     ...semestersQueries.getAll(),
@@ -64,7 +55,7 @@ export const SemesterManagement = () => {
 
   const semesters: Semester[] = semestersData || []
 
-  // Helper function to determine semester status based on dates
+  // Helper function to determine semester status
   const getSemesterStatus = (semester: Semester) => {
     const now = new Date()
     const startDate = new Date(semester.startDate)
@@ -73,30 +64,22 @@ export const SemesterManagement = () => {
     if (now < startDate) {
       return {
         status: 'upcoming',
-        color: 'bg-yellow-500 hover:bg-yellow-600',
         text: 'Upcoming',
-        icon: <Clock className="h-4 w-4" />,
-        isActive: false,
       }
     } else if (now >= startDate && now <= endDate) {
       return {
         status: 'current',
-        color: 'bg-green-500 hover:bg-green-600',
         text: 'Current semester',
-        icon: <Star className="h-4 w-4" />,
-        isActive: true,
       }
     } else {
       return {
         status: 'completed',
-        color: 'bg-blue-500 hover:bg-blue-600',
         text: 'Completed',
-        icon: <CheckCircle className="h-4 w-4" />,
-        isActive: false,
       }
     }
   }
 
+  // Filter
   const filteredSemesters = semesters.filter(semester => {
     const matchesSearch =
       semester.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -108,6 +91,23 @@ export const SemesterManagement = () => {
 
     return matchesSearch && matchesStatus
   })
+
+  // ---------------- Pagination ----------------
+  const [currentPage, setCurrentPage] = useState(1)
+  const pageSize = 6 // số item trên 1 trang
+  const totalPages = Math.ceil(filteredSemesters.length / pageSize)
+
+  const currentSemesters = filteredSemesters.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  )
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page)
+    }
+  }
+  // --------------------------------------------
 
   const openDetailModal = (semester: Semester) => {
     setSelectedSemester(semester)
@@ -152,11 +152,6 @@ export const SemesterManagement = () => {
                 className="pl-10 w-80 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
               />
             </div>
-
-            {/* <Button variant="outline">
-              <Filter className="mr-2 h-4 w-4" />
-              Advanced filter
-            </Button> */}
           </div>
 
           <div className="flex items-center space-x-4">
@@ -175,7 +170,7 @@ export const SemesterManagement = () => {
 
         {/* Semesters Grid */}
         <div className="grid gap-6">
-          {filteredSemesters.map(semester => (
+          {currentSemesters.map(semester => (
             <Card
               key={semester.id}
               className="hover:shadow-lg transition-shadow duration-200"
@@ -191,23 +186,9 @@ export const SemesterManagement = () => {
                         <h3 className="text-xl font-semibold text-gray-900">
                           {semester.name}
                         </h3>
-                        {(() => {
-                          const status = getSemesterStatus(semester)
-                          return (
-                            <Badge
-                              variant="outline"
-                              className={`${
-                                status.status === 'current'
-                                  ? 'border-green-200 text-green-700'
-                                  : status.status === 'upcoming'
-                                    ? 'border-yellow-200 text-yellow-700'
-                                    : 'border-blue-200 text-blue-700'
-                              }`}
-                            >
-                              {status.text}
-                            </Badge>
-                          )
-                        })()}
+                        <Badge variant="outline">
+                          {getSemesterStatus(semester).text}
+                        </Badge>
                       </div>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600 mb-3">
                         <div>
@@ -256,138 +237,30 @@ export const SemesterManagement = () => {
           ))}
         </div>
 
-        {/* Detail Modal */}
-        <Dialog open={isDetailModalOpen} onOpenChange={setIsDetailModalOpen}>
-          <DialogContent className="max-w-4xl">
-            <DialogHeader>
-              <DialogTitle>Semester details</DialogTitle>
-              <DialogDescription>
-                Detailed information about semester {selectedSemester?.name}
-              </DialogDescription>
-            </DialogHeader>
-
-            {selectedSemester && (
-              <div className="space-y-6">
-                {/* Header Section */}
-                <div className="flex items-center space-x-4 p-4 bg-orange-50 rounded-lg">
-                  <div className="p-3 bg-orange-500 rounded-full">
-                    <Calendar className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-semibold text-gray-900">
-                      {selectedSemester.name}
-                    </h3>
-                    <div className="flex items-center space-x-2 mt-1">
-                      {(() => {
-                        const status = getSemesterStatus(selectedSemester)
-                        return (
-                          <Badge
-                            variant="outline"
-                            className={`${
-                              status.status === 'current'
-                                ? 'border-green-200 text-green-700'
-                                : status.status === 'upcoming'
-                                  ? 'border-yellow-200 text-yellow-700'
-                                  : 'border-blue-200 text-blue-700'
-                            }`}
-                          >
-                            {status.text}
-                          </Badge>
-                        )
-                      })()}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Information Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Card>
-                    <CardContent className="p-6">
-                      <h4 className="text-lg font-semibold text-gray-900 mb-4">
-                        Basic information
-                      </h4>
-                      <div className="space-y-3">
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Semester code:</span>
-                          <span className="font-medium">
-                            {selectedSemester.id}
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Semester name:</span>
-                          <span className="font-medium">
-                            {selectedSemester.name}
-                          </span>
-                        </div>
-
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Status:</span>
-                          <span
-                            className={`font-medium ${
-                              getSemesterStatus(selectedSemester).status ===
-                              'current'
-                                ? 'text-green-600'
-                                : getSemesterStatus(selectedSemester).status ===
-                                    'upcoming'
-                                  ? 'text-yellow-600'
-                                  : 'text-blue-600'
-                            }`}
-                          >
-                            {getSemesterStatus(selectedSemester).text}
-                          </span>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardContent className="p-6">
-                      <h4 className="text-lg font-semibold text-gray-900 mb-4">
-                        Time information
-                      </h4>
-                      <div className="space-y-3">
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Start Date:</span>
-                          <span className="font-medium">
-                            {new Date(
-                              selectedSemester.startDate
-                            ).toLocaleDateString('vi-VN', {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric',
-                            })}
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">End Date:</span>
-                          <span className="font-medium">
-                            {new Date(
-                              selectedSemester.endDate
-                            ).toLocaleDateString('vi-VN', {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric',
-                            })}
-                          </span>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                {/* Actions */}
-                <div className="flex justify-end space-x-2 pt-4 border-t">
-                  <Button
-                    variant="outline"
-                    onClick={() => setIsDetailModalOpen(false)}
-                  >
-                    Close
-                  </Button>
-                </div>
-              </div>
-            )}
-          </DialogContent>
-        </Dialog>
+        {/* Pagination */}
+        {filteredSemesters.length > 0 && (
+          <div className="flex justify-center items-center gap-2 mt-6">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Prev
+            </Button>
+            <span>
+              Page {currentPage} of {totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </Button>
+          </div>
+        )}
 
         {/* Empty State */}
         {filteredSemesters.length === 0 && (
