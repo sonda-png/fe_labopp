@@ -28,6 +28,7 @@ import { Route as AuthStudentManageIndexImport } from './routes/_auth/student-ma
 import { Route as AuthStudentAssignmentIndexImport } from './routes/_auth/student-assignment/index'
 import { Route as AuthSemesterManagementIndexImport } from './routes/_auth/semester-management/index'
 import { Route as AuthMySubmitIndexImport } from './routes/_auth/my-submit/index'
+import { Route as AuthMySelectedAssignmentIndexImport } from './routes/_auth/my-selected-assignment/index'
 import { Route as AuthManageAccountIndexImport } from './routes/_auth/manage-account/index'
 import { Route as AuthLocRankingIndexImport } from './routes/_auth/loc-ranking/index'
 import { Route as AuthHomeIndexImport } from './routes/_auth/home/index'
@@ -151,6 +152,13 @@ const AuthMySubmitIndexRoute = AuthMySubmitIndexImport.update({
   path: '/my-submit/',
   getParentRoute: () => AuthRoute,
 } as any)
+
+const AuthMySelectedAssignmentIndexRoute =
+  AuthMySelectedAssignmentIndexImport.update({
+    id: '/my-selected-assignment/',
+    path: '/my-selected-assignment/',
+    getParentRoute: () => AuthRoute,
+  } as any)
 
 const AuthManageAccountIndexRoute = AuthManageAccountIndexImport.update({
   id: '/manage-account/',
@@ -342,6 +350,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthManageAccountIndexImport
       parentRoute: typeof AuthImport
     }
+    '/_auth/my-selected-assignment/': {
+      id: '/_auth/my-selected-assignment/'
+      path: '/my-selected-assignment'
+      fullPath: '/my-selected-assignment'
+      preLoaderRoute: typeof AuthMySelectedAssignmentIndexImport
+      parentRoute: typeof AuthImport
+    }
     '/_auth/my-submit/': {
       id: '/_auth/my-submit/'
       path: '/my-submit'
@@ -504,6 +519,7 @@ interface AuthRouteChildren {
   AuthHomeIndexRoute: typeof AuthHomeIndexRoute
   AuthLocRankingIndexRoute: typeof AuthLocRankingIndexRoute
   AuthManageAccountIndexRoute: typeof AuthManageAccountIndexRoute
+  AuthMySelectedAssignmentIndexRoute: typeof AuthMySelectedAssignmentIndexRoute
   AuthMySubmitIndexRoute: typeof AuthMySubmitIndexRoute
   AuthSemesterManagementIndexRoute: typeof AuthSemesterManagementIndexRoute
   AuthStudentAssignmentIndexRoute: typeof AuthStudentAssignmentIndexRoute
@@ -532,6 +548,7 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthHomeIndexRoute: AuthHomeIndexRoute,
   AuthLocRankingIndexRoute: AuthLocRankingIndexRoute,
   AuthManageAccountIndexRoute: AuthManageAccountIndexRoute,
+  AuthMySelectedAssignmentIndexRoute: AuthMySelectedAssignmentIndexRoute,
   AuthMySubmitIndexRoute: AuthMySubmitIndexRoute,
   AuthSemesterManagementIndexRoute: AuthSemesterManagementIndexRoute,
   AuthStudentAssignmentIndexRoute: AuthStudentAssignmentIndexRoute,
@@ -586,6 +603,7 @@ export interface FileRoutesByFullPath {
   '/home': typeof AuthHomeIndexRoute
   '/loc-ranking': typeof AuthLocRankingIndexRoute
   '/manage-account': typeof AuthManageAccountIndexRoute
+  '/my-selected-assignment': typeof AuthMySelectedAssignmentIndexRoute
   '/my-submit': typeof AuthMySubmitIndexRoute
   '/semester-management': typeof AuthSemesterManagementIndexRoute
   '/student-assignment': typeof AuthStudentAssignmentIndexRoute
@@ -621,6 +639,7 @@ export interface FileRoutesByTo {
   '/home': typeof AuthHomeIndexRoute
   '/loc-ranking': typeof AuthLocRankingIndexRoute
   '/manage-account': typeof AuthManageAccountIndexRoute
+  '/my-selected-assignment': typeof AuthMySelectedAssignmentIndexRoute
   '/my-submit': typeof AuthMySubmitIndexRoute
   '/semester-management': typeof AuthSemesterManagementIndexRoute
   '/student-assignment': typeof AuthStudentAssignmentIndexRoute
@@ -658,6 +677,7 @@ export interface FileRoutesById {
   '/_auth/home/': typeof AuthHomeIndexRoute
   '/_auth/loc-ranking/': typeof AuthLocRankingIndexRoute
   '/_auth/manage-account/': typeof AuthManageAccountIndexRoute
+  '/_auth/my-selected-assignment/': typeof AuthMySelectedAssignmentIndexRoute
   '/_auth/my-submit/': typeof AuthMySubmitIndexRoute
   '/_auth/semester-management/': typeof AuthSemesterManagementIndexRoute
   '/_auth/student-assignment/': typeof AuthStudentAssignmentIndexRoute
@@ -695,6 +715,7 @@ export interface FileRouteTypes {
     | '/home'
     | '/loc-ranking'
     | '/manage-account'
+    | '/my-selected-assignment'
     | '/my-submit'
     | '/semester-management'
     | '/student-assignment'
@@ -729,6 +750,7 @@ export interface FileRouteTypes {
     | '/home'
     | '/loc-ranking'
     | '/manage-account'
+    | '/my-selected-assignment'
     | '/my-submit'
     | '/semester-management'
     | '/student-assignment'
@@ -764,6 +786,7 @@ export interface FileRouteTypes {
     | '/_auth/home/'
     | '/_auth/loc-ranking/'
     | '/_auth/manage-account/'
+    | '/_auth/my-selected-assignment/'
     | '/_auth/my-submit/'
     | '/_auth/semester-management/'
     | '/_auth/student-assignment/'
@@ -830,6 +853,7 @@ export const routeTree = rootRoute
         "/_auth/home/",
         "/_auth/loc-ranking/",
         "/_auth/manage-account/",
+        "/_auth/my-selected-assignment/",
         "/_auth/my-submit/",
         "/_auth/semester-management/",
         "/_auth/student-assignment/",
@@ -892,6 +916,10 @@ export const routeTree = rootRoute
     },
     "/_auth/manage-account/": {
       "filePath": "_auth/manage-account/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/my-selected-assignment/": {
+      "filePath": "_auth/my-selected-assignment/index.tsx",
       "parent": "/_auth"
     },
     "/_auth/my-submit/": {

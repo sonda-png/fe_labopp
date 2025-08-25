@@ -31,18 +31,29 @@ import {
   SortDesc,
   Eye,
   Clock,
+  CheckCircle,
+  X,
 } from 'lucide-react'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { format } from 'date-fns'
 import { useNavigate } from '@tanstack/react-router'
+import { useMutation, useQuery as useAppQuery } from '@/hooks'
+import { studentSemesterQueries } from '@/api/actions/student-semester/student-semester.queries'
+import { toast } from 'react-toastify'
+import { studentAssignmentQueries } from '@/api/actions/student-assignment/student-assignment.queries'
+import { StudentLabAssignment } from '@/api/actions/student-assignment/student-assignment.type'
 
 // Assignment Card Component
 const AssignmentCard = ({
   assignment,
   onView,
+  isSelected,
+  onSelect,
 }: {
   assignment: Assignment
   onView: (assignment: Assignment) => void
+  isSelected?: boolean
+  onSelect?: (assignment: Assignment) => void
 }) => {
   const formatDate = (dateString: string) => {
     try {
@@ -54,9 +65,22 @@ const AssignmentCard = ({
 
   return (
     <Card
-      className="hover:shadow-lg transition-shadow duration-200 cursor-pointer h-full flex flex-col"
+      className={`transition-shadow duration-200 cursor-pointer h-full flex flex-col relative
+        ${
+          isSelected
+            ? 'border-2 border-blue-400 bg-blue-50 shadow-2xl scale-[1.03]'
+            : 'hover:shadow-lg'
+        }`}
       onClick={() => onView(assignment)}
     >
+      {/* Selected badge */}
+      {isSelected && (
+        <div className="absolute top-3 right-3 flex items-center gap-1 px-3 py-1 bg-blue-500 text-white rounded-full shadow-lg text-xs font-semibold z-10">
+          <CheckCircle className="h-4 w-4 mr-1" />
+          Selected
+        </div>
+      )}
+
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex-1">
@@ -107,6 +131,24 @@ const AssignmentCard = ({
             <Eye className="h-4 w-4 mr-2" />
             View Details
           </Button>
+          {onSelect && (
+            <Button
+              variant={isSelected ? 'default' : 'secondary'}
+              size="sm"
+              className={`flex-1 font-semibold rounded-full transition-all
+                ${
+                  isSelected
+                    ? 'bg-blue-500 text-white hover:bg-blue-600 shadow'
+                    : 'bg-gray-100 text-blue-600 hover:bg-blue-100'
+                }`}
+              onClick={e => {
+                e.stopPropagation()
+                onSelect(assignment)
+              }}
+            >
+              {isSelected ? 'Unselect' : 'Select'}
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>
@@ -335,20 +377,79 @@ export const StudentAssignmentList = () => {
     ...assignmentQueries.getAll(),
   })
 
+  const { data: currentSemester } = useAppQuery({
+    ...studentSemesterQueries.getCurrentSemester(),
+  })
+
+  // Fetch selected assignments from server
+  const {
+    data: selectedLabs,
+    refetch: refetchSelectedLabs,
+    isLoading: isLoadingSelected,
+  } = useAppQuery({
+    ...studentAssignmentQueries.getAll(),
+  })
+
+  const { mutateAsync: addStudentLabMutation, isPending: isSelecting } =
+    useMutation('addStudentLab', {
+      onSuccess: () => {
+        toast.success('Selected successfully')
+      },
+      onError: (e: any) => {
+        toast.error(e?.message || 'Failed to select assignment')
+      },
+    })
+
   // Filter and sort states
   const [searchTerm, setSearchTerm] = useState('')
   const [sortBy, setSortBy] = useState<string>('createdAt')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
+  const [selectedAssignments, setSelectedAssignments] = useState<Assignment[]>(
+    []
+  )
+
+  // Initialize selected from server
+  useEffect(() => {
+    if (assignments && selectedLabs) {
+      const selectedIds = new Set(
+        (selectedLabs as StudentLabAssignment[]).map(l =>
+          String(l.assignmentId)
+        )
+      )
+      setSelectedAssignments(assignments.filter(a => selectedIds.has(a.id)))
+    }
+  }, [assignments, selectedLabs])
 
   const handleView = (assignment: Assignment) => {
-    // Navigate to assignment detail page
     navigate({ to: `/student-assignment/${assignment.id}` })
+  }
+
+  const handleSelect = async (assignment: Assignment) => {
+    const isSelected = selectedAssignments.some(a => a.id === assignment.id)
+    if (isSelected) {
+      setSelectedAssignments(
+        selectedAssignments.filter(a => a.id !== assignment.id)
+      )
+      return
+    }
+    // Call API to persist selection
+    await addStudentLabMutation({
+      assignmentId: Number(assignment.id),
+      semesterId: (currentSemester as any)?.id ?? 0,
+    } as any)
+    // Refresh selected from server
+    const { data: refreshed } = await refetchSelectedLabs()
+    if (refreshed && assignments) {
+      const selectedIds = new Set(
+        (refreshed as StudentLabAssignment[]).map(l => String(l.assignmentId))
+      )
+      setSelectedAssignments(assignments.filter(a => selectedIds.has(a.id)))
+    }
   }
 
   // Filtered and sorted data
   const filteredAndSortedData = useMemo(() => {
     if (!assignments) return []
-    console.log(assignments)
     const filtered = assignments.filter(assignment => {
       const matchesSearch =
         assignment.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -394,6 +495,12 @@ export const StudentAssignmentList = () => {
   if (error) return <ErrorState />
   if (!assignments || assignments.length === 0) return <EmptyState />
 
+  // Loại bỏ các assignment đã chọn khỏi danh sách còn lại
+  const selectedIds = selectedAssignments.map(a => a.id)
+  const remainingAssignments = filteredAndSortedData.filter(
+    a => !selectedIds.includes(a.id)
+  )
+
   return (
     <div className="p-6">
       {/* Header */}
@@ -423,16 +530,138 @@ export const StudentAssignmentList = () => {
         />
       </div>
 
-      {/* Assignments Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
-        {filteredAndSortedData.map((assignment: Assignment) => (
-          <AssignmentCard
-            key={assignment.id}
-            assignment={assignment}
-            onView={handleView}
-          />
-        ))}
-      </div>
+      {/* Các assignment đã chọn nổi bật */}
+      {selectedAssignments.length > 0 && (
+        <div className="mb-6">
+          <Card>
+            <CardHeader className="py-4">
+              <CardTitle className="text-base">Selected assignments</CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="divide-y">
+                {selectedAssignments.map((assignment: Assignment) => (
+                  <div
+                    key={assignment.id}
+                    className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 p-4"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold truncate">
+                          {assignment.title}
+                        </span>
+                        <Badge variant="secondary" className="text-xs">
+                          Selected
+                        </Badge>
+                      </div>
+                      <div className="mt-1 flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                        <div className="flex items-center">
+                          <Calendar className="h-4 w-4 mr-2" />
+                          <span>
+                            Created:{' '}
+                            {format(
+                              new Date(assignment.createdAt),
+                              'dd/MM/yyyy HH:mm'
+                            )}
+                          </span>
+                        </div>
+                        <div className="flex items-center">
+                          <Code className="h-4 w-4 mr-2" />
+                          <span>LOC: {assignment.locTotal}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 w-full md:w-auto">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1 md:flex-none"
+                        onClick={() => handleView(assignment)}
+                      >
+                        <Eye className="h-4 w-4 mr-2" />
+                        View Details
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        className="flex-1 md:flex-none"
+                        onClick={() => handleSelect(assignment)}
+                      >
+                        <X className="h-4 w-4 mr-2" />
+                        Unselect
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Assignments List */}
+      <Card>
+        <CardHeader className="py-4">
+          <CardTitle className="text-base">Assignments</CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="divide-y">
+            {remainingAssignments.map((assignment: Assignment) => (
+              <div
+                key={assignment.id}
+                className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 p-4"
+              >
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold truncate">
+                      {assignment.title}
+                    </span>
+                    <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+                      <FileText className="h-3 w-3 mr-1" />
+                      Assignment
+                    </Badge>
+                  </div>
+                  <div className="mt-1 flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                    <div className="flex items-center">
+                      <Calendar className="h-4 w-4 mr-2" />
+                      <span>
+                        Created:{' '}
+                        {format(
+                          new Date(assignment.createdAt),
+                          'dd/MM/yyyy HH:mm'
+                        )}
+                      </span>
+                    </div>
+                    <div className="flex items-center">
+                      <Code className="h-4 w-4 mr-2" />
+                      <span>LOC: {assignment.locTotal}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 w-full md:w-auto">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 md:flex-none"
+                    onClick={() => handleView(assignment)}
+                  >
+                    <Eye className="h-4 w-4 mr-2" />
+                    View Details
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    className="flex-1 md:flex-none"
+                    disabled={isSelecting}
+                    onClick={() => handleSelect(assignment)}
+                  >
+                    Select
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Empty state for filtered results */}
       {filteredAndSortedData.length === 0 &&
