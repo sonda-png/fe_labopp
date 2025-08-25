@@ -20,40 +20,21 @@ import {
   ChevronRight,
 } from 'lucide-react'
 import { adminDashboardQueries } from '@/api/actions/admin-dashboard/admin-dashboard.queries'
+import { adminAccountQueries } from '@/api/actions/admin-account/admin-account.queries'
 
 const systemStats = {
-  totalUsers: 2847,
-  totalStudents: 2456,
-  totalTeachers: 89,
-  totalSubjects: 47,
-  totalClasses: 156,
+  totalUsers: 0,
+  totalStudents: 0,
+  totalTeachers: 0,
+  totalSubjects: 0,
+  totalClasses: 0,
   systemUptime: 99.9,
   serverLoad: 67,
   storageUsed: 78,
-  activeUsers: 1234,
+  activeUsers: 0,
 }
 
-const quickActions = [
-  {
-    icon: UserPlus,
-    label: 'Create Account',
-    action: 'create-user',
-    color: 'bg-orange-500',
-  },
-  {
-    icon: Settings,
-    label: 'System Configuration',
-    action: 'system-config',
-    color: 'bg-blue-500',
-  },
-  {
-    icon: Database,
-    label: 'Data Backup',
-    action: 'backup',
-    color: 'bg-green-500',
-  },
-  { icon: Shield, label: 'Security', action: 'security', color: 'bg-red-500' },
-]
+// Quick Actions removed
 
 // Helper function to format timestamp
 const formatTimestamp = (timestamp: string) => {
@@ -110,6 +91,19 @@ export const AdminDashboard = () => {
     }),
   })
 
+  // Fetch accounts to compute totals
+  const { data: accountsData } = useQuery({
+    ...adminAccountQueries.getAll(),
+  })
+
+  const totalUsers = (accountsData as any)?.length ?? 0
+  const totalStudents = ((accountsData as any) ?? []).filter(
+    (u: any) => String(u.roleName).toLowerCase() === 'student'
+  ).length
+  const totalTeachers = ((accountsData as any) ?? []).filter(
+    (u: any) => String(u.roleName).toLowerCase() === 'teacher'
+  ).length
+
   // Flatten activities from all timeline entries
   const allActivities =
     (timelineData as any)?.data?.reduce((acc: any[], entry: any) => {
@@ -161,21 +155,13 @@ export const AdminDashboard = () => {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <Card className="border-l-4 border-l-orange-500 shadow-lg hover:shadow-xl transition-shadow">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Users</p>
-                <p className="text-3xl font-bold text-gray-900">
-                  {systemStats.totalUsers.toLocaleString()}
-                </p>
-                <div className="flex items-center mt-1">
-                  <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
-                  <span className="text-sm text-green-600">
-                    +12% from last month
-                  </span>
-                </div>
+                <p className="text-3xl font-bold text-gray-900">{totalUsers}</p>
               </div>
               <div className="p-3 bg-orange-100 rounded-lg">
                 <Users className="h-8 w-8 text-orange-600" />
@@ -190,14 +176,8 @@ export const AdminDashboard = () => {
               <div>
                 <p className="text-sm font-medium text-gray-600">Students</p>
                 <p className="text-3xl font-bold text-gray-900">
-                  {systemStats.totalStudents.toLocaleString()}
+                  {totalStudents}
                 </p>
-                <div className="flex items-center mt-1">
-                  <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
-                  <span className="text-sm text-green-600">
-                    +8% from last month
-                  </span>
-                </div>
               </div>
               <div className="p-3 bg-blue-100 rounded-lg">
                 <School className="h-8 w-8 text-blue-600" />
@@ -212,12 +192,8 @@ export const AdminDashboard = () => {
               <div>
                 <p className="text-sm font-medium text-gray-600">Teachers</p>
                 <p className="text-3xl font-bold text-gray-900">
-                  {systemStats.totalTeachers}
+                  {totalTeachers}
                 </p>
-                <div className="flex items-center mt-1">
-                  <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
-                  <span className="text-sm text-green-600">+3 this month</span>
-                </div>
               </div>
               <div className="p-3 bg-green-100 rounded-lg">
                 <Users className="h-8 w-8 text-green-600" />
@@ -225,57 +201,11 @@ export const AdminDashboard = () => {
             </div>
           </CardContent>
         </Card>
-
-        <Card className="border-l-4 border-l-purple-500 shadow-lg hover:shadow-xl transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Classes</p>
-                <p className="text-3xl font-bold text-gray-900">
-                  {systemStats.totalClasses}
-                </p>
-                <div className="flex items-center mt-1">
-                  <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
-                  <span className="text-sm text-green-600">+5 new classes</span>
-                </div>
-              </div>
-              <div className="p-3 bg-purple-100 rounded-lg">
-                <BookOpen className="h-8 w-8 text-purple-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
       {/* Main Content - Two Column Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Quick Actions - Takes 1 column */}
-        <div className="lg:col-span-1">
-          <Card className="shadow-lg h-full">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Settings className="h-5 w-5 text-orange-500" />
-                <span>Quick Actions</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 gap-3">
-                {quickActions.map((action, index) => (
-                  <Button
-                    key={index}
-                    variant="outline"
-                    className="w-full justify-start h-auto p-3 border-2 hover:border-orange-300 hover:bg-orange-50"
-                  >
-                    <div className={`p-2 ${action.color} rounded-lg mr-3`}>
-                      <action.icon className="h-4 w-4 text-white" />
-                    </div>
-                    <span className="font-medium text-sm">{action.label}</span>
-                  </Button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Quick Actions removed */}
 
         {/* Recent Activities - Takes 2 columns */}
         <div className="lg:col-span-2">
