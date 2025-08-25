@@ -23,8 +23,9 @@ import {
   AlertCircle,
   Eye,
   EyeClosed,
+  X,
 } from 'lucide-react'
-import { useState } from 'react'
+import { useState, type ChangeEvent } from 'react'
 import { TestCaseArgs } from '@/api/actions/problem/problem.type'
 
 interface TestCaseFormData {
@@ -47,6 +48,7 @@ export const TestCaseCreate = ({
   const [showUploadSection, setShowUploadSection] = useState(false)
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   const [showConfirmUpload, setShowConfirmUpload] = useState(false)
+  const [uploadDescription, setUploadDescription] = useState('')
 
   const { mutateAsync: createTestCase, isPending: isCreating } = useMutation(
     'createTestCase',
@@ -65,18 +67,21 @@ export const TestCaseCreate = ({
     }
   )
 
-  const { mutateAsync: createTestCaseFromFile } =
-    useMutation('createTestCaseFromFile', {
+  const { mutateAsync: createTestCaseFromFile } = useMutation(
+    'createTestCaseFromFile',
+    {
       onSuccess: () => {
         queryClient.invalidateQueries({
           queryKey: problemQueries.getByAssignment(selectedLab?.id).queryKey,
         })
         toast.success('Test cases uploaded successfully')
+        onOpenChange(false)
       },
       onError: () => {
         toast.error('Failed to upload test cases')
       },
-    })
+    }
+  )
 
   const {
     register,
@@ -116,43 +121,39 @@ export const TestCaseCreate = ({
     }
   }
 
-  const handleFileUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleFileUpload = async (event: ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files
-    console.log(files)
-    console.log(files?.length)
     if (!files || !selectedLab) return
 
-    const fileArray = Array.from(files) // tất cả file trong folder
+    const fileArray = Array.from(files) as File[] // tất cả file trong folder
 
-    await createTestCaseFromFile({
-      assignmentId: selectedLab.id,
-      files: fileArray,
-    })
+    // Store selected files instead of calling API immediately
+    setSelectedFiles(fileArray)
 
     // reset input để chọn lại được folder khác
     event.target.value = ''
   }
 
   const handleConfirmUpload = async () => {
-    if (!selectedLab || selectedFiles.length === 0) return
-
-    try {
-      // TODO: Implement file upload mutation for each file
-      for (const file of selectedFiles) {
-        console.log(`Processing file: ${file.name}`)
-        // await createTestCaseFromFile({ assignmentId: selectedLab.id, file })
-      }
-
-      toast.success(`${selectedFiles.length} file(s) uploaded successfully`)
-      setSelectedFiles([])
-      setShowConfirmUpload(false)
-      setShowUploadSection(false)
-    } catch (error) {
-      toast.error('Failed to upload test cases')
-      console.error('Error uploading files:', error)
+    if (
+      !selectedLab ||
+      selectedFiles.length === 0 ||
+      !uploadDescription.trim()
+    ) {
+      toast.error('Please select files and enter a description')
+      return
     }
+
+    await createTestCaseFromFile({
+      assignmentId: selectedLab.id,
+      description: uploadDescription.trim(),
+      files: selectedFiles,
+    })
+
+    setSelectedFiles([])
+    setShowConfirmUpload(false)
+    setShowUploadSection(false)
+    setUploadDescription('')
   }
 
   const downloadSampleFile = (type: 'input' | 'output') => {
@@ -170,6 +171,7 @@ export const TestCaseCreate = ({
     setShowUploadSection(false)
     setSelectedFiles([])
     setShowConfirmUpload(false)
+    setUploadDescription('')
     onOpenChange(false)
   }
 
@@ -217,7 +219,7 @@ export const TestCaseCreate = ({
             {showUploadSection && (
               <div className="border rounded-lg p-4 space-y-4">
                 <div className="flex items-center gap-2">
-                  <Upload className="w-4 h-4 text-blue-600" />
+                  <Upload className="w-4 h-4 text-orange-600" />
                   <h4 className="font-medium">Upload Test Cases from Files</h4>
                 </div>
 
@@ -240,6 +242,65 @@ export const TestCaseCreate = ({
                       className="hidden"
                     />
                   </div>
+
+                  {/* Description Field for File Upload */}
+                  <div className="space-y-2">
+                    <Label htmlFor="upload-description">Description *</Label>
+                    <Textarea
+                      id="upload-description"
+                      placeholder="Enter description for the uploaded test cases"
+                      value={uploadDescription}
+                      onChange={e => setUploadDescription(e.target.value)}
+                      className="min-h-[80px]"
+                    />
+                    <p className="text-xs text-gray-500">
+                      Provide a description to identify these test cases
+                    </p>
+                  </div>
+
+                  {/* Selected Files Display */}
+                  {selectedFiles.length > 0 && (
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">
+                        Selected Files ({selectedFiles.length}):
+                      </Label>
+                      <div className="border rounded-lg p-3 bg-gray-50 space-y-2">
+                        {selectedFiles.map((file, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center justify-between p-2 bg-white rounded border border-gray-200"
+                          >
+                            <div className="flex items-center space-x-2">
+                              <FileText className="h-4 w-4 text-orange-600" />
+                              <span className="text-sm font-medium text-gray-900">
+                                {file.name}
+                              </span>
+                              <span className="text-xs text-gray-500">
+                                ({(file.size / 1024).toFixed(1)} KB)
+                              </span>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                const newFiles = selectedFiles.filter(
+                                  (_, i) => i !== index
+                                )
+                                setSelectedFiles(newFiles)
+                              }}
+                              className="h-6 w-6 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-xs text-gray-500">
+                        Click the X button to remove individual files
+                      </p>
+                    </div>
+                  )}
+
                   <div className="text-sm text-gray-600">
                     <p>Supported formats: .txt</p>
                     <p>
@@ -340,7 +401,7 @@ export const TestCaseCreate = ({
                   <Button
                     type="submit"
                     disabled={!isValid || isCreating}
-                    className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+                    className="bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white"
                   >
                     {isCreating ? 'Adding...' : 'Add Test Case'}
                   </Button>
@@ -353,6 +414,14 @@ export const TestCaseCreate = ({
               <DialogFooter>
                 <Button type="button" variant="outline" onClick={handleCancel}>
                   Cancel
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handleConfirmUpload}
+                  disabled={!uploadDescription.trim()}
+                  className="bg-orange-500 hover:bg-orange-600 text-white disabled:opacity-50"
+                >
+                  Upload Files
                 </Button>
               </DialogFooter>
             )}
@@ -381,7 +450,7 @@ export const TestCaseCreate = ({
               <div className="mt-2 space-y-1">
                 {selectedFiles.map((file, index) => (
                   <div key={index} className="flex items-center gap-2">
-                    <FileText className="w-4 h-4 text-blue-600" />
+                    <FileText className="w-4 h-4 text-orange-600" />
                     <span className="font-mono text-xs">{file.name}</span>
                     <span className="text-xs text-gray-500">
                       ({(file.size / 1024).toFixed(1)} KB)
@@ -403,7 +472,7 @@ export const TestCaseCreate = ({
             <Button
               type="button"
               onClick={handleConfirmUpload}
-              className="bg-blue-600 hover:bg-blue-700"
+              className="bg-orange-500 hover:bg-orange-600 text-white"
             >
               Upload Files
             </Button>

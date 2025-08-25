@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { Input } from '@/components/ui/input'
+import ReactMarkdown from "react-markdown";
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Progress } from '@/components/ui/progress'
@@ -21,6 +21,11 @@ import {
   FileArchive,
   X,
   Check,
+  TestTube,
+  MessageSquare,
+  CheckCircle,
+  AlertCircle,
+  Info,
 } from 'lucide-react'
 import { format } from 'date-fns'
 import { useQuery, useMutation } from '@/hooks'
@@ -33,6 +38,14 @@ import { authStore } from '@/stores/authStore'
 import { studentSemesterQueries } from '@/api/actions/student-semester/student-semester.queries'
 import axios from 'axios'
 import { ENV } from '@/config/env'
+import { SuggestTestCasesResponse } from '@/api/actions/ai-manage/ai-manage.type'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 
 interface AssignmentDetailProps {
   assignment: Assignment
@@ -59,6 +72,11 @@ export const AssignmentDetail = ({
   const [errorMessage, setErrorMessage] = useState('')
   const [submissionStatus, setSubmissionStatus] = useState('draft')
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // AI Test Cases state
+  const [testCasesResult, setTestCasesResult] =
+    useState<SuggestTestCasesResponse | null>(null)
+  const [showTestCasesModal, setShowTestCasesModal] = useState(false)
 
   const { data: downloadPdfFileData, isLoading: isDownloading } = useQuery({
     ...assignmentQueries.downloadPdfFile(assignmentId as string),
@@ -87,6 +105,29 @@ export const AssignmentDetail = ({
         setUploadStatus('error')
       },
     })
+
+  const {
+    mutateAsync: suggestTestCasesMutation,
+    isPending: isSuggestingTestCases,
+  } = useMutation('handleSuggestTestCases', {
+    onSuccess: (data: SuggestTestCasesResponse) => {
+      setTestCasesResult(data)
+      setShowTestCasesModal(true)
+    },
+    onError: () => {
+      toast.error('Failed to generate test cases. Please try again.')
+    },
+  })
+
+  const handleSuggestTestCases = async () => {
+    try {
+      await suggestTestCasesMutation({
+        assignmentId: Number(assignmentId),
+      })
+    } catch (error) {
+      console.error('Error in suggest test cases:', error)
+    }
+  }
 
   const formatDate = (dateString: string) => {
     try {
@@ -320,38 +361,51 @@ export const AssignmentDetail = ({
             </CardContent>
           </Card>
 
-          {/* Requirements */}
+          {/* AI Tools Section */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
-                <FileText className="h-5 w-5 mr-2" />
-                Requirements
+                <TestTube className="h-5 w-5 mr-2" />
+                AI-Powered Tools
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div className="flex items-start">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3"></div>
-                  <p className="text-gray-700">
-                    Complete all required functions according to the
-                    specifications
-                  </p>
+            <CardContent className="space-y-4">
+              <div className="text-center p-6 bg-gradient-to-br from-blue-50 via-indigo-50 to-blue-100 rounded-xl border border-blue-200 shadow-sm">
+                <div className="p-3 bg-blue-100 text-blue-600 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                  <TestTube className="h-8 w-8" />
                 </div>
-                <div className="flex items-start">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3"></div>
-                  <p className="text-gray-700">
-                    Ensure your code follows the coding standards
-                  </p>
-                </div>
-                <div className="flex items-start">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3"></div>
-                  <p className="text-gray-700">
-                    Test your implementation thoroughly
-                  </p>
-                </div>
-                <div className="flex items-start">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3"></div>
-                  <p className="text-gray-700">Submit before the deadline</p>
+                <h4 className="font-semibold text-gray-900 mb-3 text-lg">
+                  AI Test Case Generator
+                </h4>
+                <p className="text-gray-600 mb-4 text-sm leading-relaxed">
+                  Get intelligent test case suggestions powered by AI to help
+                  you validate your assignment implementation
+                </p>
+                <Button
+                  onClick={handleSuggestTestCases}
+                  disabled={isSuggestingTestCases}
+                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md hover:shadow-lg transition-all duration-200"
+                >
+                  {isSuggestingTestCases ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Generating Test Cases...
+                    </>
+                  ) : (
+                    <>
+                      <TestTube className="h-4 w-4 mr-2" />
+                      Generate Test Cases
+                    </>
+                  )}
+                </Button>
+              </div>
+
+              <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
+                <div className="flex items-center justify-center space-x-2 text-orange-700">
+                  <Info className="h-4 w-4" />
+                  <span className="text-sm font-medium">
+                    AI tools help you write better code and test more thoroughly
+                  </span>
                 </div>
               </div>
             </CardContent>
@@ -533,8 +587,190 @@ export const AssignmentDetail = ({
               </div>
             </CardContent>
           </Card>
+          {/* Requirements */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <FileText className="h-5 w-5 mr-2" />
+                Requirements
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex items-start">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3"></div>
+                  <p className="text-gray-700">
+                    Complete all required functions according to the
+                    specifications
+                  </p>
+                </div>
+                <div className="flex items-start">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3"></div>
+                  <p className="text-gray-700">
+                    Ensure your code follows the coding standards
+                  </p>
+                </div>
+                <div className="flex items-start">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3"></div>
+                  <p className="text-gray-700">
+                    Test your implementation thoroughly
+                  </p>
+                </div>
+                <div className="flex items-start">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3"></div>
+                  <p className="text-gray-700">Submit before the deadline</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
+
+      {/* AI Test Cases Modal */}
+      <Dialog open={showTestCasesModal} onOpenChange={setShowTestCasesModal}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center space-x-3 text-2xl font-bold text-gray-900">
+              <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl">
+                <TestTube className="h-8 w-8 text-white" />
+              </div>
+              <div>
+                <div>AI Test Cases Suggestion</div>
+                <div className="text-sm font-normal text-gray-600 mt-1">
+                  {assignment.title} • Assignment ID: {assignmentId}
+                </div>
+              </div>
+            </DialogTitle>
+            <DialogDescription className="text-gray-600">
+              Intelligent test case recommendations for your assignment
+            </DialogDescription>
+          </DialogHeader>
+
+          {testCasesResult && (
+            <div className="space-y-6 py-4">
+              {/* Test Cases */}
+              {testCasesResult.testCases &&
+                testCasesResult.testCases.length > 0 && (
+                  <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl p-6 border border-orange-200">
+                    <div className="flex items-center space-x-3 mb-4">
+                      <div className="p-2 bg-orange-100 rounded-lg">
+                        <TestTube className="h-5 w-5 text-orange-600" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-orange-900">
+                        Suggested Test Cases ({testCasesResult.testCases.length}
+                        )
+                      </h3>
+                    </div>
+
+                    <div className="space-y-4">
+                      {testCasesResult.testCases.map((testCase, index) => (
+                        <div
+                          key={index}
+                          className="bg-white rounded-lg p-4 border border-orange-100 shadow-sm"
+                        >
+                          <div className="flex items-center justify-between mb-3">
+                            <h4 className="font-semibold text-orange-800">
+                              Test Case #{index + 1}
+                            </h4>
+                            <Badge
+                              variant="outline"
+                              className="text-xs border-orange-200 text-orange-700"
+                            >
+                              Case {index + 1}
+                            </Badge>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <label className="text-sm font-medium text-gray-700 mb-2 block">
+                                Input
+                              </label>
+                              <div className="bg-gray-50 rounded p-3 border border-orange-100">
+                                <pre className="text-sm text-gray-800 whitespace-pre-wrap font-mono">
+                                  {testCase.input}
+                                </pre>
+                              </div>
+                            </div>
+
+                            <div>
+                              <label className="text-sm font-medium text-gray-700 mb-2 block">
+                                Expected Output
+                              </label>
+                              <div className="bg-gray-50 rounded p-3 border border-orange-100">
+                                <pre className="text-sm text-gray-800 whitespace-pre-wrap font-mono">
+                                  {testCase.expectedOutput}
+                                </pre>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+              {/* Suggestions */}
+              {testCasesResult.suggestions && (
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+                  <div className="flex items-center space-x-3 mb-4">
+                    <div className="p-2 bg-blue-100 rounded-lg">
+                      <Info className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-blue-900">
+                      AI Suggestions
+                    </h3>
+                  </div>
+                  <div className="prose prose-sm max-w-none text-gray-700">
+                    <ReactMarkdown>{testCasesResult.suggestions}</ReactMarkdown>
+                  </div>
+                </div>
+              )}
+
+              {/* Error Details */}
+              {testCasesResult.error && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <AlertCircle className="h-5 w-5 text-red-600" />
+                    <h3 className="text-lg font-semibold text-red-900">
+                      Error Details
+                    </h3>
+                  </div>
+                  <p className="text-red-700 text-sm bg-red-100 p-3 rounded border-l-4 border-red-400">
+                    {testCasesResult.error}
+                  </p>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-between pt-6 border-t border-gray-200">
+                <div className="text-sm text-gray-600">
+                  Test cases generated at {new Date().toLocaleString()}
+                </div>
+                <div className="flex space-x-3">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setShowTestCasesModal(false)
+                      setTestCasesResult(null)
+                    }}
+                  >
+                    Close
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setShowTestCasesModal(false)
+                      setTestCasesResult(null)
+                    }}
+                    className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+                  >
+                    Got it, thanks!
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
