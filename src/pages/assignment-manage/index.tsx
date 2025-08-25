@@ -17,6 +17,7 @@ import {
   AssignmentFormDialog,
 } from '@/components/features/assignment-manage'
 
+
 interface Lab {
   id: string
   title: string
@@ -61,6 +62,20 @@ export default function AssignmentManagement() {
     }
   }, [assignmentsData])
 
+  // ---------------- Pagination ----------------
+  const [currentPage, setCurrentPage] = useState(1)
+  const pageSize = 5 // số item trên 1 trang
+
+  const totalPages = Math.ceil(labs.length / pageSize)
+  const currentLabs = labs.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page)
+    }
+  }
+  // --------------------------------------------
+
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [editingLab, setEditingLab] = useState<Lab | null>(null)
@@ -79,7 +94,7 @@ export default function AssignmentManagement() {
       description: '',
       locTotal: 0,
       teacherId: 0,
-      status: 'Active' as 'Pending' | 'Active' | 'Inactive',
+      status: 'Active',
     },
   })
 
@@ -109,19 +124,6 @@ export default function AssignmentManagement() {
     }
   }
 
-  const handleAddAssignment = () => {
-    setIsAddDialogOpen(true)
-  }
-
-  const handleAddCancel = () => {
-    setIsAddDialogOpen(false)
-    reset()
-  }
-
-  const handleEditCancel = () => {
-    handleEditDialogChange(false)
-  }
-
   return (
     <main className="flex-1 p-6">
       <div className="space-y-6">
@@ -132,15 +134,36 @@ export default function AssignmentManagement() {
         <StatsCards labs={labs} />
 
         {/* Filters and Actions */}
-        <FiltersAndActions onAddAssignment={handleAddAssignment} />
+        <FiltersAndActions onAddAssignment={() => setIsAddDialogOpen(true)} />
 
         {/* Labs Table */}
         <AssignmentTable
-          labs={labs}
+          labs={currentLabs}
           isLoading={isLoading}
           onEdit={handleEdit}
           onDelete={handleDelete}
         />
+
+        {/* Pagination Controls */}
+        <div className="flex justify-center items-center gap-2 mt-4">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-3 py-1 border rounded disabled:opacity-50"
+          >
+            Prev
+          </button>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="px-3 py-1 border rounded disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
 
         {/* Add Dialog */}
         <AssignmentFormDialog
@@ -150,7 +173,10 @@ export default function AssignmentManagement() {
           description="Enter information for the new assignment"
           submitButtonText="Add"
           form={{ register, handleSubmit, errors, setValue, watch, reset }}
-          onCancel={handleAddCancel}
+          onCancel={() => {
+            setIsAddDialogOpen(false)
+            reset()
+          }}
         />
 
         {/* Edit Dialog */}
@@ -163,7 +189,7 @@ export default function AssignmentManagement() {
           isEditMode={true}
           editingAssignment={editingLab}
           form={{ register, handleSubmit, errors, setValue, watch, reset }}
-          onCancel={handleEditCancel}
+          onCancel={() => handleEditDialogChange(false)}
         />
       </div>
     </main>
