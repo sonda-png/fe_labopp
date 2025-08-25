@@ -1,6 +1,7 @@
 export interface StudentLabAssignment {
   id: number
   assignmentId: number
+  assignmentName: string
   semesterId: number
   status: 'Passed' | 'Draft'
   submittedAt: string // ISO date string

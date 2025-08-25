@@ -32,10 +32,16 @@ import {
   Eye,
   Clock,
   CheckCircle,
+  X,
 } from 'lucide-react'
 import { useState, useMemo, useEffect } from 'react'
 import { format } from 'date-fns'
 import { useNavigate } from '@tanstack/react-router'
+import { useMutation, useQuery as useAppQuery } from '@/hooks'
+import { studentSemesterQueries } from '@/api/actions/student-semester/student-semester.queries'
+import { toast } from 'react-toastify'
+import { studentAssignmentQueries } from '@/api/actions/student-assignment/student-assignment.queries'
+import { StudentLabAssignment } from '@/api/actions/student-assignment/student-assignment.type'
 
 // Assignment Card Component
 const AssignmentCard = ({
@@ -60,9 +66,10 @@ const AssignmentCard = ({
   return (
     <Card
       className={`transition-shadow duration-200 cursor-pointer h-full flex flex-col relative
-        ${isSelected
-          ? 'border-2 border-blue-400 bg-blue-50 shadow-2xl scale-[1.03]'
-          : 'hover:shadow-lg'
+        ${
+          isSelected
+            ? 'border-2 border-blue-400 bg-blue-50 shadow-2xl scale-[1.03]'
+            : 'hover:shadow-lg'
         }`}
       onClick={() => onView(assignment)}
     >
@@ -126,19 +133,20 @@ const AssignmentCard = ({
           </Button>
           {onSelect && (
             <Button
-              variant={isSelected ? "default" : "secondary"}
+              variant={isSelected ? 'default' : 'secondary'}
               size="sm"
               className={`flex-1 font-semibold rounded-full transition-all
-                ${isSelected
-                  ? "bg-blue-500 text-white hover:bg-blue-600 shadow"
-                  : "bg-gray-100 text-blue-600 hover:bg-blue-100"
+                ${
+                  isSelected
+                    ? 'bg-blue-500 text-white hover:bg-blue-600 shadow'
+                    : 'bg-gray-100 text-blue-600 hover:bg-blue-100'
                 }`}
               onClick={e => {
                 e.stopPropagation()
                 onSelect(assignment)
               }}
             >
-              {isSelected ? "Unselect" : "Select"}
+              {isSelected ? 'Unselect' : 'Select'}
             </Button>
           )}
         </div>
@@ -369,40 +377,73 @@ export const StudentAssignmentList = () => {
     ...assignmentQueries.getAll(),
   })
 
+  const { data: currentSemester } = useAppQuery({
+    ...studentSemesterQueries.getCurrentSemester(),
+  })
+
+  // Fetch selected assignments from server
+  const {
+    data: selectedLabs,
+    refetch: refetchSelectedLabs,
+    isLoading: isLoadingSelected,
+  } = useAppQuery({
+    ...studentAssignmentQueries.getAll(),
+  })
+
+  const { mutateAsync: addStudentLabMutation, isPending: isSelecting } =
+    useMutation('addStudentLab', {
+      onSuccess: () => {
+        toast.success('Selected successfully')
+      },
+      onError: (e: any) => {
+        toast.error(e?.message || 'Failed to select assignment')
+      },
+    })
+
   // Filter and sort states
   const [searchTerm, setSearchTerm] = useState('')
   const [sortBy, setSortBy] = useState<string>('createdAt')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
-  const [selectedAssignments, setSelectedAssignments] = useState<Assignment[]>([])
+  const [selectedAssignments, setSelectedAssignments] = useState<Assignment[]>(
+    []
+  )
 
-  // Đọc selected từ localStorage khi vào trang
+  // Initialize selected from server
   useEffect(() => {
-    const saved = localStorage.getItem('selectedAssignments')
-    if (saved && assignments) {
-      try {
-        const ids: string[] = JSON.parse(saved)
-        const selected = assignments.filter(a => ids.includes(a.id))
-        setSelectedAssignments(selected)
-      } catch {}
+    if (assignments && selectedLabs) {
+      const selectedIds = new Set(
+        (selectedLabs as StudentLabAssignment[]).map(l =>
+          String(l.assignmentId)
+        )
+      )
+      setSelectedAssignments(assignments.filter(a => selectedIds.has(a.id)))
     }
-  }, [assignments])
-
-  // Lưu selected vào localStorage mỗi khi thay đổi
-  useEffect(() => {
-    const ids = selectedAssignments.map(a => a.id)
-    localStorage.setItem('selectedAssignments', JSON.stringify(ids))
-  }, [selectedAssignments])
+  }, [assignments, selectedLabs])
 
   const handleView = (assignment: Assignment) => {
     navigate({ to: `/student-assignment/${assignment.id}` })
   }
 
-  const handleSelect = (assignment: Assignment) => {
+  const handleSelect = async (assignment: Assignment) => {
     const isSelected = selectedAssignments.some(a => a.id === assignment.id)
     if (isSelected) {
-      setSelectedAssignments(selectedAssignments.filter(a => a.id !== assignment.id))
-    } else {
-      setSelectedAssignments([...selectedAssignments, assignment])
+      setSelectedAssignments(
+        selectedAssignments.filter(a => a.id !== assignment.id)
+      )
+      return
+    }
+    // Call API to persist selection
+    await addStudentLabMutation({
+      assignmentId: Number(assignment.id),
+      semesterId: (currentSemester as any)?.id ?? 0,
+    } as any)
+    // Refresh selected from server
+    const { data: refreshed } = await refetchSelectedLabs()
+    if (refreshed && assignments) {
+      const selectedIds = new Set(
+        (refreshed as StudentLabAssignment[]).map(l => String(l.assignmentId))
+      )
+      setSelectedAssignments(assignments.filter(a => selectedIds.has(a.id)))
     }
   }
 
@@ -456,7 +497,9 @@ export const StudentAssignmentList = () => {
 
   // Loại bỏ các assignment đã chọn khỏi danh sách còn lại
   const selectedIds = selectedAssignments.map(a => a.id)
-  const remainingAssignments = filteredAndSortedData.filter(a => !selectedIds.includes(a.id))
+  const remainingAssignments = filteredAndSortedData.filter(
+    a => !selectedIds.includes(a.id)
+  )
 
   return (
     <div className="p-6">
@@ -489,31 +532,136 @@ export const StudentAssignmentList = () => {
 
       {/* Các assignment đã chọn nổi bật */}
       {selectedAssignments.length > 0 && (
-        <div className="mb-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
-          {selectedAssignments.map((assignment: Assignment) => (
-            <AssignmentCard
-              key={assignment.id}
-              assignment={assignment}
-              onView={handleView}
-              isSelected={true}
-              onSelect={handleSelect}
-            />
-          ))}
+        <div className="mb-6">
+          <Card>
+            <CardHeader className="py-4">
+              <CardTitle className="text-base">Selected assignments</CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="divide-y">
+                {selectedAssignments.map((assignment: Assignment) => (
+                  <div
+                    key={assignment.id}
+                    className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 p-4"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold truncate">
+                          {assignment.title}
+                        </span>
+                        <Badge variant="secondary" className="text-xs">
+                          Selected
+                        </Badge>
+                      </div>
+                      <div className="mt-1 flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                        <div className="flex items-center">
+                          <Calendar className="h-4 w-4 mr-2" />
+                          <span>
+                            Created:{' '}
+                            {format(
+                              new Date(assignment.createdAt),
+                              'dd/MM/yyyy HH:mm'
+                            )}
+                          </span>
+                        </div>
+                        <div className="flex items-center">
+                          <Code className="h-4 w-4 mr-2" />
+                          <span>LOC: {assignment.locTotal}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 w-full md:w-auto">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1 md:flex-none"
+                        onClick={() => handleView(assignment)}
+                      >
+                        <Eye className="h-4 w-4 mr-2" />
+                        View Details
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        className="flex-1 md:flex-none"
+                        onClick={() => handleSelect(assignment)}
+                      >
+                        <X className="h-4 w-4 mr-2" />
+                        Unselect
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       )}
 
-      {/* Assignments Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
-        {remainingAssignments.map((assignment: Assignment) => (
-          <AssignmentCard
-            key={assignment.id}
-            assignment={assignment}
-            onView={handleView}
-            isSelected={false}
-            onSelect={handleSelect}
-          />
-        ))}
-      </div>
+      {/* Assignments List */}
+      <Card>
+        <CardHeader className="py-4">
+          <CardTitle className="text-base">Assignments</CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="divide-y">
+            {remainingAssignments.map((assignment: Assignment) => (
+              <div
+                key={assignment.id}
+                className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 p-4"
+              >
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold truncate">
+                      {assignment.title}
+                    </span>
+                    <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+                      <FileText className="h-3 w-3 mr-1" />
+                      Assignment
+                    </Badge>
+                  </div>
+                  <div className="mt-1 flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                    <div className="flex items-center">
+                      <Calendar className="h-4 w-4 mr-2" />
+                      <span>
+                        Created:{' '}
+                        {format(
+                          new Date(assignment.createdAt),
+                          'dd/MM/yyyy HH:mm'
+                        )}
+                      </span>
+                    </div>
+                    <div className="flex items-center">
+                      <Code className="h-4 w-4 mr-2" />
+                      <span>LOC: {assignment.locTotal}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 w-full md:w-auto">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 md:flex-none"
+                    onClick={() => handleView(assignment)}
+                  >
+                    <Eye className="h-4 w-4 mr-2" />
+                    View Details
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    className="flex-1 md:flex-none"
+                    disabled={isSelecting}
+                    onClick={() => handleSelect(assignment)}
+                  >
+                    Select
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Empty state for filtered results */}
       {filteredAndSortedData.length === 0 &&
