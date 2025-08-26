@@ -81,17 +81,6 @@ export const ManageAccountPage = (): ReactNode => {
               </SelectContent>
             </Select>
           </div>
-
-          <div className="flex items-center space-x-4">
-            
-            <Button
-              className="bg-orange-500 hover:bg-orange-600"
-              onClick={() => setIsCreateModalOpen(true)}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add Account
-            </Button>
-          </div>
         </div>
         <ManageAccountAudit
           auditMode="create"
