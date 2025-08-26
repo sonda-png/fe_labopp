@@ -1,16 +1,7 @@
 import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import {
-  BookOpen,
-  FileText,
-  CheckCircle,
-  Clock,
-  Calendar,
-  UserCheck,
-  BarChart3,
-  Target,
-} from 'lucide-react'
+import { BookOpen, FileText, Clock, UserCheck } from 'lucide-react'
 import { useQuery } from '@/hooks'
 import { teacherDashboardQueries } from '@/api/actions/teacher-dashboard/teacher-dashboard.queries'
 import { TeacherClass } from '@/api/actions/teacher-dashboard/teacher-dashboard.type'
@@ -173,45 +164,6 @@ export const TeacherDashboard = () => {
               </CardContent>
             </Card>
           </div>
-
-          {/* Quick Actions */}
-          <Card className="shadow-lg bg-white">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Target className="h-5 w-5 text-orange-500" />
-                <span>Quick Actions</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <Button className="bg-white text-black border border-gray-200 hover:bg-gray-100 h-auto p-4 flex-col space-y-2">
-                  <FileText className="h-6 w-6" />
-                  <span>Create Assignment</span>
-                </Button>
-                <Button
-                  variant="outline"
-                  className="bg-white text-black border border-orange-200 hover:bg-orange-50 h-auto p-4 flex-col space-y-2"
-                >
-                  <CheckCircle className="h-6 w-6" />
-                  <span>Grade</span>
-                </Button>
-                <Button
-                  variant="outline"
-                  className="bg-white text-black border border-orange-200 hover:bg-orange-50 h-auto p-4 flex-col space-y-2"
-                >
-                  <BarChart3 className="h-6 w-6" />
-                  <span>Report</span>
-                </Button>
-                <Button
-                  variant="outline"
-                  className="bg-white text-black border border-orange-200 hover:bg-orange-50 h-auto p-4 flex-col space-y-2"
-                >
-                  <Calendar className="h-6 w-6" />
-                  <span>Schedule</span>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
         </>
       )}
     </div>
