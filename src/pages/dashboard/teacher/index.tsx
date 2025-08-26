@@ -7,13 +7,19 @@ import { teacherDashboardQueries } from '@/api/actions/teacher-dashboard/teacher
 import { TeacherClass } from '@/api/actions/teacher-dashboard/teacher-dashboard.type'
 import { authStore } from '@/stores/authStore'
 import { DashboardTeacher } from '@/components/features/dashboard/teacher/dashboard-data'
+import { dashboardStudentQueries } from '@/api/actions/dashboard-student/dashboard-student.queries'
 
 export const TeacherDashboard = () => {
-  const teacherId = authStore.getState().authValues.userId
+  const { authValues } = authStore()
+  const teacherId = authValues.userId
   console.log('teacherId:', teacherId)
   const { data, isLoading } = useQuery<TeacherClass[]>(
     teacherDashboardQueries.classList(teacherId)
   )
+
+  const { data: userData } = useQuery({
+    ...dashboardStudentQueries.getProfile(),
+  })
   console.log('API data:', data)
 
   // Calculate stats from class list
@@ -43,16 +49,10 @@ export const TeacherDashboard = () => {
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-gray-900">
-                  Welcome, Teacher!
+                  Welcome, {userData?.name}!
                 </h1>
                 <p className="text-gray-600">ID: {teacherId}</p>
               </div>
-            </div>
-            <div className="flex space-x-2">
-              <Button className="bg-white text-black border border-gray-200 hover:bg-gray-100">
-                <FileText className="h-4 w-4 mr-2" />
-                Create Assignment
-              </Button>
             </div>
           </div>
 
@@ -164,7 +164,6 @@ export const TeacherDashboard = () => {
               </CardContent>
             </Card>
           </div>
-
         </>
       )}
     </div>

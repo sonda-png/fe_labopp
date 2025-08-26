@@ -22,6 +22,7 @@ export interface AssignmentRequest {
   teacherId: number
   status: 'Pending' | 'Active' | 'Inactive'
   classIds: string[]
+  file: File
 }
 
 export type AssignmentStatistic = {

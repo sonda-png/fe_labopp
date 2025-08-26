@@ -108,7 +108,7 @@ export default function AssignmentManagement() {
       description: '',
       locTotal: 0,
       teacherId: 0,
-      status: 'Active',
+      status: 'Active'
     },
   })
 

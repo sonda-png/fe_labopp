@@ -9,17 +9,42 @@ import {
 // ADD assignment
 const handleAddAssignment =
   (client: AxiosInstance) => async (body: AssignmentRequest) => {
-    return (await client.post<string>('/head_subject/assignment/add', body))
-      .data
+    const formData = new FormData()
+    formData.append('Title', body.title)
+    formData.append('Description', body.description)
+    formData.append('LocTotal', body.locTotal.toString())
+    formData.append('TeacherId', body.teacherId.toString())
+    formData.append('Status', body.status)
+    body.classIds.forEach((id: string | number) => {
+      formData.append('ClassIds', id.toString())
+    })
+    formData.append('File', body.file)
+    return (
+      await client.post<string>(
+        '/head_subject/assignment/add-with-pdf',
+        formData
+      )
+    ).data
   }
 
 // UPDATE assignment
 const handleUpdateAssignment =
   (client: AxiosInstance) => async (body: AssignmentRequest) => {
+    const formData = new FormData()
+    formData.append('Id', body.id as string)
+    formData.append('Title', body.title)
+    formData.append('Description', body.description)
+    formData.append('LocTotal', body.locTotal.toString())
+    formData.append('TeacherId', body.teacherId.toString())
+    formData.append('Status', body.status)
+    body.classIds.forEach((id: string | number) => {
+      formData.append('ClassIds', id.toString())
+    })
+    formData.append('File', body.file)
     return (
       await client.put<AssignmentListResponse>(
         `/head_subject/assignment/update/${body.id}`,
-        body
+        formData
       )
     ).data
   }

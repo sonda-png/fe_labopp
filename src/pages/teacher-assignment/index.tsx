@@ -15,6 +15,8 @@ import {
   Code,
   Calendar,
   Download,
+  Upload,
+  FileText,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -63,6 +65,7 @@ export const TeacherAssignmentPage = () => {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
   const [selectedAssignment, setSelectedAssignment] =
     useState<TeacherAssignment | null>(null)
+  const [selectedPdfFile, setSelectedPdfFile] = useState<File | null>(null)
   const { classId } = useParams({ from: '/_auth/teacher-assignment/$classId/' })
 
   const { data: assignmentsData, isLoading } = useQuery({
@@ -106,6 +109,7 @@ export const TeacherAssignmentPage = () => {
       toast.success('Create assignment successfully')
       setIsCreateModalOpen(false)
       resetCreate()
+      setSelectedPdfFile(null)
     },
     onError: (error: StandardizedApiError) => {
       toast.error(error.message)
@@ -121,8 +125,9 @@ export const TeacherAssignmentPage = () => {
         queryKey: teacherAssignmentQueries.getAll(classId).queryKey,
       })
       toast.success('Update assignment successfully')
-      setIsCreateModalOpen(false)
-      resetCreate()
+      setIsEditModalOpen(false)
+      resetEdit()
+      setSelectedPdfFile(null)
     },
     onError: (error: StandardizedApiError) => {
       toast.error(error.message)
@@ -131,6 +136,25 @@ export const TeacherAssignmentPage = () => {
 
   const deleteAssignmentMutation = () => {
     toast.error('Feature under development')
+  }
+
+  const handlePdfFileSelect = (event: any) => {
+    const file = event.target.files?.[0]
+    if (file && file.type === 'application/pdf') {
+      setSelectedPdfFile(file)
+    } else if (file) {
+      toast.error('Please select a PDF file')
+      event.target.value = ''
+    }
+  }
+
+  const handleRemovePdfFile = () => {
+    setSelectedPdfFile(null)
+    // Reset the file input
+    const fileInput = document.getElementById('pdf-file') as HTMLInputElement
+    if (fileInput) {
+      fileInput.value = ''
+    }
   }
 
   const getStatusColor = (status: string) => {
@@ -149,14 +173,26 @@ export const TeacherAssignmentPage = () => {
   }
 
   const handleCreateAssignment = async (data: TeacherAssignmentFormValues) => {
-    await createAssignmentMutation({ params: classId, body: data })
+    // Create request object with file
+    const requestData = {
+      ...data,
+      file: selectedPdfFile || new File([], 'placeholder.pdf'),
+    }
+
+    await createAssignmentMutation({ params: classId, body: requestData })
   }
 
   const handleEditAssignment = (data: TeacherAssignmentFormValues) => {
     console.log('Edit data:', data)
+    // Create request object with file
+    const requestData = {
+      ...data,
+      file: selectedPdfFile || new File([], 'placeholder.pdf'),
+    }
+
     updateAssignmentMutation({
       assignmentId: selectedAssignment?.id,
-      ...data,
+      ...requestData,
     })
   }
 
@@ -401,6 +437,67 @@ export const TeacherAssignmentPage = () => {
                       )}
                     </div>
                   </div>
+
+                  {/* PDF File Upload */}
+                  <div className="space-y-2">
+                    <Label htmlFor="pdf-file">
+                      Assignment PDF File (Optional)
+                    </Label>
+                    <div className="space-y-2">
+                      {!selectedPdfFile ? (
+                        <div className="flex items-center gap-2">
+                          <Label htmlFor="pdf-file" className="cursor-pointer">
+                            <Button variant="outline" asChild>
+                              <span>
+                                <Upload className="w-4 h-4 mr-2" />
+                                Select PDF File
+                              </span>
+                            </Button>
+                          </Label>
+                          <Input
+                            id="pdf-file"
+                            type="file"
+                            accept=".pdf"
+                            onChange={handlePdfFileSelect}
+                            className="hidden"
+                          />
+                          <span className="text-xs text-gray-500">
+                            Only PDF files are allowed
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-between p-3 border rounded-lg bg-gray-50">
+                          <div className="flex items-center gap-2">
+                            <FileText className="w-5 h-5 text-red-600" />
+                            <div>
+                              <p className="text-sm font-medium">
+                                {selectedPdfFile.name}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                {(selectedPdfFile.size / 1024 / 1024).toFixed(
+                                  2
+                                )}{' '}
+                                MB
+                              </p>
+                            </div>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={handleRemovePdfFile}
+                            className="text-red-600 hover:text-red-700"
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-xs text-gray-500">
+                      Upload a PDF file containing the assignment details,
+                      requirements, or instructions
+                    </p>
+                  </div>
                 </div>
                 <div className="flex justify-end space-x-2">
                   <Button
@@ -409,6 +506,7 @@ export const TeacherAssignmentPage = () => {
                     onClick={() => {
                       setIsCreateModalOpen(false)
                       resetCreate()
+                      setSelectedPdfFile(null)
                     }}
                   >
                     Cancel
@@ -510,12 +608,15 @@ export const TeacherAssignmentPage = () => {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem
-                          onClick={() => openEditModal(assignment)}
-                        >
-                          <Edit className="mr-2 h-4 w-4" />
-                          Edit
-                        </DropdownMenuItem>
+                        {assignment.status === 'Pending' && (
+                          <DropdownMenuItem
+                            onClick={() => openEditModal(assignment)}
+                          >
+                            <Edit className="mr-2 h-4 w-4" />
+                            Edit
+                          </DropdownMenuItem>
+                        )}
+
                         <DropdownMenuItem
                           onClick={() => openDetailModal(assignment)}
                         >
@@ -625,6 +726,65 @@ export const TeacherAssignmentPage = () => {
                     )}
                   </div>
                 </div>
+
+                {/* PDF File Upload for Edit */}
+                <div className="space-y-2">
+                  <Label htmlFor="editPdfFile">
+                    Assignment PDF File (Optional)
+                  </Label>
+                  <div className="space-y-2">
+                    {!selectedPdfFile ? (
+                      <div className="flex items-center gap-2">
+                        <Label htmlFor="editPdfFile" className="cursor-pointer">
+                          <Button variant="outline" asChild>
+                            <span>
+                              <Upload className="w-4 h-4 mr-2" />
+                              Select PDF File
+                            </span>
+                          </Button>
+                        </Label>
+                        <Input
+                          id="editPdfFile"
+                          type="file"
+                          accept=".pdf"
+                          onChange={handlePdfFileSelect}
+                          className="hidden"
+                        />
+                        <span className="text-xs text-gray-500">
+                          Only PDF files are allowed
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-between p-3 border rounded-lg bg-gray-50">
+                        <div className="flex items-center gap-2">
+                          <FileText className="w-5 h-5 text-red-600" />
+                          <div>
+                            <p className="text-sm font-medium">
+                              {selectedPdfFile.name}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {(selectedPdfFile.size / 1024 / 1024).toFixed(2)}{' '}
+                              MB
+                            </p>
+                          </div>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={handleRemovePdfFile}
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-xs text-gray-500">
+                    Upload a PDF file containing the assignment details,
+                    requirements, or instructions
+                  </p>
+                </div>
               </div>
               <div className="flex justify-end space-x-2">
                 <Button
@@ -633,6 +793,7 @@ export const TeacherAssignmentPage = () => {
                   onClick={() => {
                     setIsEditModalOpen(false)
                     resetEdit()
+                    setSelectedPdfFile(null)
                   }}
                 >
                   <X className="mr-2 h-4 w-4" />
@@ -641,10 +802,10 @@ export const TeacherAssignmentPage = () => {
                 <Button
                   type="submit"
                   className="bg-orange-500 hover:bg-orange-600"
-                  disabled={isCreateAssignmentPending}
+                  disabled={isUpdateAssignmentPending}
                 >
                   <Save className="mr-2 h-4 w-4" />
-                  {isCreateAssignmentPending ? 'Updating...' : 'Update'}
+                  {isUpdateAssignmentPending ? 'Updating...' : 'Update'}
                 </Button>
               </div>
             </form>

@@ -27,6 +27,8 @@ import { toast } from 'react-toastify'
 import { useState } from 'react'
 import { useMutation } from '@/hooks'
 import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
+import { semestersQueries } from '@/api/actions/semesters/semesters.queries'
+import { Semester } from '@/api/actions/semesters/semesters.types'
 
 // Component to display class status indicator
 function ClassStatusIndicator({ classId }: { classId: string }) {
@@ -206,6 +208,9 @@ export default function ClassManagement() {
   } = useQuery(teacherDashboardQueries.classList(teacherId))
 
   const { refetch: refetchClassStatus } = useQuery(classQueries.getAll())
+
+  const { data: semesterData } = useQuery(semestersQueries.getAll())
+
   const handleViewClass = (classId: string) => {
     navigate({ to: '/student-manage', search: { classId } })
   }
@@ -264,6 +269,13 @@ export default function ClassManagement() {
         </div>
       </div>
     )
+  }
+
+  const convertToSemesterName = (semesterId: number) => {
+    const semester = semesterData?.find(
+      (semester: Semester) => semester.id === semesterId
+    )
+    return semester?.name
   }
 
   if (error) {
@@ -360,7 +372,9 @@ export default function ClassManagement() {
                       <p className="font-medium text-muted-foreground">
                         Semester
                       </p>
-                      <p className="font-semibold">{classItem.semester}</p>
+                      <p className="font-semibold">
+                        {convertToSemesterName(classItem.semester)}
+                      </p>
                     </div>
                   </div>
 
