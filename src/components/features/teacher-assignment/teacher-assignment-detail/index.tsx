@@ -283,7 +283,7 @@ export const TeacherAssignmentDetail = ({
                   </CardContent>
                 </Card>
 
-                <Card>
+                {/* <Card>
                   <CardContent className="p-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">
                       Quick Actions
@@ -320,7 +320,7 @@ export const TeacherAssignmentDetail = ({
                       </Button>
                     </div>
                   </CardContent>
-                </Card>
+                </Card> */}
               </div>
             </div>
           </div>

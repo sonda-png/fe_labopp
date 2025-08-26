@@ -79,7 +79,7 @@ export const GradingCommentPanel = ({
   const handleSubmitGrade = async () => {
     await gradeMutate({
       submissionId,
-      isPass: newStatus === 'Passed',
+      status: newStatus,
     })
   }
 
@@ -126,7 +126,7 @@ export const GradingCommentPanel = ({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="Passed">✅ Passed</SelectItem>
-                  <SelectItem value="Reject">❌ Rejected</SelectItem>
+                  <SelectItem value="Reject">❌ Reject</SelectItem>
                 </SelectContent>
               </Select>
             </div>

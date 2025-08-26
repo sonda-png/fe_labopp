@@ -14,8 +14,8 @@ import { useQuery } from '@/hooks/useQuery/useQuery'
 import { headSubjectDashboardQueries } from '@/api/actions/headsubject-dashboard/headsubject-dashboard.queries'
 
 const headDataFake = {
-  name: 'PGS.TS. Trần Văn Minh',
-  position: 'Head of Software Engineering Department',
+  name: 'Head of Subject Dashboard',
+  position: '',
   department: 'Faculty of Information Technology',
 }
 
@@ -67,6 +67,7 @@ export const HeadSubjectDashboard = () => {
     totalSubjects: 0, // Nếu API có trường này thì lấy, không thì để 0 hoặc bỏ
   }
 
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -77,7 +78,9 @@ export const HeadSubjectDashboard = () => {
           </div>
           <div>
             <h1 className="text-3xl font-bold text-gray-900">
-              Hello, teacher!
+
+              {headData.name}!
+
             </h1>
             <p className="text-gray-600">{headData.position}</p>
           </div>
@@ -85,7 +88,7 @@ export const HeadSubjectDashboard = () => {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <Card className="border-l-4 border-l-orange-500 shadow-lg hover:shadow-xl transition-shadow">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -129,26 +132,6 @@ export const HeadSubjectDashboard = () => {
               </div>
               <div className="p-3 bg-green-100 rounded-lg">
                 <Users className="h-8 w-8 text-green-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-l-4 border-l-purple-500 shadow-lg hover:shadow-xl transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Subjects</p>
-                <p className="text-3xl font-bold text-gray-900">
-                  {headData.totalSubjects}
-                </p>
-                <div className="flex items-center mt-1">
-                  <CheckCircle className="h-4 w-4 text-green-500 mr-1" />
-                  <span className="text-sm text-green-600">Active</span>
-                </div>
-              </div>
-              <div className="p-3 bg-purple-100 rounded-lg">
-                <School className="h-8 w-8 text-purple-600" />
               </div>
             </div>
           </CardContent>
@@ -198,6 +181,7 @@ export const HeadSubjectDashboard = () => {
                         </Badge>
                       </div>
                     </div>
+
                   </div>
                 </div>
               ))}
@@ -205,6 +189,7 @@ export const HeadSubjectDashboard = () => {
           </CardContent>
         </Card>
       </div>
+
     </div>
   )
 }

@@ -339,7 +339,7 @@ export const StudentDashboard = () => {
       </div>
 
       {/* Quick Actions */}
-      <Card className="shadow-lg">
+      {/* <Card className="shadow-lg">
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Target className="h-5 w-5 text-orange-500" />
@@ -375,7 +375,7 @@ export const StudentDashboard = () => {
             </Button>
           </div>
         </CardContent>
-      </Card>
+      </Card> */}
     </div>
   )
 }

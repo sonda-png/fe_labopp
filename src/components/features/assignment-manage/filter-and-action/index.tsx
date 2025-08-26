@@ -1,13 +1,15 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Search, Filter, Download, Upload, Plus } from 'lucide-react'
+import { Search, Plus } from 'lucide-react'
 
 interface FiltersAndActionsProps {
   onAddAssignment: () => void
+  onSearch: (searchTerm: string) => void
 }
 
 export const FiltersAndActions = ({
   onAddAssignment,
+  onSearch,
 }: FiltersAndActionsProps) => {
   return (
     <div className="flex items-center justify-between gap-4">
@@ -17,6 +19,7 @@ export const FiltersAndActions = ({
           <Input
             placeholder="Search by title, description..."
             className="pl-10 w-80"
+            onChange={e => onSearch(e.target.value)}
           />
         </div>
         {/* 
