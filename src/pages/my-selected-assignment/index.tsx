@@ -72,10 +72,10 @@ const SelectedAssignments = () => {
         queryKey,
         queryFn: ctx => queryFn(client)(ctx),
       })
-      toast.success('Unselected successfully')
+      toast.success('Remove successfully')
       handleRemoveAssignment(assignment.id)
     } catch (err: any) {
-      toast.error(err?.message || 'Failed to unselect assignment')
+      toast.error(err?.message || 'Failed to remove assignment')
     }
   }
 
@@ -256,7 +256,7 @@ const SelectedAssignments = () => {
                         onClick={() => handleUnselect(assignment)}
                       >
                         <X className="w-4 h-4 mr-2" />
-                        Unselected
+                        Remove
                       </Button>
                     </div>
                   </div>

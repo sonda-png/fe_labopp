@@ -132,7 +132,7 @@ export const allNavigationItems: NavigationItem[] = [
   },
 {
     id: 'my-selected-assignment',
-    label: 'My Selected Assignment',
+    label: 'My  Assignment',
     icon: BookOpen,
     path: '/my-selected-assignment',
     roles: ['Student'],
