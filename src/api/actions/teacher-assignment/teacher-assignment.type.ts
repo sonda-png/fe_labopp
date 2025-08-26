@@ -12,6 +12,7 @@ export type AuditTeacherAssignmentRequest = {
   description: string
   locTarget: number
   dueDate: string
+  file: File
 }
 
 export type UpdateTeacherAssignmentRequest = AuditTeacherAssignmentRequest & {

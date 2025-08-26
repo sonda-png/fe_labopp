@@ -25,8 +25,11 @@ import { semestersQueries } from '@/api/actions/semesters/semesters.queries'
 import { Semester } from '@/api/actions/semesters/semesters.types'
 import { toast } from 'react-toastify'
 import { OverviewSemesterClass } from '@/components/features/semester-class/overview-semester-class'
+import { syncFapMutations } from '@/api/actions/sync-fap/sync-fap.mutations'
+import { useQueryClient } from '@tanstack/react-query'
 
 export const SemesterManagement = () => {
+  const queryClient = useQueryClient()
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [, setIsDetailModalOpen] = useState(false)
@@ -40,6 +43,9 @@ export const SemesterManagement = () => {
     'handleSyncFap',
     {
       onSuccess: data => {
+        queryClient.invalidateQueries({
+          queryKey: semestersQueries.getAll().queryKey,
+        })
         toast.success(data.message || 'Sync FAP completed successfully')
       },
       onError: error => {

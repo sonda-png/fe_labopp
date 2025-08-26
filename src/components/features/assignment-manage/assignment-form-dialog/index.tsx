@@ -25,16 +25,8 @@ import {
   UseFormSetValue,
   UseFormWatch,
 } from 'react-hook-form'
-import {
-  FileText,
-  Upload,
-  X,
-  ArrowLeft,
-  ArrowRight,
-  CheckCircle,
-  Download,
-} from 'lucide-react'
-import { useState } from 'react'
+import { FileText, Upload, X, Download } from 'lucide-react'
+import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
 import { useMutation, useQuery } from '@/hooks'
 import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
@@ -43,7 +35,8 @@ import { adminAccountQueries } from '@/api/actions/admin-account/admin-account.q
 import { useQueryClient } from '@tanstack/react-query'
 import { assignmentQueries } from '@/api/actions/assignment/assignment.queries'
 import { assignmentManageQueries } from '@/api/actions/assignment-manage/assignment.query'
-import { AssignmentClass } from '@/api/actions/assignment-manage/assignment.types'
+import axios from 'axios'
+import { ENV } from '@/config/env'
 
 interface AssignmentFormDialogProps {
   isOpen: boolean
@@ -80,12 +73,8 @@ export const AssignmentFormDialog = ({
   const { authValues } = authStore()
   const queryClient = useQueryClient()
   const { register, handleSubmit, errors, setValue, watch, reset } = form
-  const [currentStep, setCurrentStep] = useState(1)
   const [selectedPdfFile, setSelectedPdfFile] = useState<File | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [currentAssignmentId, setCurrentAssignmentId] = useState<
-    string | undefined
-  >(editingAssignment?.id)
 
   const watchedValues = watch()
 
@@ -96,6 +85,17 @@ export const AssignmentFormDialog = ({
   const { data: classData } = useQuery({
     ...assignmentManageQueries.getAllClass(),
   })
+  const { data: downloadPdfFileData, isLoading: isDownloading } = useQuery({
+    ...assignmentQueries.downloadPdfFile(editingAssignment?.id as string),
+  })
+  // Auto-select all classes when component mounts or classData changes
+  useEffect(() => {
+    if (classData && Array.isArray(classData) && classData.length > 0) {
+      const allClassIds = classData.map((c: any) => c.id.toString())
+      console.log('allClassIds', allClassIds)
+      setValue('classIds', allClassIds, { shouldValidate: true })
+    }
+  }, [classData, setValue])
 
   // Mutations
   const { mutateAsync: addAssignmentMutation } = useMutation(
@@ -105,14 +105,17 @@ export const AssignmentFormDialog = ({
         queryClient.invalidateQueries({
           queryKey: assignmentManageQueries.get().queryKey,
         })
-        toast.success(
-          'Assignment created successfully! Now you can upload the PDF file.'
-        )
+        toast.success('Assignment created successfully!')
+        onSuccess?.()
+        onOpenChange(false)
+        reset()
+        setSelectedPdfFile(null)
       },
       onError: (error: StandardizedApiError) => {
         toast.error(error.message || 'Error occurred while adding assignment', {
           toastId: 'add-error',
         })
+        setIsSubmitting(false)
       },
     }
   )
@@ -130,8 +133,9 @@ export const AssignmentFormDialog = ({
         })
         toast.success('Assignment updated successfully')
         onSuccess?.()
+        onOpenChange(false)
         reset()
-        setCurrentStep(1)
+        setSelectedPdfFile(null)
       },
       onError: (error: StandardizedApiError) => {
         toast.error(
@@ -140,35 +144,37 @@ export const AssignmentFormDialog = ({
             toastId: 'update-error',
           }
         )
+        setIsSubmitting(false)
       },
     }
   )
 
-  const { mutateAsync: uploadAssignmentPdfMutation } = useMutation(
-    'uploadAssignmentPdfMutation',
-    {
-      onSuccess: () => {
-        toast.success(
-          'Assignment updated successfully! Now you can upload the PDF file.'
-        )
-        // Close dialog and reset after successful upload
-        onOpenChange(false)
-        setCurrentStep(1)
-        setSelectedPdfFile(null)
-        setCurrentAssignmentId(undefined)
-        reset()
-        onSuccess?.()
-      },
-      onError: (error: StandardizedApiError) => {
-        toast.error(error.message || 'Error occurred while upload pdf file', {
-          toastId: 'upload-error',
-        })
-      },
-    }
-  )
+  const handleDownloadPdf = async () => {
+    const res = await axios.get(
+      `${ENV.BACK_END_URL}/assignment/download-pdf/by-assignment/${editingAssignment?.id}`,
+      {
+        responseType: 'blob',
+        withCredentials: false,
+        headers: {
+          'Content-Type': 'application/pdf',
+          Authorization: `Bearer ${authValues.token}`,
+        },
+      }
+    )
+    const blob = new Blob([res.data], { type: 'application/pdf' })
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `${editingAssignment?.title.replace(/\s+/g, '_')}.pdf`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(url)
+  }
 
   const handlePdfFileSelect = (event: any) => {
     const file = event.target.files?.[0]
+    console.log('file', file)
     if (file && file.type === 'application/pdf') {
       setSelectedPdfFile(file)
     } else if (file) {
@@ -187,30 +193,24 @@ export const AssignmentFormDialog = ({
   }
 
   const handleFormSubmit = async (data: AssignmentFormValues) => {
+    console.log(selectedPdfFile)
+    console.log('1')
     setIsSubmitting(true)
     try {
       if (isEditMode && editingAssignment) {
-        // Edit mode
-        await updateAssignmentMutation({ ...data, id: editingAssignment.id })
-        // Set the current assignment ID for edit mode
-        setCurrentAssignmentId(editingAssignment.id)
-        setCurrentStep(2)
+        // Edit mode - update assignment with file
+        await updateAssignmentMutation({
+          ...data,
+          id: editingAssignment.id,
+          file: selectedPdfFile || new File([], 'placeholder.pdf'),
+        })
       } else {
-        // Add mode
-        const result = await addAssignmentMutation({
+        // Add mode - create assignment with file
+        await addAssignmentMutation({
           ...data,
           id: `lab${Date.now()}`, // Generate temporary ID
+          file: selectedPdfFile || new File([], 'placeholder.pdf'),
         })
-
-        if (typeof result === 'string') {
-          // New assignment created, get the ID
-          setCurrentAssignmentId(result)
-          console.log('currentAssignmentId', result)
-          setCurrentStep(2)
-        } else {
-          // Fallback to step 2
-          setCurrentStep(2)
-        }
       }
     } catch (e: unknown) {
       toast.error('Failed to save assignment')
@@ -219,116 +219,49 @@ export const AssignmentFormDialog = ({
     }
   }
 
-  const handlePdfUpload = async () => {
-    if (!selectedPdfFile) {
-      toast.error('Please select a PDF file')
-      return
-    }
-
-    try {
-      // Determine which assignment ID to use
-      const targetAssignmentId = isEditMode
-        ? editingAssignment?.id
-        : currentAssignmentId
-
-      if (!targetAssignmentId) {
-        toast.error('Assignment ID not found')
-        return
-      }
-
-      await uploadAssignmentPdfMutation({
-        file: selectedPdfFile,
-        uploadBy: authValues.userId,
-        assignmentId: targetAssignmentId,
-      })
-    } catch (error: unknown) {
-      toast.error('Failed to upload PDF')
-    }
-  }
-
   const handleCancel = () => {
-    setCurrentStep(1)
     setSelectedPdfFile(null)
-    setCurrentAssignmentId(undefined)
     reset()
     onCancel()
-  }
-
-  const goToStep1 = () => {
-    setCurrentStep(1)
-  }
-
-  const goToStep2 = () => {
-    if (currentAssignmentId || (isEditMode && editingAssignment?.id)) {
-      setCurrentStep(2)
-    } else {
-      toast.error('Please save the assignment first before uploading PDF')
-    }
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            {currentStep === 1 ? (
-              <>
-                <span>{title}</span>
-                <span className="text-sm text-gray-500">(Step 1/2)</span>
-              </>
-            ) : (
-              <>
-                <span>Upload Assignment PDF</span>
-                <span className="text-sm text-gray-500">(Step 2/2)</span>
-              </>
-            )}
-          </DialogTitle>
-          <DialogDescription>
-            {currentStep === 1
-              ? description
-              : `Upload PDF file for assignment: ${currentAssignmentId || editingAssignment?.id || 'Unknown'}`}
-          </DialogDescription>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
 
-        {/* Step Indicator */}
-        <div className="flex items-center justify-center mb-6">
-          <div className="flex items-center space-x-2">
-            <div
-              className={`flex items-center justify-center w-8 h-8 rounded-full border-2 ${
-                currentStep >= 1
-                  ? 'bg-blue-600 border-blue-600 text-white'
-                  : 'border-gray-300 text-gray-500'
-              }`}
-            >
-              {currentStep > 1 ? <CheckCircle className="w-5 h-5" /> : '1'}
-            </div>
-            <div
-              className={`w-16 h-0.5 ${
-                currentStep >= 2 ? 'bg-blue-600' : 'bg-gray-300'
-              }`}
-            ></div>
-            <div
-              className={`flex items-center justify-center w-8 h-8 rounded-full border-2 ${
-                currentStep >= 2
-                  ? 'bg-blue-600 border-blue-600 text-white'
-                  : 'border-gray-300 text-gray-500'
-              }`}
-            >
-              {currentStep === 2 ? (
-                '2'
-              ) : currentStep > 2 ? (
-                <CheckCircle className="w-5 h-5" />
-              ) : (
-                '2'
-              )}
-            </div>
-          </div>
-        </div>
-
-        {currentStep === 1 ? (
-          // Step 1: Assignment Details Form
-          <div className="space-y-4">
-            <div className="grid gap-4">
+        <div className="space-y-4">
+          <div className="grid gap-4">
+            {/* PDF Download Section */}
+            {downloadPdfFileData ? (
+              <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <FileText className="w-5 h-5 text-green-600" />
+                    <div>
+                      <p className="text-sm font-medium text-green-800">
+                        Assignment PDF Available
+                      </p>
+                      <p className="text-xs text-green-600">
+                        Click download to view the assignment file
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={handleDownloadPdf}
+                    disabled={isDownloading}
+                    size="sm"
+                    className="bg-green-600 hover:bg-green-700"
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    {isDownloading ? 'Downloading...' : 'Download PDF'}
+                  </Button>
+                </div>
+              </div>
+            ) : (
               <div>
                 <Button
                   variant="outline"
@@ -342,183 +275,142 @@ export const AssignmentFormDialog = ({
                   </a>
                 </Button>
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="title">Title</Label>
-                <Input
-                  id="title"
-                  {...register('title')}
-                  placeholder="Enter assignment title"
-                />
-                {errors.title && (
-                  <span className="text-red-500 text-xs">
-                    {errors.title.message}
-                  </span>
-                )}
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  {...register('description')}
-                  placeholder="Enter assignment description"
-                />
-                {errors.description && (
-                  <span className="text-red-500 text-xs">
-                    {errors.description.message}
-                  </span>
-                )}
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="label">Total Lines of Code</Label>
-                <Input
-                  id="locTotal"
-                  type="number"
-                  {...register('locTotal', { valueAsNumber: true })}
-                  placeholder="Enter total lines of code"
-                />
-                {errors.locTotal && (
-                  <span className="text-red-500 text-xs">
-                    {errors.locTotal.message}
-                  </span>
-                )}
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="teacherId">Teacher</Label>
-                <Select
-                  value={watchedValues.teacherId.toString() || '2'}
-                  onValueChange={(value: string) =>
-                    setValue('teacherId', Number(value))
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a teacher" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {accountData
-                      ?.filter(account => account.roleName === 'Teacher')
-                      .map(account => (
-                        <SelectItem
-                          key={account.id}
-                          value={account.id.toString()}
-                        >
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium">
-                              {account.fullName}
-                            </span>
-                            <span className="text-muted-foreground text-xs">
-                              ({account.email})
-                            </span>
-                          </div>
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
-                {errors.teacherId && (
-                  <span className="text-red-500 text-xs">
-                    {errors.teacherId.message}
-                  </span>
-                )}
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="status">Status</Label>
-                <Select
-                  value={watchedValues.status || 'Active'}
-                  onValueChange={(value: 'Pending' | 'Active' | 'Inactive') =>
-                    setValue('status', value)
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Pending">Pending</SelectItem>
-                    <SelectItem value="Active">Active</SelectItem>
-                    <SelectItem value="Inactive">Inactive</SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.status && (
-                  <span className="text-red-500 text-xs">
-                    {errors.status.message}
-                  </span>
-                )}
-              </div>
-
-              {/* Classes multi-select */}
-              <div className="grid gap-2">
-                <Label>Classes</Label>
-                <div className="max-h-40 overflow-auto rounded border p-2 space-y-1">
-                  {((classData as AssignmentClass[]) ?? []).map(c => {
-                    const idString = c.id?.toString?.() ?? String(c.id)
-                    const selected = (watchedValues.classIds || []).includes(
-                      idString
-                    )
-
-                    return (
-                      <label
-                        key={idString}
-                        className="flex items-center gap-2 cursor-pointer text-sm"
+            )}
+            <div className="grid gap-2">
+              <Label htmlFor="title">Title</Label>
+              <Input
+                id="title"
+                {...register('title')}
+                placeholder="Enter assignment title"
+              />
+              {errors.title && (
+                <span className="text-red-500 text-xs">
+                  {errors.title.message}
+                </span>
+              )}
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                {...register('description')}
+                placeholder="Enter assignment description"
+              />
+              {errors.description && (
+                <span className="text-red-500 text-xs">
+                  {errors.description.message}
+                </span>
+              )}
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="label">Total Lines of Code</Label>
+              <Input
+                id="locTotal"
+                type="number"
+                {...register('locTotal', { valueAsNumber: true })}
+                placeholder="Enter total lines of code"
+              />
+              {errors.locTotal && (
+                <span className="text-red-500 text-xs">
+                  {errors.locTotal.message}
+                </span>
+              )}
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="teacherId">Teacher</Label>
+              <Select
+                value={watchedValues.teacherId.toString() || '2'}
+                onValueChange={(value: string) =>
+                  setValue('teacherId', Number(value))
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a teacher" />
+                </SelectTrigger>
+                <SelectContent>
+                  {accountData
+                    ?.filter(account => account.roleName === 'Teacher')
+                    .map(account => (
+                      <SelectItem
+                        key={account.id}
+                        value={account.id.toString()}
                       >
-                        <input
-                          type="checkbox"
-                          className="h-4 w-4"
-                          checked={selected}
-                          onChange={e => {
-                            const current: string[] =
-                              watchedValues.classIds || []
-                            const next = e.target.checked
-                              ? Array.from(new Set([...current, idString]))
-                              : current.filter(v => v !== idString)
-                            setValue('classIds', next, { shouldValidate: true })
-                          }}
-                        />
-                        <span className="flex-1 truncate">
-                          {c.classCode} - {c.subjectCode} ({c.academicYear},
-                          Semester {c.semesterId})
-                        </span>
-                      </label>
-                    )
-                  })}
-                  {!((classData as AssignmentClass[]) ?? []).length && (
-                    <div className="text-xs text-gray-500">
-                      No classes found
-                    </div>
-                  )}
-                </div>
-                {errors.classIds && (
-                  <span className="text-red-500 text-xs">
-                    {errors.classIds.message as string}
-                  </span>
-                )}
-              </div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">
+                            {account.fullName}
+                          </span>
+                          <span className="text-muted-foreground text-xs">
+                            ({account.email})
+                          </span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+              {errors.teacherId && (
+                <span className="text-red-500 text-xs">
+                  {errors.teacherId.message}
+                </span>
+              )}
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="status">Status</Label>
+              <Select
+                value={watchedValues.status || 'Active'}
+                onValueChange={(value: 'Pending' | 'Active' | 'Inactive') =>
+                  setValue('status', value)
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Pending">Pending</SelectItem>
+                  <SelectItem value="Active">Active</SelectItem>
+                  <SelectItem value="Inactive">Inactive</SelectItem>
+                </SelectContent>
+              </Select>
+              {errors.status && (
+                <span className="text-red-500 text-xs">
+                  {errors.status.message}
+                </span>
+              )}
             </div>
 
-            <DialogFooter>
-              <Button variant="outline" onClick={handleCancel}>
-                Cancel
-              </Button>
-              {isEditMode && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={goToStep2}
-                  className="border-blue-600 text-blue-600 hover:bg-blue-50"
-                >
-                  <Upload className="w-4 h-4 mr-2" />
-                  Go to PDF Upload
-                </Button>
-              )}
-              <Button
-                onClick={handleSubmit(handleFormSubmit)}
-                disabled={isSubmitting}
-                className="bg-orange-500 hover:bg-orange-600"
-              >
-                {isSubmitting ? 'Saving...' : submitButtonText}
-              </Button>
-            </DialogFooter>
-          </div>
-        ) : (
-          // Step 2: PDF Upload
-          <div className="space-y-4">
+            {/* Classes multi-select - Auto-selected and disabled */}
+            <div className="grid gap-2">
+              <Label>Classes (Auto-selected)</Label>
+              <div className="max-h-40 overflow-auto rounded border p-2 space-y-1 bg-gray-50">
+                {(classData ?? []).map((c: any) => {
+                  const idString = c.id?.toString?.() ?? String(c.id)
+                  return (
+                    <label
+                      key={idString}
+                      className="flex items-center gap-2 text-sm text-gray-600"
+                    >
+                      <input
+                        type="checkbox"
+                        className="h-4 w-4"
+                        checked={true}
+                        disabled
+                      />
+                      <span className="flex-1 truncate">
+                        {c.classCode} - {c.subjectCode} ({c.academicYear},
+                        Semester {c.semesterId})
+                      </span>
+                    </label>
+                  )
+                })}
+                {!(classData ?? []).length && (
+                  <div className="text-xs text-gray-500">No classes found</div>
+                )}
+              </div>
+              <p className="text-xs text-gray-500">
+                All available classes are automatically selected
+              </p>
+            </div>
+
+            {/* PDF File Upload */}
             <div className="grid gap-2">
               <Label htmlFor="pdf-file">Assignment PDF File</Label>
               <div className="space-y-2">
@@ -573,23 +465,23 @@ export const AssignmentFormDialog = ({
                 requirements, or instructions
               </p>
             </div>
-
-            <DialogFooter>
-              <Button variant="outline" onClick={goToStep1}>
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Details
-              </Button>
-              <Button
-                onClick={handlePdfUpload}
-                disabled={!selectedPdfFile}
-                className="bg-blue-600 hover:bg-blue-700"
-              >
-                <ArrowRight className="w-4 h-4 mr-2" />
-                Upload PDF
-              </Button>
-            </DialogFooter>
           </div>
-        )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={handleCancel}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                handleSubmit(handleFormSubmit)()
+              }}
+              disabled={isSubmitting}
+              className="bg-orange-500 hover:bg-orange-600"
+            >
+              {isSubmitting ? 'Saving...' : submitButtonText}
+            </Button>
+          </DialogFooter>
+        </div>
       </DialogContent>
     </Dialog>
   )

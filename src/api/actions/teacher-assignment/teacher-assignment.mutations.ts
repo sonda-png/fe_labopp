@@ -21,17 +21,29 @@ const handleCreateSemesterClass =
     params: string
     body: AuditTeacherAssignmentRequest
   }) => {
-    console.log(params, body)
+    const formData = new FormData()
+    formData.append('Title', body.title)
+    formData.append('Description', body.description)
+    formData.append('LocTarget', body.locTarget.toString())
+    formData.append('DueDate', body.dueDate)
+    formData.append('File', body.file)
     return (
       await client.post<TeacherAssignment>(
         `/teacher/assignments/${params}`,
-        body
+        formData
       )
     ).data
   }
 
 const handleUpdateSemesterClass =
   (client: AxiosInstance) => async (body: UpdateTeacherAssignmentRequest) => {
-    return (await client.put<TeacherAssignment>(`/teacher/assignments`, body))
-      .data
+    const formData = new FormData()
+    formData.append('Title', body.title)
+    formData.append('Description', body.description)
+    formData.append('LocTarget', body.locTarget.toString())
+    formData.append('DueDate', body.dueDate)
+    formData.append('File', body.file)
+    return (
+      await client.put<TeacherAssignment>(`/teacher/assignments`, formData)
+    ).data
   }

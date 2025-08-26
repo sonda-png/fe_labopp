@@ -30,6 +30,7 @@ import {
   Mail,
   User,
   Award,
+  Ban,
 } from 'lucide-react'
 import { useNavigate, useSearch } from '@tanstack/react-router'
 import { useQuery } from '@/hooks/useQuery/useQuery'
@@ -46,16 +47,26 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { format as formatDate } from 'date-fns'
+import { ManageAccountSuspend } from '@/components/features/manage-account/manage-account-suspend'
+import { authStore } from '@/stores/authStore'
+import axios from 'axios'
+import { ENV } from '@/config/env'
+import { adminAccountQueries } from '@/api/actions/admin-account/admin-account.queries'
 
 export default function StudentManagement() {
   const navigate = useNavigate()
   const search = useSearch({ strict: false })
   const classId = search.classId as string
-
+  const { authValues } = authStore()
+  const [isSuspendModalOpen, setIsSuspendModalOpen] = useState(false)
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(
     null
   )
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+
+  const { data: users } = useQuery({
+    ...adminAccountQueries.getAll(),
+  })
 
   const { data: studentsResponse, isLoading } = useQuery(
     teacherStudentQueries.getAll(classId)
@@ -64,6 +75,34 @@ export default function StudentManagement() {
   const { data: studentDetailResponse, isLoading: isLoadingDetail } = useQuery(
     teacherStudentQueries.getStudentDetail(classId, selectedStudentId || '')
   )
+
+  const checkIsActiveAccount = (id: string) => {
+    const user = users?.find((user: any) => user.id === id)
+    return !user?.isActive
+  }
+
+  const handleExportPdf = async () => {
+    const res = await axios.get(
+      `${ENV.BACK_END_URL}/teacher/students/export/${classId}`,
+      {
+        responseType: 'blob',
+        withCredentials: false,
+        headers: {
+          'Content-Type': 'application/xlsx',
+          Authorization: `Bearer ${authValues.token}`,
+        },
+      }
+    )
+    const blob = new Blob([res.data], { type: 'application/xlsx' })
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `${classId}_student_progress.xlsx`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(url)
+  }
 
   const studentDetail = studentDetailResponse as StudentProgress | undefined
 
@@ -259,7 +298,7 @@ export default function StudentManagement() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>Student List ({totalStudents})</CardTitle>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={handleExportPdf}>
               <Download className="h-4 w-4 mr-2" />
               Export Excel
             </Button>
@@ -352,6 +391,24 @@ export default function StudentManagement() {
                       >
                         <Eye className="h-4 w-4 mr-2" />
                         View
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          if (checkIsActiveAccount(student.studentId)) {
+                            setIsSuspendModalOpen(true)
+                            setSelectedStudentId(student.studentId)
+                          } else {
+                            setIsSuspendModalOpen(true)
+                            setSelectedStudentId(student.studentId)
+                          }
+                        }}
+                      >
+                        <Ban className="h-4 w-4 mr-2" />
+                        {checkIsActiveAccount(student.studentId)
+                          ? 'Activate'
+                          : 'Suspend'}
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -532,6 +589,11 @@ export default function StudentManagement() {
           )}
         </DialogContent>
       </Dialog>
+      <ManageAccountSuspend
+        isSuspendModalOpen={isSuspendModalOpen}
+        setIsSuspendModalOpen={setIsSuspendModalOpen}
+        id={selectedStudentId?.toString() || ''}
+      />
     </div>
   )
 }
