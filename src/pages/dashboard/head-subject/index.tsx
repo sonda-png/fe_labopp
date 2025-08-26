@@ -1,19 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Progress } from '@/components/ui/progress'
 
 import {
   Users,
   BookOpen,
-  FileText,
   TrendingUp,
-  TrendingDown,
-  Calendar,
-  Award,
   Briefcase,
-  BarChart3,
-  Target,
   School,
   UserCheck,
   CheckCircle,
@@ -75,35 +67,6 @@ export const HeadSubjectDashboard = () => {
     totalSubjects: 0, // Nếu API có trường này thì lấy, không thì để 0 hoặc bỏ
   }
 
-  const teacherPerformance = [
-    {
-      id: 1,
-      name: 'Dr. Sarah Wilson',
-      subjects: ['PRF192', 'PRO192'],
-      classes: 4,
-      students: 156,
-      avgPassRate: 91,
-      rating: 'excellent',
-    },
-    {
-      id: 2,
-      name: 'MSc. David Brown',
-      subjects: ['LAB211', 'DBI202'],
-      classes: 3,
-      students: 118,
-      avgPassRate: 85,
-      rating: 'good',
-    },
-    {
-      id: 3,
-      name: 'Dr. Emily Davis',
-      subjects: ['PRF192', 'LAB211'],
-      classes: 3,
-      students: 125,
-      avgPassRate: 78,
-      rating: 'average',
-    },
-  ]
 
   return (
     <div className="space-y-6">
@@ -115,7 +78,9 @@ export const HeadSubjectDashboard = () => {
           </div>
           <div>
             <h1 className="text-3xl font-bold text-gray-900">
+
               {headData.name}!
+
             </h1>
             <p className="text-gray-600">{headData.position}</p>
           </div>
@@ -184,7 +149,7 @@ export const HeadSubjectDashboard = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {subjects.map(subject => (
                 <div
                   key={subject.classId}
@@ -216,37 +181,7 @@ export const HeadSubjectDashboard = () => {
                         </Badge>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="flex items-center">
-                        <p className="text-2xl font-bold text-orange-600 mr-2">
-                          {subject.passRate}%
-                        </p>
-                        {subject.passRate >= 75 ? (
-                          <TrendingUp className="h-5 w-5 text-green-500" />
-                        ) : (
-                          <TrendingDown className="h-5 w-5 text-red-500" />
-                        )}
-                      </div>
-                      <p className="text-sm text-gray-600">Pass Rate</p>
-                    </div>
-                  </div>
 
-                  <div className="mb-2">
-                    <Progress
-                      value={subject.passRate}
-                      className="h-2 bg-gray-200"
-                    >
-                      <div
-                        className={`h-full rounded-full ${
-                          subject.passRate >= 85
-                            ? 'bg-green-500'
-                            : subject.passRate >= 75
-                              ? 'bg-orange-500'
-                              : 'bg-red-500'
-                        }`}
-                        style={{ width: `${subject.passRate}%` }}
-                      />
-                    </Progress>
                   </div>
                 </div>
               ))}
@@ -255,44 +190,6 @@ export const HeadSubjectDashboard = () => {
         </Card>
       </div>
 
-      {/* Quick Actions */}
-      {/* <Card className="shadow-lg">
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Target className="h-5 w-5 text-orange-500" />
-            <span>Management Actions</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Button className="bg-orange-500 hover:bg-orange-600 h-auto p-4 flex-col space-y-2">
-              <FileText className="h-6 w-6" />
-              <span>Summary Report</span>
-            </Button>
-            <Button
-              variant="outline"
-              className="border-orange-200 text-orange-600 hover:bg-orange-50 h-auto p-4 flex-col space-y-2"
-            >
-              <Users className="h-6 w-6" />
-              <span>Manage Teachers</span>
-            </Button>
-            <Button
-              variant="outline"
-              className="border-orange-200 text-orange-600 hover:bg-orange-50 h-auto p-4 flex-col space-y-2"
-            >
-              <BarChart3 className="h-6 w-6" />
-              <span>Data Analytics</span>
-            </Button>
-            <Button
-              variant="outline"
-              className="border-orange-200 text-orange-600 hover:bg-orange-50 h-auto p-4 flex-col space-y-2"
-            >
-              <Calendar className="h-6 w-6" />
-              <span>Planning</span>
-            </Button>
-          </div>
-        </CardContent>
-      </Card> */}
     </div>
   )
 }
