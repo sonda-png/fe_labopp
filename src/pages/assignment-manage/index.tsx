@@ -27,6 +27,7 @@ interface Lab {
 }
 
 export default function AssignmentManagement() {
+  const [searchTerm, setSearchTerm] = useState('')
   const {
     data: assignmentsData,
     isLoading,
@@ -56,10 +57,23 @@ export default function AssignmentManagement() {
   const [labs, setLabs] = useState<Lab[]>([])
 
   useEffect(() => {
-    if (assignmentsData?.data) {
-      setLabs(Array.isArray(assignmentsData.data) ? assignmentsData.data : [])
+    if (!assignmentsData?.data) {
+      setLabs([])
+      return
     }
-  }, [assignmentsData])
+
+    const data = Array.isArray(assignmentsData.data) ? assignmentsData.data : []
+    if (searchTerm === '') {
+      setLabs(data)
+      return
+    }
+
+    const filtered = data.filter(assignment =>
+      assignment?.title?.toLowerCase?.().includes(searchTerm.toLowerCase())
+    )
+
+    setLabs(filtered)
+  }, [assignmentsData, searchTerm])
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
@@ -132,7 +146,10 @@ export default function AssignmentManagement() {
         <StatsCards labs={labs} />
 
         {/* Filters and Actions */}
-        <FiltersAndActions onAddAssignment={handleAddAssignment} />
+        <FiltersAndActions
+          onAddAssignment={handleAddAssignment}
+          onSearch={setSearchTerm}
+        />
 
         {/* Labs Table */}
         <AssignmentTable
