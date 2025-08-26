@@ -83,7 +83,7 @@ export const SemesterManagement = () => {
   const filteredSemesters = semesters.filter(semester => {
     const matchesSearch =
       semester.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      semester.id.toLowerCase().includes(searchTerm.toLowerCase())
+      semester.id.toString().includes(searchTerm)
 
     const matchesStatus =
       statusFilter === 'all' ||
