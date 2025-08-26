@@ -1,8 +1,7 @@
 import { TeacherAssignment } from '@/api/actions/teacher-assignment/teacher-assignment.type'
 
 export const getAssignmentStatus = (assignment: TeacherAssignment) => {
-  if (assignment.status === 'draft') return 'draft'
-  if (assignment.status === 'archived') return 'archived'
+  if (assignment.status === 'Pending') return 'Pending'
 
   const dueDate = assignment.dueDate ? new Date(assignment.dueDate) : null
   const now = new Date()
