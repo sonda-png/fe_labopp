@@ -15,12 +15,13 @@ export interface AssignmentListResponse {
 }
 
 export interface AssignmentRequest {
-  id: string
+  id?: string
   title: string
   description: string
   locTotal: number
   teacherId: number
   status: 'Pending' | 'Active' | 'Inactive'
+  classIds: string[]
 }
 
 export type AssignmentStatistic = {
@@ -42,4 +43,21 @@ export type UploadAssignmentPdfRequest = {
 export type UploadAssignmentPdfResponse = {
   success: boolean
   message: string
+}
+
+export type AssignmentAllClassResponse = AssignmentClass[]
+
+export type AssignmentClass = {
+  id: string
+  classCode: string
+  subjectCode: string
+  semesterId: number
+  academicYear: string
+  isActive: boolean
+  teacherId: number
+  locToPass: number
+  createdBy: string | null
+  createdAt: string
+  updatedBy: string | null
+  updatedAt: string | null
 }

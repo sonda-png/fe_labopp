@@ -32,6 +32,7 @@ import {
   ArrowLeft,
   ArrowRight,
   CheckCircle,
+  Download,
 } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
@@ -42,6 +43,7 @@ import { adminAccountQueries } from '@/api/actions/admin-account/admin-account.q
 import { useQueryClient } from '@tanstack/react-query'
 import { assignmentQueries } from '@/api/actions/assignment/assignment.queries'
 import { assignmentManageQueries } from '@/api/actions/assignment-manage/assignment.query'
+import { AssignmentClass } from '@/api/actions/assignment-manage/assignment.types'
 
 interface AssignmentFormDialogProps {
   isOpen: boolean
@@ -91,6 +93,10 @@ export const AssignmentFormDialog = ({
     ...adminAccountQueries.getAll(),
   })
 
+  const { data: classData } = useQuery({
+    ...assignmentManageQueries.getAllClass(),
+  })
+
   // Mutations
   const { mutateAsync: addAssignmentMutation } = useMutation(
     'addAssignmentMutation',
@@ -104,7 +110,6 @@ export const AssignmentFormDialog = ({
         )
       },
       onError: (error: StandardizedApiError) => {
-        console.log('onError addAssignmentMutation', error)
         toast.error(error.message || 'Error occurred while adding assignment', {
           toastId: 'add-error',
         })
@@ -324,6 +329,19 @@ export const AssignmentFormDialog = ({
           // Step 1: Assignment Details Form
           <div className="space-y-4">
             <div className="grid gap-4">
+              <div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  asChild
+                  className="flex items-center gap-2 shadow-sm"
+                >
+                  <a href="/sample-assignment/Template.docx" download>
+                    <Download className="h-4 w-4" />
+                    <span>Download Assignment Template</span>
+                  </a>
+                </Button>
+              </div>
               <div className="grid gap-2">
                 <Label htmlFor="title">Title</Label>
                 <Input
@@ -379,7 +397,10 @@ export const AssignmentFormDialog = ({
                     {accountData
                       ?.filter(account => account.roleName === 'Teacher')
                       .map(account => (
-                        <SelectItem key={account.id} value={account.id.toString()}>
+                        <SelectItem
+                          key={account.id}
+                          value={account.id.toString()}
+                        >
                           <div className="flex items-center gap-2">
                             <span className="font-medium">
                               {account.fullName}
@@ -418,6 +439,54 @@ export const AssignmentFormDialog = ({
                 {errors.status && (
                   <span className="text-red-500 text-xs">
                     {errors.status.message}
+                  </span>
+                )}
+              </div>
+
+              {/* Classes multi-select */}
+              <div className="grid gap-2">
+                <Label>Classes</Label>
+                <div className="max-h-40 overflow-auto rounded border p-2 space-y-1">
+                  {((classData as AssignmentClass[]) ?? []).map(c => {
+                    const idString = c.id?.toString?.() ?? String(c.id)
+                    const selected = (watchedValues.classIds || []).includes(
+                      idString
+                    )
+
+                    return (
+                      <label
+                        key={idString}
+                        className="flex items-center gap-2 cursor-pointer text-sm"
+                      >
+                        <input
+                          type="checkbox"
+                          className="h-4 w-4"
+                          checked={selected}
+                          onChange={e => {
+                            const current: string[] =
+                              watchedValues.classIds || []
+                            const next = e.target.checked
+                              ? Array.from(new Set([...current, idString]))
+                              : current.filter(v => v !== idString)
+                            setValue('classIds', next, { shouldValidate: true })
+                          }}
+                        />
+                        <span className="flex-1 truncate">
+                          {c.classCode} - {c.subjectCode} ({c.academicYear},
+                          Semester {c.semesterId})
+                        </span>
+                      </label>
+                    )
+                  })}
+                  {!((classData as AssignmentClass[]) ?? []).length && (
+                    <div className="text-xs text-gray-500">
+                      No classes found
+                    </div>
+                  )}
+                </div>
+                {errors.classIds && (
+                  <span className="text-red-500 text-xs">
+                    {errors.classIds.message as string}
                   </span>
                 )}
               </div>
