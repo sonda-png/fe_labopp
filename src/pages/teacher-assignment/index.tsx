@@ -161,11 +161,9 @@ export const TeacherAssignmentPage = () => {
     switch (status) {
       case 'active':
         return 'bg-green-500 hover:bg-green-600'
-      case 'completed':
-        return 'bg-blue-500 hover:bg-blue-600'
-      case 'draft':
+      case 'close':
         return 'bg-yellow-500 hover:bg-yellow-600'
-      case 'archived':
+      case 'Pending':
         return 'bg-gray-500 hover:bg-gray-600'
       default:
         return 'bg-gray-500 hover:bg-gray-600'
@@ -294,11 +292,11 @@ export const TeacherAssignmentPage = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Draft</p>
+                  <p className="text-sm font-medium text-gray-600">Pending</p>
                   <p className="text-2xl font-bold text-yellow-600">
                     {
                       assignmentsData?.filter(
-                        a => getAssignmentStatus(a) === 'draft'
+                        a => getAssignmentStatus(a) === 'Pending'
                       ).length
                     }
                   </p>
@@ -623,10 +621,7 @@ export const TeacherAssignmentPage = () => {
                           <Eye className="mr-2 h-4 w-4" />
                           View Details
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Users className="mr-2 h-4 w-4" />
-                          View Submissions
-                        </DropdownMenuItem>
+                       
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
                           className="text-red-600"

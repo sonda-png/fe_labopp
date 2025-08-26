@@ -6,8 +6,8 @@ export const getStatusText = (status: string) => {
       return 'Completed'
     case 'draft':
       return 'Draft'
-    case 'archived':
-      return 'Archived'
+    case 'Pending':
+      return 'Pending'
     default:
       return 'Unknown'
   }
