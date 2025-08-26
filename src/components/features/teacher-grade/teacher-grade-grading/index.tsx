@@ -10,6 +10,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { useMutation } from '@/hooks'
 import { toast } from 'react-toastify'
+import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
 
 interface TeacherGradeDetailProps {
   submissionId: string
@@ -37,12 +38,15 @@ export function TeacherGradding({
         onSuccess?.()
         toast.success('Grade submitted successfully')
       },
+      onError: (error: StandardizedApiError) => {
+        toast.error(error.message)
+      },
     }
   )
 
   function handleGrade(pass: boolean) {
     setIsPass(pass)
-    gradeMutate({ submissionId, isPass: pass })
+    gradeMutate({ submissionId, status: pass ? 'Passed' : 'Reject' })
   }
 
   function handleOpenChange(val: boolean) {

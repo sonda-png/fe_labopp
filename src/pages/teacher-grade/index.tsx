@@ -289,7 +289,7 @@ export default function TeacherGradingSystem() {
                   <SelectItem value="all">All status</SelectItem>
                   <SelectItem value="Drafted">Pending</SelectItem>
                   <SelectItem value="Passed">Passed</SelectItem>
-                  <SelectItem value="Rejected">Rejected</SelectItem>
+                  <SelectItem value="Reject">Reject</SelectItem>
                 </SelectContent>
               </Select>
             </div>

@@ -14,6 +14,7 @@ import {
   Users,
   Code,
   Calendar,
+  Download,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -306,16 +307,31 @@ export const TeacherAssignmentPage = () => {
                 Create New Assignment
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-3xl">
+            <DialogContent className="max-w-3xl [&>button]:hidden">
               <DialogHeader>
-                <DialogTitle>Create New Assignment</DialogTitle>
-                <DialogDescription>
-                  Enter information to create a new assignment for class{' '}
-                  {classId}
-                </DialogDescription>
+                <div className="space-y-1">
+                  <DialogTitle>Create New Assignment</DialogTitle>
+                  <DialogDescription>
+                    Enter information to create a new assignment
+                  </DialogDescription>
+                </div>
               </DialogHeader>
+
               <form onSubmit={handleSubmitCreate(handleCreateAssignment)}>
                 <div className="grid grid-cols-1 gap-4 py-4">
+                  <div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      asChild
+                      className="flex items-center gap-2 shadow-sm"
+                    >
+                      <a href="/sample-assignment/Template.docx" download>
+                        <Download className="h-4 w-4" />
+                        <span>Download Assignment Template</span>
+                      </a>
+                    </Button>
+                  </div>
                   <div className="space-y-2">
                     <Label htmlFor="title">Title *</Label>
                     <Input

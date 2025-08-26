@@ -25,7 +25,7 @@ export interface TeacherSubmissionDetailApiResponse {
 // Request cho POST /grade
 export interface GradeSubmissionArgs {
   submissionId: string
-  isPass: boolean
+  status: string
 }
 
 // Request cho POST /feedback
@@ -42,7 +42,7 @@ export interface TeacherSubmissionActionResponse {
   errors: any
 }
 
-export type SubmissionStatus = 'Drafted' | 'Passed' | 'Rejected'
+export type SubmissionStatus = 'Drafted' | 'Passed' | 'Reject'
 
 export interface TestCaseResult {
   id: string

@@ -1,6 +1,7 @@
 import { AxiosInstance } from 'axios'
 import {
   Assignment,
+  AssignmentAllClassResponse,
   AssignmentListResponse,
   AssignmentStatisticResponse,
   // MUTATION_TYPE_IMPORTS
@@ -26,6 +27,14 @@ const getAssignmentById =
     return (await client.get<Assignment>(`/head_subject/assignment/${id}`)).data
   }
 
+const getAllClass = (client: AxiosInstance) => async () => {
+  return (
+    await client.get<AssignmentAllClassResponse>(
+      `/head_subject/assignment/allclasses`
+    )
+  )
+}
+
 export const assignmentManageQueries = {
   all: () => ['assignments'],
   get: () =>
@@ -44,6 +53,12 @@ export const assignmentManageQueries = {
     queryFactoryOptions({
       queryKey: [...assignmentManageQueries.all(), 'statistic'],
       queryFn: getStatistic,
+      enabled: true,
+    }),
+  getAllClass: () =>
+    queryFactoryOptions({
+      queryKey: [...assignmentManageQueries.all(), 'class'],
+      queryFn: getAllClass,
       enabled: true,
     }),
 }
