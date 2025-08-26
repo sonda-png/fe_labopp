@@ -46,6 +46,13 @@ export default function TeacherSubmissionClassList() {
     queryFn: queryOptions.queryFn(client),
   })
 
+  const convertSemesterIdToName = (semesterId: number | undefined) => {
+    const semester = semestersData?.find(
+      semester => Number(semester.id) === Number(semesterId)
+    )
+    return semester?.name
+  }
+
   const navigate = useNavigate()
   const handleViewSubmission = (classId: string) => {
     navigate({ to: '/teacher-grade', search: { classId } })
@@ -58,7 +65,7 @@ export default function TeacherSubmissionClassList() {
       classItem.id.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesSemester =
       selectedSemester === 'all' ||
-      classItem.semester?.toString() === selectedSemester
+      classItem.semester?.toString() === selectedSemester.toString()
     const matchesYear =
       selectedYear === 'all' || classItem.academicYear === selectedYear
 
@@ -258,7 +265,8 @@ export default function TeacherSubmissionClassList() {
                     <Calendar className="h-4 w-4 text-gray-500" />
                     <span className="text-sm text-gray-700">Semester:</span>
                     <span className="text-sm font-medium text-gray-900">
-                      {classItem.semester} - {classItem.academicYear}
+                      {convertSemesterIdToName(classItem?.semester)} -{' '}
+                      {classItem.academicYear}
                     </span>
                   </div>
 
