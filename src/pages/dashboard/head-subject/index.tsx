@@ -262,7 +262,7 @@ const teacherPerformance = [
           </CardContent>
         </Card>
 
-        {/* Alerts & Teacher Performance */}
+      {/* Alerts & Teacher Performance */}
         <div className="space-y-6">
           {/* Top Teachers */}
           <Card className="shadow-lg">
