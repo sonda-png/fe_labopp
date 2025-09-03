@@ -634,7 +634,7 @@ export const AssignmentDetail = ({
 
       {/* AI Test Cases Modal */}
       <Dialog open={showTestCasesModal} onOpenChange={setShowTestCasesModal}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-7xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center space-x-3 text-2xl font-bold text-gray-900">
               <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl">

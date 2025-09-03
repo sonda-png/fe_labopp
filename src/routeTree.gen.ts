@@ -45,6 +45,7 @@ import { Route as AuthDashboardTeacherIndexImport } from './routes/_auth/dashboa
 import { Route as AuthDashboardStudentIndexImport } from './routes/_auth/dashboard/student/index'
 import { Route as AuthDashboardHeadSubjectIndexImport } from './routes/_auth/dashboard/head-subject/index'
 import { Route as AuthDashboardAdminIndexImport } from './routes/_auth/dashboard/admin/index'
+import { Route as AuthMySubmitReviewSubmissionIdAssignmentIdImport } from './routes/_auth/my-submit/review/$submissionId/$assignmentId'
 
 // Create/Update Routes
 
@@ -261,6 +262,13 @@ const AuthDashboardAdminIndexRoute = AuthDashboardAdminIndexImport.update({
   path: '/dashboard/admin/',
   getParentRoute: () => AuthRoute,
 } as any)
+
+const AuthMySubmitReviewSubmissionIdAssignmentIdRoute =
+  AuthMySubmitReviewSubmissionIdAssignmentIdImport.update({
+    id: '/my-submit/review/$submissionId/$assignmentId',
+    path: '/my-submit/review/$submissionId/$assignmentId',
+    getParentRoute: () => AuthRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -504,6 +512,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthTeacherAssignmentClassIdIndexImport
       parentRoute: typeof AuthImport
     }
+    '/_auth/my-submit/review/$submissionId/$assignmentId': {
+      id: '/_auth/my-submit/review/$submissionId/$assignmentId'
+      path: '/my-submit/review/$submissionId/$assignmentId'
+      fullPath: '/my-submit/review/$submissionId/$assignmentId'
+      preLoaderRoute: typeof AuthMySubmitReviewSubmissionIdAssignmentIdImport
+      parentRoute: typeof AuthImport
+    }
   }
 }
 
@@ -536,6 +551,7 @@ interface AuthRouteChildren {
   AuthStudentAssignmentAssignmentIdIndexRoute: typeof AuthStudentAssignmentAssignmentIdIndexRoute
   AuthSubmitResultSubmissionIdIndexRoute: typeof AuthSubmitResultSubmissionIdIndexRoute
   AuthTeacherAssignmentClassIdIndexRoute: typeof AuthTeacherAssignmentClassIdIndexRoute
+  AuthMySubmitReviewSubmissionIdAssignmentIdRoute: typeof AuthMySubmitReviewSubmissionIdAssignmentIdRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
@@ -568,6 +584,8 @@ const AuthRouteChildren: AuthRouteChildren = {
     AuthSubmitResultSubmissionIdIndexRoute,
   AuthTeacherAssignmentClassIdIndexRoute:
     AuthTeacherAssignmentClassIdIndexRoute,
+  AuthMySubmitReviewSubmissionIdAssignmentIdRoute:
+    AuthMySubmitReviewSubmissionIdAssignmentIdRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
@@ -625,6 +643,7 @@ export interface FileRoutesByFullPath {
   '/student-assignment/$assignmentId': typeof AuthStudentAssignmentAssignmentIdIndexRoute
   '/submit-result/$submissionId': typeof AuthSubmitResultSubmissionIdIndexRoute
   '/teacher-assignment/$classId': typeof AuthTeacherAssignmentClassIdIndexRoute
+  '/my-submit/review/$submissionId/$assignmentId': typeof AuthMySubmitReviewSubmissionIdAssignmentIdRoute
 }
 
 export interface FileRoutesByTo {
@@ -661,6 +680,7 @@ export interface FileRoutesByTo {
   '/student-assignment/$assignmentId': typeof AuthStudentAssignmentAssignmentIdIndexRoute
   '/submit-result/$submissionId': typeof AuthSubmitResultSubmissionIdIndexRoute
   '/teacher-assignment/$classId': typeof AuthTeacherAssignmentClassIdIndexRoute
+  '/my-submit/review/$submissionId/$assignmentId': typeof AuthMySubmitReviewSubmissionIdAssignmentIdRoute
 }
 
 export interface FileRoutesById {
@@ -699,6 +719,7 @@ export interface FileRoutesById {
   '/_auth/student-assignment/$assignmentId/': typeof AuthStudentAssignmentAssignmentIdIndexRoute
   '/_auth/submit-result/$submissionId/': typeof AuthSubmitResultSubmissionIdIndexRoute
   '/_auth/teacher-assignment/$classId/': typeof AuthTeacherAssignmentClassIdIndexRoute
+  '/_auth/my-submit/review/$submissionId/$assignmentId': typeof AuthMySubmitReviewSubmissionIdAssignmentIdRoute
 }
 
 export interface FileRouteTypes {
@@ -737,6 +758,7 @@ export interface FileRouteTypes {
     | '/student-assignment/$assignmentId'
     | '/submit-result/$submissionId'
     | '/teacher-assignment/$classId'
+    | '/my-submit/review/$submissionId/$assignmentId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -772,6 +794,7 @@ export interface FileRouteTypes {
     | '/student-assignment/$assignmentId'
     | '/submit-result/$submissionId'
     | '/teacher-assignment/$classId'
+    | '/my-submit/review/$submissionId/$assignmentId'
   id:
     | '__root__'
     | '/'
@@ -808,6 +831,7 @@ export interface FileRouteTypes {
     | '/_auth/student-assignment/$assignmentId/'
     | '/_auth/submit-result/$submissionId/'
     | '/_auth/teacher-assignment/$classId/'
+    | '/_auth/my-submit/review/$submissionId/$assignmentId'
   fileRoutesById: FileRoutesById
 }
 
@@ -869,7 +893,8 @@ export const routeTree = rootRoute
         "/_auth/dashboard/teacher/",
         "/_auth/student-assignment/$assignmentId/",
         "/_auth/submit-result/$submissionId/",
-        "/_auth/teacher-assignment/$classId/"
+        "/_auth/teacher-assignment/$classId/",
+        "/_auth/my-submit/review/$submissionId/$assignmentId"
       ]
     },
     "/_public": {
@@ -1004,6 +1029,10 @@ export const routeTree = rootRoute
     },
     "/_auth/teacher-assignment/$classId/": {
       "filePath": "_auth/teacher-assignment/$classId/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/my-submit/review/$submissionId/$assignmentId": {
+      "filePath": "_auth/my-submit/review/$submissionId/$assignmentId.tsx",
       "parent": "/_auth"
     }
   }

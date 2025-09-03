@@ -41,7 +41,7 @@ export function TeacherSubmissionDetail({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="max-w-2xl h-[70vh] overflow-y-auto pt-2 pb-2 px-6">
+      <DialogContent className="max-w-7xl h-[70vh] overflow-y-auto pt-2 pb-2 px-6">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">
             Submission Detail
@@ -117,7 +117,7 @@ export function TeacherSubmissionDetail({
                           <td className="border px-2 py-1">{tc.id}</td>
                           <td className="border px-2 py-1">{tc.testCaseId}</td>
                           <td className="border px-2 py-1">
-                            {tc.actualOutput}
+                            <pre>{tc.actualOutput}</pre>
                           </td>
                           <td className="border px-2 py-1">
                             {tc.isPassed ? (

@@ -19,18 +19,55 @@ export type ReviewCodeRequest = {
 }
 
 export type ReviewCodeResponse = {
-  reviewAllowed: boolean
+  success?: boolean
   assignmentId: string
+  submissionId: string
+  reviewAllowed?: boolean
   review: string
   hasErrors: boolean
   errorCount: number
   summary: string
-  error: string
   rawResponse: string
+  error?: string
+}
+
+export type ReviewCodeRawResponse = {
+  assignmentId: string
+  submissionId: string
+  reviewAllowed?: boolean
+  review: string
+  hasErrors: boolean
+  errorCount: number
+  summary: string
+  rawResponse: RawResponse
+}
+
+export type RawResponse = {
+  status: string
+  issues: any[]
+  evidence: Evidence[]
+  ioCoverage: {
+    provided: number
+    used: number
+    failed: number
+  }
+}
+
+export type Evidence = {
+  input: string
+  expectedOutput: string
+  actualOutput: string
+  reason: string
 }
 
 export type SuggestTestCasesRequest = {
   assignmentId: number
+  submissionId: number
+  review: string
+  hasErrors: boolean
+  errorCount: number
+  summary: string
+  rawResponse: string
 }
 
 export type SuggestTestCasesResponse = {
