@@ -62,12 +62,16 @@ export type Evidence = {
 
 export type SuggestTestCasesRequest = {
   assignmentId: number
-  submissionId: number
-  review: string
-  hasErrors: boolean
-  errorCount: number
-  summary: string
-  rawResponse: string
+  submissionId?: number
+  review?: string
+  hasErrors?: boolean
+  errorCount?: number
+  summary?: string
+  rawResponse?: string
+}
+
+export type SuggestTestCasesSimpleRequest = {
+  assignmentId: number
 }
 
 export type SuggestTestCasesResponse = {

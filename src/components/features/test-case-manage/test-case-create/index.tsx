@@ -24,9 +24,14 @@ import {
   Eye,
   EyeClosed,
   X,
+  Sparkles,
 } from 'lucide-react'
 import { useState, type ChangeEvent } from 'react'
 import { TestCaseArgs } from '@/api/actions/problem/problem.type'
+import {
+  SuggestTestCasesResponse,
+  SuggestTestCasesSimpleRequest,
+} from '@/api/actions/ai-manage/ai-manage.type'
 
 interface TestCaseFormData {
   input: string
@@ -49,6 +54,12 @@ export const TestCaseCreate = ({
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   const [showConfirmUpload, setShowConfirmUpload] = useState(false)
   const [uploadDescription, setUploadDescription] = useState('')
+  const [showAIGenerate, setShowAIGenerate] = useState(false)
+  const [showManualInput, setShowManualInput] = useState(true)
+  const [aiGeneratedTestCases, setAiGeneratedTestCases] = useState<
+    Array<{ input: string; expectedOutput: string }>
+  >([])
+  const [aiSuggestions, setAiSuggestions] = useState('')
 
   const { mutateAsync: createTestCase, isPending: isCreating } = useMutation(
     'createTestCase',
@@ -82,6 +93,18 @@ export const TestCaseCreate = ({
       },
     }
   )
+
+  const { mutateAsync: generateTestCases, isPending: isGenerating } =
+    useMutation('handleSuggestTestCases', {
+      onSuccess: (data: SuggestTestCasesResponse) => {
+        setAiGeneratedTestCases(data.testCases)
+        setAiSuggestions(data.suggestions)
+        toast.success('AI test cases generated successfully')
+      },
+      onError: () => {
+        toast.error('Failed to generate AI test cases')
+      },
+    })
 
   const {
     register,
@@ -166,53 +189,93 @@ export const TestCaseCreate = ({
     document.body.removeChild(link)
   }
 
+  const handleGenerateAITestCases = async () => {
+    if (!selectedLab) {
+      toast.error('No lab selected')
+      return
+    }
+
+    try {
+      await generateTestCases({
+        assignmentId: Number(selectedLab.id),
+      })
+    } catch (error) {
+      console.error('Error generating AI test cases:', error)
+    }
+  }
+
   const handleCancel = () => {
     reset()
     setShowUploadSection(false)
     setSelectedFiles([])
     setShowConfirmUpload(false)
     setUploadDescription('')
+    setShowAIGenerate(false)
+    setShowManualInput(true)
+    setAiGeneratedTestCases([])
+    setAiSuggestions('')
     onOpenChange(false)
   }
 
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-7xl">
           <DialogHeader>
             <DialogTitle>Add New Test Case</DialogTitle>
             <DialogDescription>
-              Enter information for the new test case or upload from files
+              Create test cases manually, upload from files, or generate with AI
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4">
-            {/* Upload Section Toggle */}
-            <div className="flex items-center gap-3">
+            {/* Action Buttons */}
+            <div className="flex items-center gap-3 flex-wrap">
+              <Button
+                type="button"
+                variant={showManualInput ? 'default' : 'outline'}
+                onClick={() => {
+                  setShowManualInput(true)
+                  setShowUploadSection(false)
+                  setShowAIGenerate(false)
+                }}
+                className="flex items-center gap-2"
+              >
+                <FileText className="w-4 h-4" />
+                Manual Input
+              </Button>
+
               <Button
                 type="button"
                 variant={showUploadSection ? 'default' : 'outline'}
-                onClick={() => setShowUploadSection(!showUploadSection)}
+                onClick={() => {
+                  setShowUploadSection(true)
+                  setShowManualInput(false)
+                  setShowAIGenerate(false)
+                }}
                 className="flex items-center gap-2"
               >
-                {showUploadSection ? (
-                  <>
-                    <EyeClosed className="w-4 h-4" />
-                    Hide Upload
-                  </>
-                ) : (
-                  <>
-                    <Eye className="w-4 h-4" />
-                    Show Upload
-                  </>
-                )}
+                <Upload className="w-4 h-4" />
+                Upload Files
               </Button>
 
-              {!showUploadSection && (
-                <div className="text-sm text-gray-500">
-                  Or upload test cases from files
-                </div>
-              )}
+              <Button
+                type="button"
+                variant={showAIGenerate ? 'default' : 'outline'}
+                onClick={() => {
+                  setShowAIGenerate(true)
+                  setShowUploadSection(false)
+                  setShowManualInput(false)
+                }}
+                className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white border-orange-500 hover:text-white"
+              >
+                <Sparkles className="w-4 h-4" />
+                Generate with AI
+              </Button>
+
+              <div className="text-sm text-gray-500">
+                Choose your preferred method to create test cases
+              </div>
             </div>
 
             {/* Upload Section */}
@@ -343,8 +406,91 @@ export const TestCaseCreate = ({
               </div>
             )}
 
+            {/* AI Generate Section */}
+            {showAIGenerate && (
+              <div className="border rounded-lg p-4 space-y-4 bg-gradient-to-r from-orange-50 to-amber-50 border-orange-200">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-orange-600" />
+                  <h4 className="font-medium text-orange-900">
+                    Generate Test Cases with AI
+                  </h4>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="text-sm text-orange-700">
+                    <p>
+                      AI will analyze your assignment and generate appropriate
+                      test cases automatically.
+                    </p>
+                    <p className="mt-1">
+                      <strong>Assignment:</strong> {selectedLab?.title}
+                    </p>
+                  </div>
+
+                  <Button
+                    type="button"
+                    onClick={handleGenerateAITestCases}
+                    disabled={isGenerating}
+                    className="bg-orange-500 hover:bg-orange-600 text-white flex items-center gap-2"
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    {isGenerating ? 'Generating...' : 'Generate Test Cases'}
+                  </Button>
+
+                  {/* AI Suggestions */}
+                  {aiSuggestions && (
+                    <div className="bg-white rounded-lg p-4 border border-orange-200">
+                      <h5 className="font-medium text-orange-900 mb-2">
+                        AI Suggestions:
+                      </h5>
+                      <p className="text-sm text-gray-700">{aiSuggestions}</p>
+                    </div>
+                  )}
+
+                  {/* Generated Test Cases */}
+                  {aiGeneratedTestCases.length > 0 && (
+                    <div className="space-y-3">
+                      <h5 className="font-medium text-orange-900">
+                        Generated Test Cases ({aiGeneratedTestCases.length}):
+                      </h5>
+                      <div className="space-y-3 max-h-60 overflow-y-auto">
+                        {aiGeneratedTestCases.map((testCase, index) => (
+                          <div
+                            key={index}
+                            className="bg-white rounded-lg p-3 border border-orange-200"
+                          >
+                            <div className="text-xs font-semibold text-gray-600 mb-1">
+                              Test Case #{index + 1}
+                            </div>
+                            <div className="grid grid-cols-2 gap-3">
+                              <div>
+                                <div className="text-xs font-medium text-gray-600 mb-1">
+                                  Input:
+                                </div>
+                                <pre className="text-xs bg-orange-50 p-2 rounded border border-orange-100 whitespace-pre-wrap">
+                                  {testCase.input}
+                                </pre>
+                              </div>
+                              <div>
+                                <div className="text-xs font-medium text-gray-600 mb-1">
+                                  Expected Output:
+                                </div>
+                                <pre className="text-xs bg-orange-50 p-2 rounded border border-orange-100 whitespace-pre-wrap">
+                                  {testCase.expectedOutput}
+                                </pre>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* Manual Form */}
-            {!showUploadSection && (
+            {showManualInput && (
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">

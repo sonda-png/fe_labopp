@@ -368,7 +368,7 @@ export const AssignmentDetail = ({
           </Card>
 
           {/* AI Tools Section */}
-          <Card>
+          {/* <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
                 <TestTube className="h-5 w-5 mr-2" />
@@ -415,7 +415,7 @@ export const AssignmentDetail = ({
                 </div>
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
         </div>
 
         {/* Sidebar */}
