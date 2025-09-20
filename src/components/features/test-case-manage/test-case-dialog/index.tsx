@@ -25,7 +25,6 @@ export const TestCaseDialog = ({
   selectedLab,
   setIsAddTestCaseDialogOpen,
 }: TestCaseDialogProps) => {
-
   const { data: testCases } = useQuery({
     ...problemQueries.getByAssignment(selectedLab?.id || ''),
   })
@@ -37,7 +36,7 @@ export const TestCaseDialog = ({
   }
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-7xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <TestTube className="w-5 h-5" />
@@ -88,9 +87,9 @@ export const TestCaseDialog = ({
                           <Label className="text-sm font-medium">
                             Expected Output:
                           </Label>
-                          <p className="text-sm bg-gray-100 p-2 rounded mt-1 font-mono">
+                          <pre className="text-sm bg-gray-100 p-2 rounded mt-1 font-mono whitespace-pre-wrap">
                             {testCase.expectedOutput}
-                          </p>
+                          </pre>
                         </div>
                       </div>
                       {testCase.updatedAt && (

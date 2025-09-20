@@ -21,17 +21,12 @@ import {
   Upload,
   FileText,
   AlertCircle,
-  Eye,
-  EyeClosed,
   X,
   Sparkles,
 } from 'lucide-react'
 import { useState, type ChangeEvent } from 'react'
 import { TestCaseArgs } from '@/api/actions/problem/problem.type'
-import {
-  SuggestTestCasesResponse,
-  SuggestTestCasesSimpleRequest,
-} from '@/api/actions/ai-manage/ai-manage.type'
+import { SuggestTestCasesResponse } from '@/api/actions/ai-manage/ai-manage.type'
 
 interface TestCaseFormData {
   input: string
@@ -220,7 +215,7 @@ export const TestCaseCreate = ({
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-7xl">
+        <DialogContent className="max-w-8xl max-h-[100vh] overflow-hidden">
           <DialogHeader>
             <DialogTitle>Add New Test Case</DialogTitle>
             <DialogDescription>
@@ -408,84 +403,119 @@ export const TestCaseCreate = ({
 
             {/* AI Generate Section */}
             {showAIGenerate && (
-              <div className="border rounded-lg p-4 space-y-4 bg-gradient-to-r from-orange-50 to-amber-50 border-orange-200">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-orange-600" />
-                  <h4 className="font-medium text-orange-900">
-                    Generate Test Cases with AI
-                  </h4>
+              <div className="border rounded-lg bg-gradient-to-r from-orange-50 to-amber-50 border-orange-200 flex flex-col h-[75vh]">
+                {/* Header - Compact */}
+                <div className="p-3 border-b border-orange-200 flex-shrink-0">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-orange-600" />
+                      <h4 className="font-medium text-orange-900">
+                        Generate Test Cases with AI
+                      </h4>
+                    </div>
+                    <Button
+                      type="button"
+                      onClick={handleGenerateAITestCases}
+                      disabled={isGenerating}
+                      className="bg-orange-500 hover:bg-orange-600 text-white flex items-center gap-2"
+                    >
+                      <Sparkles className="w-4 h-4" />
+                      {isGenerating ? 'Generating...' : 'Generate Test Cases'}
+                    </Button>
+                  </div>
+                  <div className="text-xs text-orange-600 mt-1">
+                    <strong>Assignment:</strong> {selectedLab?.title}
+                  </div>
                 </div>
 
-                <div className="space-y-3">
-                  <div className="text-sm text-orange-700">
-                    <p>
-                      AI will analyze your assignment and generate appropriate
-                      test cases automatically.
-                    </p>
-                    <p className="mt-1">
-                      <strong>Assignment:</strong> {selectedLab?.title}
-                    </p>
-                  </div>
-
-                  <Button
-                    type="button"
-                    onClick={handleGenerateAITestCases}
-                    disabled={isGenerating}
-                    className="bg-orange-500 hover:bg-orange-600 text-white flex items-center gap-2"
-                  >
-                    <Sparkles className="w-4 h-4" />
-                    {isGenerating ? 'Generating...' : 'Generate Test Cases'}
-                  </Button>
-
-                  {/* AI Suggestions */}
-                  {aiSuggestions && (
-                    <div className="bg-white rounded-lg p-4 border border-orange-200">
-                      <h5 className="font-medium text-orange-900 mb-2">
-                        AI Suggestions:
-                      </h5>
-                      <p className="text-sm text-gray-700">{aiSuggestions}</p>
-                    </div>
-                  )}
-
-                  {/* Generated Test Cases */}
-                  {aiGeneratedTestCases.length > 0 && (
-                    <div className="space-y-3">
-                      <h5 className="font-medium text-orange-900">
-                        Generated Test Cases ({aiGeneratedTestCases.length}):
-                      </h5>
-                      <div className="space-y-3 max-h-60 overflow-y-auto">
-                        {aiGeneratedTestCases.map((testCase, index) => (
-                          <div
-                            key={index}
-                            className="bg-white rounded-lg p-3 border border-orange-200"
-                          >
-                            <div className="text-xs font-semibold text-gray-600 mb-1">
-                              Test Case #{index + 1}
+                {/* Content Area - Maximized */}
+                {(aiSuggestions || aiGeneratedTestCases.length > 0) && (
+                  <div className="flex-1 flex min-h-0">
+                    <div className="flex w-full h-full">
+                      {/* AI Suggestions - Compact Sidebar */}
+                      {aiSuggestions && (
+                        <div className="w-80 flex-shrink-0 border-r border-orange-200">
+                          <div className="p-3 h-full bg-white">
+                            <h5 className="font-semibold text-orange-900 mb-2 text-sm flex items-center gap-2">
+                              <Sparkles className="w-3 h-3" />
+                              AI Suggestions
+                            </h5>
+                            <div className="text-xs text-gray-700 leading-relaxed overflow-y-auto h-full pr-2">
+                              {aiSuggestions}
                             </div>
-                            <div className="grid grid-cols-2 gap-3">
-                              <div>
-                                <div className="text-xs font-medium text-gray-600 mb-1">
-                                  Input:
-                                </div>
-                                <pre className="text-xs bg-orange-50 p-2 rounded border border-orange-100 whitespace-pre-wrap">
-                                  {testCase.input}
-                                </pre>
-                              </div>
-                              <div>
-                                <div className="text-xs font-medium text-gray-600 mb-1">
-                                  Expected Output:
-                                </div>
-                                <pre className="text-xs bg-orange-50 p-2 rounded border border-orange-100 whitespace-pre-wrap">
-                                  {testCase.expectedOutput}
-                                </pre>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Generated Test Cases - Main Content - Maximized */}
+                      {aiGeneratedTestCases.length > 0 && (
+                        <div className="flex-1 flex flex-col min-h-0">
+                          <div className="p-3 border-b border-orange-200 bg-orange-50 flex-shrink-0">
+                            <div className="flex items-center justify-between">
+                              <h5 className="font-semibold text-orange-900 flex items-center gap-2">
+                                <FileText className="w-4 h-4" />
+                                Generated Test Cases (
+                                {aiGeneratedTestCases.length})
+                              </h5>
+                              <div className="text-xs text-gray-500">
+                                Scroll to view all test cases
                               </div>
                             </div>
                           </div>
-                        ))}
-                      </div>
+
+                          <div className="flex-1 overflow-y-auto p-4">
+                            <div className="space-y-6">
+                              {aiGeneratedTestCases.map((testCase, index) => (
+                                <div
+                                  key={`test-case-${index}-${testCase.input.slice(0, 10)}`}
+                                  className="bg-white rounded-lg border border-orange-200 shadow-sm hover:shadow-lg transition-all duration-200"
+                                >
+                                  {/* Test Case Header */}
+                                  <div className="p-4 border-b border-orange-100 bg-orange-50">
+                                    <div className="text-lg font-semibold text-orange-800 bg-orange-200 px-4 py-2 rounded-full inline-block">
+                                      Test Case #{index + 1}
+                                    </div>
+                                  </div>
+
+                                  {/* Test Case Content - Full Width with More Space */}
+                                  <div className="p-6">
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                      {/* Input Section */}
+                                      <div className="space-y-3">
+                                        <div className="text-lg font-semibold text-gray-800 flex items-center gap-3">
+                                          <span className="w-3 h-3 bg-blue-500 rounded-full" />
+                                          Input:
+                                        </div>
+                                        <div className="bg-gray-50 rounded-lg border border-gray-200 p-4 min-h-48 max-h-96 overflow-y-auto">
+                                          <pre className="text-base text-gray-800 whitespace-pre-wrap font-mono leading-relaxed">
+                                            {testCase.input}
+                                          </pre>
+                                        </div>
+                                      </div>
+
+                                      {/* Expected Output Section */}
+                                      <div className="space-y-3">
+                                        <div className="text-lg font-semibold text-gray-800 flex items-center gap-3">
+                                          <span className="w-3 h-3 bg-green-500 rounded-full" />
+                                          Expected Output:
+                                        </div>
+                                        <div className="bg-gray-50 rounded-lg border border-gray-200 p-4 min-h-48 max-h-96 overflow-y-auto">
+                                          <pre className="text-base text-gray-800 whitespace-pre-wrap font-mono leading-relaxed">
+                                            {testCase.expectedOutput}
+                                          </pre>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             )}
 
