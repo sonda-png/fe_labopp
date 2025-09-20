@@ -164,7 +164,7 @@ export const TestCaseCreate = ({
 
     await createTestCaseFromFile({
       assignmentId: selectedLab.id,
-      description: uploadDescription.trim(),
+      descriptions: uploadDescription.trim(),
       files: selectedFiles,
     })
 
