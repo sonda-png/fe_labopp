@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import {
   BookOpen,
   Users,
@@ -19,6 +19,24 @@ import { Badge } from '@/components/ui/badge'
 import { AssignmentStatistic } from '@/api/actions/assignment-manage/assignment.types'
 import { assignmentManageQueries } from '@/api/actions/assignment-manage/assignment.query'
 import { useQuery } from '@/hooks'
+import {
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Line,
+  PieChart,
+  Pie,
+  Cell,
+} from 'recharts'
 
 export default function ClassProgressDashboard() {
   const [selectedClass, setSelectedClass] =
@@ -28,6 +46,25 @@ export default function ClassProgressDashboard() {
   const { data: assignmentStatisticData } = useQuery({
     ...assignmentManageQueries.getStatistic(),
   })
+
+  const chartData = useMemo(
+    () =>
+      (assignmentStatisticData ?? []).map(cls => ({
+        name: cls.className,
+        total: cls.totalStudents,
+        passed: cls.studentsPassed,
+        failed: Math.max(0, cls.totalStudents - cls.studentsPassed),
+        passRate: cls.passRate,
+      })),
+    [assignmentStatisticData]
+  )
+
+  const chartConfig = {
+    total: { label: 'Total', color: '#94a3b8' },
+    passed: { label: 'Passed', color: '#22c55e' },
+    failed: { label: 'Failed', color: '#ef4444' },
+    passRate: { label: 'Pass rate (%)', color: '#f59e0b' },
+  } as const
 
   const getPassRateStatus = (passRate: number) => {
     if (passRate >= 80)
@@ -237,66 +274,58 @@ export default function ClassProgressDashboard() {
           </div>
         </div>
 
-        {/* Summary Statistics */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
-                Total classes
-              </CardTitle>
-              <BookOpen className="w-4 h-4 text-blue-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-gray-900">
-                {assignmentStatisticData?.length}
-              </div>
-            </CardContent>
-          </Card>
+        {/* Overall chart (toàn bộ các lớp học) */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>Overall across classes</CardTitle>
+            <CardDescription>
+              Total, passed, failed students and pass rate per class
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ChartContainer config={chartConfig} className="w-full h-[360px]">
+              <BarChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis yAxisId="left" />
+                <YAxis yAxisId="right" orientation="right" domain={[0, 100]} />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <ChartLegend content={<ChartLegendContent />} />
+                <Bar
+                  yAxisId="left"
+                  dataKey="total"
+                  fill={chartConfig.total.color}
+                />
+                <Bar
+                  yAxisId="left"
+                  dataKey="passed"
+                  fill={chartConfig.passed.color}
+                />
+                <Bar
+                  yAxisId="left"
+                  dataKey="failed"
+                  fill={chartConfig.failed.color}
+                />
+                <Line
+                  yAxisId="right"
+                  type="monotone"
+                  dataKey="passRate"
+                  stroke={chartConfig.passRate.color}
+                  dot={false}
+                />
+              </BarChart>
+            </ChartContainer>
+          </CardContent>
+        </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
-                Total students
-              </CardTitle>
-              <Users className="w-4 h-4 text-green-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-gray-900">
-                {assignmentStatisticData?.reduce(
-                  (sum: number, cls: AssignmentStatistic) =>
-                    sum + cls.totalStudents,
-                  0
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
-                Average pass rate
-              </CardTitle>
-              <TrendingUp className="w-4 h-4 text-orange-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-gray-900">
-                {(
-                  (assignmentStatisticData?.reduce(
-                    (sum: number, cls: AssignmentStatistic) =>
-                      sum + cls.passRate,
-                    0
-                  ) ?? 0) / (assignmentStatisticData?.length ?? 1)
-                ).toFixed(1)}
-                %
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Classes Grid */}
+        {/* Per-class charts (biểu đồ từng môn) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {assignmentStatisticData?.map((classData: AssignmentStatistic) => {
             const status = getPassRateStatus(classData.passRate)
+            const failed = Math.max(
+              0,
+              classData.totalStudents - classData.studentsPassed
+            )
 
             return (
               <Card
@@ -320,37 +349,57 @@ export default function ClassProgressDashboard() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">
-                        Total students:
-                      </span>
-                      <span className="font-medium">
-                        {classData.totalStudents}
-                      </span>
+                  <div className="grid grid-cols-5 gap-4 items-center">
+                    <div className="col-span-3">
+                      <ChartContainer
+                        config={chartConfig}
+                        className="w-full h-[180px]"
+                      >
+                        <PieChart>
+                          <ChartTooltip content={<ChartTooltipContent />} />
+                          <Pie
+                            dataKey="value"
+                            nameKey="name"
+                            data={[
+                              {
+                                name: 'passed',
+                                value: classData.studentsPassed,
+                              },
+                              { name: 'failed', value: failed },
+                            ]}
+                            innerRadius={40}
+                            outerRadius={70}
+                            paddingAngle={2}
+                          >
+                            <Cell fill={chartConfig.passed.color} />
+                            <Cell fill={chartConfig.failed.color} />
+                          </Pie>
+                        </PieChart>
+                      </ChartContainer>
                     </div>
-
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">
-                        Passed students:
-                      </span>
-                      <span className="font-medium text-green-600">
-                        {classData.studentsPassed}
-                      </span>
-                    </div>
-
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Pass rate:</span>
-                      <span className="font-bold text-lg">
-                        {classData.passRate}%
-                      </span>
-                    </div>
-
-                    <div className="w-full bg-gray-200 rounded-full h-2 mt-3">
-                      <div
-                        className="bg-green-500 h-2 rounded-full transition-all duration-300"
-                        style={{ width: `${classData.passRate}%` }}
-                      ></div>
+                    <div className="col-span-2 space-y-2">
+                      <div className="flex justify-between text-sm text-gray-600">
+                        <span>Total</span>
+                        <span className="font-medium">
+                          {classData.totalStudents}
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-sm text-gray-600">
+                        <span>Passed</span>
+                        <span className="font-medium text-green-600">
+                          {classData.studentsPassed}
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-sm text-gray-600">
+                        <span>Failed</span>
+                        <span className="font-medium text-red-600">
+                          {failed}
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-sm text-gray-600">
+                        <span>Pass rate</span>
+                        <span className="font-bold">{classData.passRate}%</span>
+                      </div>
                     </div>
                   </div>
                 </CardContent>

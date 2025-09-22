@@ -166,7 +166,7 @@ export const SemesterManagement = () => {
             </Button> */}
           </div>
 
-          <div className="flex items-center space-x-4">
+          {/* <div className="flex items-center space-x-4">
             <Button
               className="bg-orange-500 hover:bg-orange-600"
               onClick={handleSyncFap}
@@ -177,7 +177,7 @@ export const SemesterManagement = () => {
               />
               {isSyncing ? 'Syncing...' : 'Sync FAP'}
             </Button>
-          </div>
+          </div> */}
         </div>
 
         {/* Semesters Grid */}

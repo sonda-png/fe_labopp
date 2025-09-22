@@ -7,13 +7,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { useQuery } from '@/hooks'
+import { useMutation, useQuery } from '@/hooks'
 import { roleQueries } from '@/api/actions/roles/role.queries'
 import { ManageAccountOverview } from '@/components/features/manage-account'
 import { ManageAccountTable } from '@/components/features/manage-account/manage-account-table'
 import DebouncedInput from '@/components/common/debounce-input'
 import { ManageAccountAudit } from '@/components/features/manage-account/manage-account-audit'
 import { Button } from '@/components/ui/button'
+import { useQueryClient } from '@tanstack/react-query'
+import { semestersQueries } from '@/api/actions/semesters/semesters.queries'
+import { toast } from 'react-toastify'
+import { adminAccountQueries } from '@/api/actions/admin-account/admin-account.queries'
 
 export const ManageAccountPage = (): ReactNode => {
   const [searchTerm, setSearchTerm] = useState('')
@@ -25,8 +29,30 @@ export const ManageAccountPage = (): ReactNode => {
   const { data: rolesData } = useQuery({
     ...roleQueries.getAll(),
   })
+  const queryClient = useQueryClient()
+  const { mutateAsync: syncFapMutation, isPending: isSyncing } = useMutation(
+    'handleSyncFap',
+    {
+      onSuccess: data => {
+        queryClient.invalidateQueries({
+          queryKey: semestersQueries.getAll().queryKey,
+        })
+        queryClient.invalidateQueries({
+          queryKey: adminAccountQueries.getAll().queryKey,
+        })
+        toast.success(data.message || 'Sync FAP completed successfully')
+      },
+      onError: error => {
+        toast.error('Failed to sync FAP. Please try again.')
+        console.error('Sync FAP error:', error)
+      },
+    }
+  )
 
-  
+  const handleSyncFap = async () => {
+    await syncFapMutation(undefined)
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 space-y-6">
       <div className="flex items-center gap-3">
@@ -80,6 +106,18 @@ export const ManageAccountPage = (): ReactNode => {
                 <SelectItem value="false">Inactive</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+          <div className="flex items-center space-x-4">
+            <Button
+              className="bg-orange-500 hover:bg-orange-600"
+              onClick={handleSyncFap}
+              disabled={isSyncing}
+            >
+              <FolderSync
+                className={`mr-2 h-4 w-4 ${isSyncing ? 'animate-spin' : ''}`}
+              />
+              {isSyncing ? 'Syncing...' : 'Sync FAP'}
+            </Button>
           </div>
         </div>
         <ManageAccountAudit
