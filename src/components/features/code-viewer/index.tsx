@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { FileText, Folder } from 'lucide-react'
+import { FileText, Folder, Download } from 'lucide-react'
 import { Highlight, themes } from 'prism-react-renderer'
 import Prism from 'prismjs'
 import { useQuery } from '@/hooks'
@@ -15,6 +15,10 @@ import { FileIconComponent } from '@/components/common/file-icon'
 import { TeacherSubmissionData } from '@/api/actions/teacher-submit/teacher-submit.type'
 import { convertFileObjectToCodeFiles } from '@/utils/helpers/convert-file-object-to-code-file'
 import { CodeFile } from '@/api/actions/teacher-assignment/teacher-assignment.type'
+import { authStore } from '@/stores/authStore'
+import { ENV } from '@/config/env'
+import axios from 'axios'
+import { Assignment } from '@/api/actions/assignment/assignment.type'
 
 export interface TestResult {
   id: string
@@ -29,15 +33,69 @@ export interface TestResult {
 interface CodeFileViewerProps {
   studentId: string
   submission: TeacherSubmissionData
+  assignment: Assignment | undefined
 }
 
 export default function CodeFileViewer({
   studentId,
   submission,
+  assignment,
 }: CodeFileViewerProps) {
+  const { authValues } = authStore()
+
   const [internalSelectedFile, setInternalSelectedFile] =
     useState<CodeFile | null>(null)
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set())
+
+  const handleDownloadPdf = async () => {
+    const res = await axios.get(
+      `${ENV.BACK_END_URL}/assignment/download-pdf/by-assignment/${submission.assignmentCode}`,
+      {
+        responseType: 'blob',
+        withCredentials: false,
+        headers: {
+          'Content-Type': 'application/pdf',
+          Authorization: `Bearer ${authValues.token}`,
+        },
+      }
+    )
+    const blob = new Blob([res.data], { type: 'application/pdf' })
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `${(assignment?.title || 'assignment').replace(/\s+/g, '_')}.pdf`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(url)
+  }
+
+  const handleDownloadSubmission = async () => {
+    try {
+      const res = await axios.get(
+        `${ENV.BACK_END_URL}/assignment/download-submission/${submission.id}`,
+        {
+          responseType: 'blob',
+          withCredentials: false,
+          headers: {
+            'Content-Type': 'application/zip',
+            Authorization: `Bearer ${authValues.token}`,
+          },
+        }
+      )
+      const blob = new Blob([res.data], { type: 'application/zip' })
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `submission_${submission.id}.zip`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url)
+    } catch (e) {
+      console.error('Failed to download submission', e)
+    }
+  }
 
   const { data: viewJavaFileData } = useQuery({
     ...teacherAssignmentQueries.getViewJavaFile({
@@ -144,7 +202,7 @@ export default function CodeFileViewer({
   return (
     <div className="flex h-screen bg-background">
       {/* Left Sidebar - File Explorer */}
-      <div className="w-80 border-r bg-muted/30 flex-shrink-0">
+      <div className="border-r bg-muted/30 flex-shrink-0">
         <Card className="h-full rounded-none border-0">
           <CardHeader className="pb-3 flex-shrink-0">
             <CardTitle className="text-lg flex items-center gap-2">
@@ -167,6 +225,29 @@ export default function CodeFileViewer({
 
       {/* Main Content - Code Viewer */}
       <div className="flex-1 flex flex-col">
+        {/* Assignment Detail (fake) */}
+        <div className="border-b bg-orange-50/60">
+          <div className="px-4 py-3 flex items-start justify-between gap-4">
+            <div className="space-y-1">
+              <div className="text-base font-semibold text-orange-800 flex items-center gap-2">
+                <FileText className="w-4 h-4 text-orange-600" />
+                {assignment?.title}
+              </div>
+              <p className="text-sm text-orange-900/80 max-w-4xl">
+                {assignment?.description}
+              </p>
+            </div>
+            <Button
+              onClick={handleDownloadPdf}
+              className="bg-orange-600 hover:bg-orange-700 text-white flex items-center gap-2"
+              size="sm"
+              variant="default"
+            >
+              <Download className="w-4 h-4" /> Download PDF
+            </Button>
+          </div>
+        </div>
+
         {/* Toolbar */}
         <div className="border-b bg-muted/20 p-3">
           <div className="flex items-center justify-between">
@@ -189,7 +270,7 @@ export default function CodeFileViewer({
             </div>
 
             <div className="flex items-center gap-2">
-              <Button
+              {/* <Button
                 variant="outline"
                 size="sm"
                 onClick={() => {
@@ -203,6 +284,15 @@ export default function CodeFileViewer({
               >
                 <FileText className="w-4 h-4" />
                 View Results
+              </Button> */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleDownloadSubmission}
+                className="flex items-center gap-2"
+              >
+                <Download className="w-4 h-4" />
+                Download Submission
               </Button>
             </div>
           </div>

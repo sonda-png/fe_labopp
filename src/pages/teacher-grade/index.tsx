@@ -42,6 +42,7 @@ import TeacherGradeDetail from '@/components/features/teacher-grade/teacher-grad
 import TeacherSubmissionDetail from '@/components/features/teacher-grade/teacher-grade-detail'
 import { teacherAssignmentQueries } from '@/api/actions/teacher-assignment/teacher-assignment.queries'
 import { useQuery } from '@/hooks'
+import { Assignment } from '@/api/actions/assignment/assignment.type'
 
 // Pagination Component
 const Pagination = ({
@@ -390,7 +391,8 @@ export default function TeacherGradingSystem() {
                               <Calendar className="h-4 w-4 text-gray-500" />
                               <span className="text-gray-600 text-sm">
                                 {new Date(
-                                  submission.submittedAt
+                                  new Date(submission.submittedAt).getTime() +
+                                    7 * 60 * 60 * 1000
                                 ).toLocaleString('vi-VN')}
                               </span>
                             </div>
@@ -470,7 +472,7 @@ export default function TeacherGradingSystem() {
 
         {/* Code Viewer Dialog */}
         <Dialog open={isCodeViewerOpen} onOpenChange={setIsCodeViewerOpen}>
-          <DialogContent className="max-w-7xl h-[90vh] flex flex-col">
+          <DialogContent className="max-w-8xl h-[90vh] flex flex-col">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
                 <Code className="h-5 w-5" />
@@ -493,6 +495,12 @@ export default function TeacherGradingSystem() {
                 <CodeFileViewer
                   studentId={selectedSubmission.id}
                   submission={selectedSubmission}
+                  assignment={
+                    assignmentsData?.find(
+                      assignment =>
+                        assignment.id === selectedSubmission.assignmentCode
+                    ) as Assignment | undefined
+                  }
                 />
               </div>
             )}

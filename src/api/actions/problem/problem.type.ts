@@ -10,6 +10,10 @@ export type CreateTestCaseFromFileArgs = {
   files: File[]
 }
 
+export type UpdateTestCaseFromFileArgs = CreateTestCaseFromFileArgs & {
+  id: string
+}
+
 export type TestCaseArgs = {
   input: string
   expectedOutput: string

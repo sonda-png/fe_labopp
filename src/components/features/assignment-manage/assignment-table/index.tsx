@@ -44,7 +44,6 @@ import {
   Upload,
   X,
   CheckCircle,
-  AlertCircle,
 } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { TestCaseDialog } from '../../test-case-manage/test-case-dialog'

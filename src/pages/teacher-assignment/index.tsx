@@ -17,6 +17,7 @@ import {
   Download,
   Upload,
   FileText,
+  TestTube,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -56,6 +57,9 @@ import {
   teacherAssignmentSchema,
 } from '@/schema/teacherAssignment'
 import { TeacherAssignmentDetail } from '@/components/features/teacher-assignment/teacher-assignment-detail'
+import { Assignment } from '@/api/actions/assignment-manage/assignment.types'
+import { TestCaseDialog } from '@/components/features/test-case-manage/test-case-dialog'
+import { TestCaseCreate } from '@/components/features/test-case-manage/test-case-create'
 
 export const TeacherAssignmentPage = () => {
   const queryClient = useQueryClient()
@@ -65,8 +69,17 @@ export const TeacherAssignmentPage = () => {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
   const [selectedAssignment, setSelectedAssignment] =
     useState<TeacherAssignment | null>(null)
+  const [selectedLab, setSelectedLab] = useState<Assignment | null>(null)
+  const [isTestCasesDialogOpen, setIsTestCasesDialogOpen] = useState(false)
+  const [isAddTestCaseDialogOpen, setIsAddTestCaseDialogOpen] = useState(false)
+
   const [selectedPdfFile, setSelectedPdfFile] = useState<File | null>(null)
   const { classId } = useParams({ from: '/_auth/teacher-assignment/$classId/' })
+
+  const openTestCasesDialog = (lab: Assignment) => {
+    setSelectedLab(lab)
+    setIsTestCasesDialogOpen(true)
+  }
 
   const { data: assignmentsData, isLoading } = useQuery({
     ...teacherAssignmentQueries.getAll(classId),
@@ -621,7 +634,14 @@ export const TeacherAssignmentPage = () => {
                           <Eye className="mr-2 h-4 w-4" />
                           View Details
                         </DropdownMenuItem>
-                       
+                        <DropdownMenuItem
+                          onClick={() =>
+                            openTestCasesDialog(assignment as unknown as Assignment)
+                          }
+                        >
+                          <TestTube className="mr-2 h-4 w-4" />
+                          Manage Test Cases
+                        </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
                           className="text-red-600"
@@ -830,6 +850,20 @@ export const TeacherAssignmentPage = () => {
           </Card>
         )}
       </div>
+      {/* Test Cases Management Dialog */}
+      <TestCaseDialog
+        isOpen={isTestCasesDialogOpen}
+        onOpenChange={setIsTestCasesDialogOpen}
+        selectedLab={selectedLab}
+        setIsAddTestCaseDialogOpen={setIsAddTestCaseDialogOpen}
+      />
+
+      {/* Add Test Case Dialog */}
+      <TestCaseCreate
+        isOpen={isAddTestCaseDialogOpen}
+        onOpenChange={setIsAddTestCaseDialogOpen}
+        selectedLab={selectedLab}
+      />
     </div>
   )
 }
