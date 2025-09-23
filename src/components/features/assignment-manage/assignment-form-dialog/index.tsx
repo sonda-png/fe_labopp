@@ -92,7 +92,6 @@ export const AssignmentFormDialog = ({
   useEffect(() => {
     if (classData && Array.isArray(classData) && classData.length > 0) {
       const allClassIds = classData.map((c: any) => c.id.toString())
-      console.log('allClassIds', allClassIds)
       setValue('classIds', allClassIds, { shouldValidate: true })
     }
   }, [classData, setValue])
