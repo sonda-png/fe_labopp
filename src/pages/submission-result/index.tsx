@@ -95,7 +95,7 @@ export default function SubmissionResultPage() {
               className="bg-white text-orange-600 border-white hover:bg-orange-50"
               onClick={() => navigate({ to: '/my-submit' })}
             >
-              Back to My Submissions
+              Back to My Assignment
             </Button>
           </div>
         </div>

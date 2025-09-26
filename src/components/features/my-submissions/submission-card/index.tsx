@@ -118,7 +118,7 @@ export const SubmissionCard = ({
           <div className="space-y-2">
             <div className="flex items-center text-sm text-gray-600">
               <Calendar className="h-4 w-4 mr-2" />
-              <span>Submitted: {formatDate(submission.submittedAt)}</span>
+              <span>Uploaded: {formatDate(submission.submittedAt)}</span>
             </div>
 
             {submission.locResult >= 0 && (

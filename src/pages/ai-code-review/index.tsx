@@ -107,7 +107,7 @@ export default function AICodeReviewPage() {
           onClick={() => navigate({ to: '/my-submit' })}
           className="border-orange-500 text-orange-500 hover:bg-orange-50"
         >
-          <ArrowLeft className="h-4 w-4 mr-2" /> Back to My Submissions
+          <ArrowLeft className="h-4 w-4 mr-2" /> Back to My Assignment
         </Button>
         <Badge className="bg-orange-500 text-white">AI Review</Badge>
       </div>

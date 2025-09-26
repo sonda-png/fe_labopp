@@ -326,7 +326,7 @@ export const AssignmentDetail = ({
             <CardHeader>
               <CardTitle className="flex items-center">
                 <FileDown className="h-5 w-5 mr-2" />
-                Download Materials
+                Materials
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">

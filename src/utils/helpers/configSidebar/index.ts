@@ -125,14 +125,14 @@ export const allNavigationItems: NavigationItem[] = [
   },
   {
     id: 'my-submit',
-    label: 'My Submission',
+    label: 'My Assignment',
     icon: BookOpen,
     path: '/my-submit',
     roles: ['Student'],
   },
 {
     id: 'my-selected-assignment',
-    label: 'My  Assignment',
+    label: 'Selected Assignment',
     icon: BookOpen,
     path: '/my-selected-assignment',
     roles: ['Student'],
