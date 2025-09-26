@@ -45,6 +45,7 @@ import { ENV } from '@/config/env'
 import { SuggestTestCasesResponse } from '@/api/actions/ai-manage/ai-manage.type'
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -781,14 +782,8 @@ export const AssignmentDetail = ({
       </Dialog>
       {/* PDF Viewer Modal */}
       <Dialog open={showPdfViewer} onOpenChange={setShowPdfViewer}>
-        <DialogContent className="max-w-7xl p-0 overflow-hidden">
-          <DialogHeader className="px-6 pt-6 pb-2">
-            
-            <DialogDescription className="px-0 hidden">
-              PDF Viewer
-            </DialogDescription>
-          </DialogHeader>
-          <div className="h-[calc(90vh-72px)]">
+        <DialogContent className="max-w-7xl p-0 overflow-hidden [&>button:last-child]:hidden">
+          <div className="h-[90vh]">
             {isPdfLoading && (
               <div className="w-full h-full flex items-center justify-center text-sm text-gray-600">
                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-700 mr-2"></div>
