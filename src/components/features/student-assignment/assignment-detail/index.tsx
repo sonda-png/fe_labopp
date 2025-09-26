@@ -245,7 +245,7 @@ export const AssignmentDetail = ({
       await submitAssignmentMutation({
         problemId: assignmentId as string,
         studentId: authValues.userId,
-        semesterId: currentSemester?.data?.id ?? 0,
+        semesterId: currentSemester?.id ?? 0,
         zipFile: file,
         status: submissionStatus === 'submit' ? 'Submit' : 'Draft',
       })
