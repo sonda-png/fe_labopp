@@ -781,7 +781,7 @@ export const AssignmentDetail = ({
       </Dialog>
       {/* PDF Viewer Modal */}
       <Dialog open={showPdfViewer} onOpenChange={setShowPdfViewer}>
-        <DialogContent className="max-w-9xl w-[95vw] h-[90vh] p-0 overflow-hidden">
+        <DialogContent className="max-w-7xl p-0 overflow-hidden">
           <DialogHeader className="px-6 pt-6 pb-2">
             
             <DialogDescription className="px-0 hidden">
