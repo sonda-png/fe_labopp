@@ -22,8 +22,6 @@ import {
   X,
   Check,
   TestTube,
-  MessageSquare,
-  CheckCircle,
   AlertCircle,
   Info,
 } from 'lucide-react'
@@ -31,7 +29,13 @@ import { format } from 'date-fns'
 import { useQuery, useMutation } from '@/hooks'
 import { assignmentQueries } from '@/api/actions/assignment/assignment.queries'
 import { useNavigate, useParams, useSearch } from '@tanstack/react-router'
-import { useState, useRef, type DragEvent, type ChangeEvent } from 'react'
+import {
+  useState,
+  useRef,
+  useEffect,
+  type DragEvent,
+  type ChangeEvent,
+} from 'react'
 import { toast } from 'react-toastify'
 import { StandardizedApiError } from '@/context/apiClient/apiClientContextController/apiError/apiError.types'
 import { authStore } from '@/stores/authStore'
@@ -112,28 +116,20 @@ export const AssignmentDetail = ({
       },
     })
 
-  const {
-    mutateAsync: suggestTestCasesMutation,
-    isPending: isSuggestingTestCases,
-  } = useMutation('handleSuggestTestCases', {
-    onSuccess: (data: SuggestTestCasesResponse) => {
-      setTestCasesResult(data)
-      setShowTestCasesModal(true)
-    },
-    onError: () => {
-      toast.error('Failed to generate test cases. Please try again.')
-    },
-  })
+  // (AI suggest test cases mutation temporarily disabled)
 
-  const handleSuggestTestCases = async () => {
-    try {
-      await suggestTestCasesMutation({
-        assignmentId: Number(assignmentId),
-      })
-    } catch (error) {
-      console.error('Error in suggest test cases:', error)
+  // PDF preview state
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null)
+  const [showPdfViewer, setShowPdfViewer] = useState(false)
+  const [isPdfLoading, setIsPdfLoading] = useState(false)
+
+  useEffect(() => {
+    return () => {
+      if (pdfUrl) {
+        window.URL.revokeObjectURL(pdfUrl)
+      }
     }
-  }
+  }, [pdfUrl])
 
   const formatDate = (dateString: string) => {
     try {
@@ -144,26 +140,32 @@ export const AssignmentDetail = ({
   }
 
   const handleDownloadPdf = async () => {
-    const res = await axios.get(
-      `${ENV.BACK_END_URL}/assignment/download-pdf/by-assignment/${assignmentId}`,
-      {
-        responseType: 'blob',
-        withCredentials: false,
-        headers: {
-          'Content-Type': 'application/pdf',
-          Authorization: `Bearer ${authValues.token}`,
-        },
+    try {
+      setShowPdfViewer(true)
+      setIsPdfLoading(true)
+      const res = await axios.get(
+        `${ENV.BACK_END_URL}/assignment/download-pdf/by-assignment/${assignmentId}`,
+        {
+          responseType: 'blob',
+          withCredentials: false,
+          headers: {
+            'Content-Type': 'application/pdf',
+            Authorization: `Bearer ${authValues.token}`,
+          },
+        }
+      )
+      const blob = new Blob([res.data], { type: 'application/pdf' })
+      const url = window.URL.createObjectURL(blob)
+      if (pdfUrl) {
+        window.URL.revokeObjectURL(pdfUrl)
       }
-    )
-    const blob = new Blob([res.data], { type: 'application/pdf' })
-    const url = window.URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = `${assignment.title.replace(/\s+/g, '_')}.pdf`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    window.URL.revokeObjectURL(url)
+      setPdfUrl(url)
+    } catch (error) {
+      toast.error('Failed to load PDF')
+      setShowPdfViewer(false)
+    } finally {
+      setIsPdfLoading(false)
+    }
   }
 
   // File handling functions
@@ -242,7 +244,7 @@ export const AssignmentDetail = ({
       await submitAssignmentMutation({
         problemId: assignmentId as string,
         studentId: authValues.userId,
-        semesterId: currentSemester?.id ?? 0,
+        semesterId: currentSemester?.data?.id ?? 0,
         zipFile: file,
         status: submissionStatus === 'submit' ? 'Submit' : 'Draft',
       })
@@ -336,7 +338,7 @@ export const AssignmentDetail = ({
                   Assignment PDF
                 </h4>
                 <p className="text-sm text-gray-600 mb-3">
-                  Download detailed requirements and instructions
+                  View detailed requirements and instructions
                 </p>
                 <Button
                   onClick={handleDownloadPdf}
@@ -346,12 +348,12 @@ export const AssignmentDetail = ({
                   {isDownloading ? (
                     <>
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      Downloading...
+                      Loading...
                     </>
                   ) : (
                     <>
                       <Download className="h-4 w-4 mr-2" />
-                      Download PDF
+                      View PDF
                     </>
                   )}
                 </Button>
@@ -775,6 +777,34 @@ export const AssignmentDetail = ({
               </div>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+      {/* PDF Viewer Modal */}
+      <Dialog open={showPdfViewer} onOpenChange={setShowPdfViewer}>
+        <DialogContent className="max-w-9xl w-[95vw] h-[90vh] p-0 overflow-hidden">
+          <DialogHeader className="px-6 pt-6 pb-2">
+            
+            <DialogDescription className="px-0 hidden">
+              PDF Viewer
+            </DialogDescription>
+          </DialogHeader>
+          <div className="h-[calc(90vh-72px)]">
+            {isPdfLoading && (
+              <div className="w-full h-full flex items-center justify-center text-sm text-gray-600">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-700 mr-2"></div>
+                Loading PDF...
+              </div>
+            )}
+            {!isPdfLoading && pdfUrl && (
+              <iframe
+                src={pdfUrl}
+                width="100%"
+                height="100%"
+                className="border-0"
+                title="Assignment PDF"
+              />
+            )}
+          </div>
         </DialogContent>
       </Dialog>
     </div>
